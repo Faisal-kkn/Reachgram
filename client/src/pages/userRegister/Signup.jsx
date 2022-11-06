@@ -4,7 +4,6 @@ function Signup() {
   return (
     <div>
       <Register />
-      <h1>dnklkfsfkdn</h1>
     </div>  
    
   ) 

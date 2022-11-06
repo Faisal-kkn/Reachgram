@@ -1,0 +1,18 @@
+
+
+.main-bg {
+    background-image: url('../../../public/assets/login.jpg');
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+}
+.main-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(140deg, #05141c, #030d12e0, #00000000);
+    z-index: -1;
+}
