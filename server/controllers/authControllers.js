@@ -9,7 +9,6 @@ export default {
         try {
             let mailId = await userRegisterSchema.findOne({ email: req.body.email })
             let otp;
-
             async function main() {
                 otp = Math.random();
                 otp = otp * 1000000;
@@ -53,7 +52,7 @@ export default {
                                 otp: req.body.otp
                             }
                         }).then(() => {
-                            res.status(200).json({ signup: true })
+                            res.status(200).json({ signup: true, email: req.body.email })
                         }).catch(console.error);
                     }).catch(console.error);
                 } else {
@@ -67,10 +66,43 @@ export default {
                     req.body.phone = parseInt(req.body.phone)
                     let registerUser = new userRegisterSchema(req.body)
                     registerUser.save().then(() => {
-                        res.status(200).json({ signup: true })
+                        res.status(200).json({ signup: true, email: registerUser.email  })
                     }).catch(console.error);
                 }).catch(console.error);
             }
+        } catch (error) {
+            res.status(501).json({ message: error.message });
+        }
+    },
+    userOtpVerification: async (req, res) => {
+        try {
+            userRegisterSchema.findOne({ email: req.body.email }).then((response)=>{
+                bcrypt.compare(req.body.otpNum, response.otp).then((otpResponse)=>{
+                    otpResponse ? 
+                        userRegisterSchema.findOneAndUpdate({ email: req.body.email }, {
+                            $set: {
+                                otpStatus: true
+                            }
+                        }).then(() => {
+                            res.status(200).json({ otpVerify: true })
+                        }) : res.status(200).json({ otpVerify: false, message: 'otp is incorrect' })
+                }).catch(error => res.status(400).json({ otpVerify: false, message: 'otp is incorrect' }))
+            }).catch(console.error)
+        } catch (error) {
+            res.status(501).json({ message: error.message });
+        }
+    },
+    userLogin: async (req, res) => {
+        try {
+            userRegisterSchema.findOne({ email: req.body.email }).then((response) => {
+                if (response){
+                    bcrypt.compare(req.body.password, response.password)
+                    .then((loginResponse) => { 
+                        loginResponse ? res.status(200).json({ status: true, name: response.fname }) 
+                            : res.status(200).json({ status: false, message: 'Password is incorrect' })})
+                    
+                } else res.status(200).json({ status: false, message: 'Mail is not found' })
+            }).catch(console.error)
         } catch (error) {
             res.status(501).json({ message: error.message });
         }

@@ -53,7 +53,12 @@ import Joi from 'joi';
 // export default { userRegisterr, validate }
 
 // const mongoose = require('mongoose');
-
+// let otpSchema = new mongoose.Schema({
+//     otpNum : {
+//         type: String,
+//         require: true,
+//     }
+// })
 let userRegisterSchema = new mongoose.Schema({
     fname: {
         type: String,

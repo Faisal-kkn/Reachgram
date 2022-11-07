@@ -24,7 +24,7 @@ function Home() {
                         <div className='mb-1 md:mb-3 '>
                             <Story />
                         </div>
-                        <div className='overflow-y-scroll scrollbar-hide h-[85vh] lg:h-[74vh] md:h-[85vh] am:h-[90vh]  text-white rounded-t-[10px]'>
+                        <div className='overflow-y-scroll scrollbar-hide h-[85vh] lg:h-[73vh] md:h-[85vh] am:h-[90vh]  text-white rounded-t-[10px] scrollbar-hide'>
                             <HomeMain />
                         </div>
                     </div>
