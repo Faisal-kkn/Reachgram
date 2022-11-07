@@ -6,6 +6,7 @@ import nodemailer from 'nodemailer';
 
 export default {
     userRegister: async (req, res) => {
+        console.log(req.body);
         try {
             let mailId = await userRegisterSchema.findOne({ email: req.body.email })
             let otp;
@@ -56,7 +57,7 @@ export default {
                         }).catch(console.error);
                     }).catch(console.error);
                 } else {
-                    res.status(400).json({ signup: false, msg: 'mail is already registered' })
+                    res.status(200).json({ signup: false, msg: 'Mail id is already registered' })
                 }
             } else {
                 main().then(async (status) => {

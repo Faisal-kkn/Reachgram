@@ -2,11 +2,18 @@ import React, { useState } from 'react'
 import './register.css'
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useForm } from "react-hook-form";
+
 function Register() {
   const Navigate = useNavigate()
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
 
   const [email, setEmail] = useState({
     email: ''
+  })
+  const [emailErr, setEmailErr] = useState({
+    errMsg: ''
   })
   const [otpErr, setOtpErr] = useState({
     errMsg: ''
@@ -46,7 +53,7 @@ function Register() {
     // setShowModal(false)
   }
   
-  const [register, setRegister] = useState({
+  const [registerData, setRegisterData] = useState({
     fname: '',
     lname: '',
     phone: '',
@@ -57,17 +64,19 @@ function Register() {
   const handleChange = (e) => {
     const { name, value } = e.target
     console.log(value);
-    setRegister({
-      ...register,
+    setRegisterData({
+      ...registerData,
       [name]: value
     })
   }
 
   const signUpForm =(e)=>{
-    e.preventDefault()
-    axios.post('http://localhost:5000/signup', register).then((response)=>{
-      if (response.msg){
-        
+    axios.post('http://localhost:5000/signup', registerData).then((response)=>{
+      console.log(response);
+      if (response.data.msg){
+        setEmailErr({
+          errMsg: response.data.msg
+        })
       }else{
         setEmail({
           email: response.data.email
@@ -91,30 +100,39 @@ function Register() {
                 </div>
                 <div className='w-full mt-[30px] sm:mt-[50px]'>
 
-                  <form onSubmit={signUpForm} >
+                  <form onSubmit={handleSubmit(signUpForm)} >
                     <div className='w-full mt-[50px]'>
                       <div className='flex flex-wrap justify-between'>
                         <div className='inline-block bg-[#182D39] w-[48%] px-3 rounded-[5px] h-fit pb-1'>
                           <label htmlFor='f-name' className='text-[13px] text-[#596C7A]'>First Name</label>
-                          <input name='fname' value={register.fname} onChange={handleChange} id='f-name' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          <input {...register('fname', { required: true, minLength: 3 })} value={registerData.fname} onChange={handleChange} id='f-name' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          {errors.fname && <p className='text-[13px] text-red-600'>Please check the First Name</p>}
                         </div>
                         <div className='inline-block  bg-[#182D39] w-[48%] px-3 rounded-[5px] h-fit pb-1'>
                           <label htmlFor='l-name' className='text-[13px]  text-[#596C7A]'>Last Name</label>
-                          <input name='lname' value={register.lname} onChange={handleChange} id='l-name' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          <input {...register('lname', { required: true })} value={registerData.lname} onChange={handleChange} id='l-name' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          {errors.lname && <p className='text-[13px] text-red-600'>Please check the Last Name</p>}
                         </div>
                       </div>
                       <div className='flex flex-wrap flex-col justify-between'>
                         <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
                           <label htmlFor='phone' className='text-[13px] text-[#596C7A]'>Phone</label>
-                          <input name='phone' value={register.phone} onChange={handleChange} id='phone' type="tel" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          <input  {...register('phone', { required: true, maxLength: 10, pattern: /^[0-9]{10}$/ })} value={registerData.phone} onChange={handleChange} id='phone' type="tel" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          {errors.phone && <p className='text-[13px] text-red-600'>Please check the Phone Number</p>}
                         </div>
                         <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
                           <label htmlFor='email' className='text-[13px]  text-[#596C7A]'>Email</label>
-                          <input name='email' value={register.email} onChange={handleChange} id='email' type="email" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          <input {...register('email', {
+                            required: true, 
+                            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ })}
+                            value={registerData.email} onChange={handleChange} id='email' type="email" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          {errors.email && <p className='text-[13px] text-red-600'>Please check the Email</p>}
                         </div>
+                        <p className='text-[13px] text-red-600'>{emailErr.errMsg}</p>
                         <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
                           <label htmlFor='password' className='text-[13px]  text-[#596C7A]'>Password</label>
-                          <input name='password' value={register.password} onChange={handleChange} id='password' type="password" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          <input {...register('password', { required: true, minLength: 6})} value={registerData.password} onChange={handleChange} id='password' type="password" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          {errors.password && <p className='text-[13px] text-red-600'>min length 6</p>}
                         </div>
                         <button className='border-2 border-[#ffffff80] w-fit px-5 py-3 text-white rounded-[5px] mt-4'>SIGN UP</button>
                       </div>
@@ -187,22 +205,22 @@ function Register() {
     _.addEventListener("keyup", handle_next_input)
   })
   function handle_next_input(event) {
-    var current = event.target
-    var index = parseInt(current.classList[1].split("__")[2])
+    let current = event.target
+    let index = parseInt(current.classList[1].split("__")[2])
     current.value = event.key
 
     if (event.keyCode == 8 && index > 1) {
       current.previousElementSibling.focus()
     }
     if (index < 6 && mykey.indexOf("" + event.key + "") != -1) {
-      var next = current.nextElementSibling;
+      let next = current.nextElementSibling;
       next.focus()
     }
-    var _finalKey = ""
-    for (var { value } of otp_inputs) {
+    let _finalKey = ""
+    for (let { value } of otp_inputs) {
       _finalKey += value
     }
-    if (_finalKey.length == 6) {
+    if (_finalKey.length == 6) { 
       document.querySelector("#_otp").classList.replace("_notok", "_ok")
       document.querySelector("#_otp").innerText = _finalKey
     } else {
