@@ -23,11 +23,9 @@ function Register() {
   }
 
   const signUpForm =(e)=>{
-    console.log('dsssss');
-    console.log(register);
     e.preventDefault()
     axios.post('http://localhost:5000/signup', register).then((res)=>{
-
+      console.log(res.data);
     })
   }
 

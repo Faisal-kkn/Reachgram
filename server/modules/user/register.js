@@ -79,6 +79,10 @@ let userRegisterSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    otpStatus: {
+        type: Boolean,
+        default: false
+    },
     status: {
        type: Boolean,
        default: false
