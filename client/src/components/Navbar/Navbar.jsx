@@ -1,42 +1,52 @@
-import React from 'react'
+import React,{useContext, useState} from 'react'
 import { Fragment } from 'react'
+import { AppContext } from '../../AppContext';
+
 
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/solid'
-const user = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-const navigation = [
-    { name: <HomeIcon className="w-6 h-6" aria-hidden="true" />, href: '#', current: true },
-    {
-        name: <span className="w-6 h-6" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"  stroke="currentColor" className="w-6 h-6">
-            <path  d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-        </svg>
-        </span>, href: '#', current: false
-    },
-    {
-        name: <span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-        </span>, href: '#', current: false
-    },
-    { name: <BellIcon className="w-6 h-6" aria-hidden="true" />, href: '#', current: false },
-]
-const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
-]
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
 
 
 function Navbar() {
+
+    const { showPostModal, setShowPostModal } = useContext(AppContext);
+    const newPost = (e)=>{
+        setShowPostModal(!showPostModal)
+    }
+
+    const user = {
+        name: 'Tom Cook',
+        email: 'tom@example.com',
+        imageUrl:
+            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    }
+    const navigation = [
+        { name: <HomeIcon className="w-6 h-6" aria-hidden="true" />, href: '#', current: true },
+        {
+            name: <span className="w-6 h-6" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+                <path d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>
+            </span>, href: '#', current: false
+        },
+        {
+            name: <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+            </span>, href: '#', current: false, fun: newPost
+        },
+        { name: <BellIcon className="w-6 h-6" aria-hidden="true" />, href: '#', current: false },
+    ]
+    const userNavigation = [
+        { name: 'Your Profile', href: '#' },
+        { name: 'Settings', href: '#' },
+        { name: 'Sign out', href: '#' },
+    ]
+    function classNames(...classes) {
+        return classes.filter(Boolean).join(' ')
+    }
+
+
     return (
         <div>
             <div className="min-h-full">
@@ -76,13 +86,14 @@ function Navbar() {
                                                     {navigation.map((item, index) => (
                                                         <a
                                                             key={index}
-                                                            href={item.href}
+                                                            // href={item.href}
                                                             className={classNames(
                                                                 item.current
                                                                     ? 'bg-gray-900 text-white'
                                                                     : 'text-[#A0ADB4] hover:bg-gray-700 hover:text-white',
-                                                                'px-3 py-2 rounded-md text-sm font-medium'
+                                                                'px-3 py-2 rounded-md text-sm font-medium cursor-pointer'
                                                             )}
+                                                            onClick={item.fun}
                                                             aria-current={item.current ? 'page' : undefined}
                                                         >
                                                             {item.name}

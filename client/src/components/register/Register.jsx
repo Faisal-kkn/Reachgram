@@ -19,6 +19,7 @@ function Register() {
     errMsg: ''
   })
   const [showModal, setShowModal] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [otpValue, setOtpValue] = useState({
     otp1: '', otp2: '',  otp3: '', otp4: '',  otp5: '', otp6: ''
   })
@@ -32,12 +33,12 @@ function Register() {
   }
 
   const otpSubmit = (e) => {
-    console.log('otpValue');
     e.preventDefault()
     let mergedData = {
       otpNum : otpValue.otp1 + otpValue.otp2 + otpValue.otp3 + otpValue.otp4 + otpValue.otp5 + otpValue.otp6,
       email: email.email
     }
+   
     axios.post('http://localhost:5000/otpvarification', mergedData).then((response) => {
       if (response.data.otpVerify) {
         Navigate('/login')
@@ -71,8 +72,10 @@ function Register() {
   }
 
   const signUpForm =(e)=>{
+    setShowLoading(true)
     axios.post('http://localhost:5000/signup', registerData).then((response)=>{
       console.log(response);
+      setShowLoading(false)
       if (response.data.msg){
         setEmailErr({
           errMsg: response.data.msg
@@ -145,6 +148,18 @@ function Register() {
         </div>
       </section>
       <>
+        {showLoading ? (<div role="status" className='bg-[#0f213eed] mx-auto w-screen my-auto h-screen z-0 absolute top-0 left-0 flex justify-center items-center'>
+          <svg aria-hidden="true" className="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"></path>
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"></path>
+          </svg>
+          <span className="sr-only">Loading...</span>
+          {/* <div className="fixed inset-0 z-0 bg-[#0f213eed] "></div> */}
+
+        </div>) : null
+        }
+      </>
+      <>
         {showModal ? (
           <>
             <div
@@ -179,7 +194,7 @@ function Register() {
                       </div>
                       <p className='text-[13px] text-center text-red-600'>{otpErr.errMsg}</p>
                       <div className="flex items-center justify-center p-3 pb-0 border-t border-solid border-slate-200 rounded-b">
-                        {otpValue.otp1 && otpValue.otp2 && otpValue.otp3 && otpValue.otp4 && otpValue.otp5 && otpValue.otp6 ? <button className=" bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"> Save Changes </button> : ''}
+                        {otpValue.otp1 && otpValue.otp2 && otpValue.otp3 && otpValue.otp4 && otpValue.otp5 && otpValue.otp6 ? <button className=" bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"> SEND </button> : ''}
                       </div>
                     </form>
                   </div>
@@ -188,7 +203,7 @@ function Register() {
                 </div>
               </div>
             </div>
-            <div className="opacity-75 fixed inset-0 z-40 bg-black"></div>
+            <div className="fixed inset-0 z-40 bg-[#0f213eed]"></div>
           </>
         ) : null}
       </>
@@ -205,19 +220,19 @@ function Register() {
     _.addEventListener("keyup", handle_next_input)
   })
   function handle_next_input(event) {
-    let current = event.target
-    let index = parseInt(current.classList[1].split("__")[2])
+    var current = event.target
+    var index = parseInt(current.classList[1].split("__")[2])
     current.value = event.key
 
     if (event.keyCode == 8 && index > 1) {
       current.previousElementSibling.focus()
     }
     if (index < 6 && mykey.indexOf("" + event.key + "") != -1) {
-      let next = current.nextElementSibling;
+      var next = current.nextElementSibling;
       next.focus()
     }
-    let _finalKey = ""
-    for (let { value } of otp_inputs) {
+    var _finalKey = ""
+    for (var { value } of otp_inputs) {
       _finalKey += value
     }
     if (_finalKey.length == 6) { 

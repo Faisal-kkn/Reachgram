@@ -8,7 +8,9 @@ import Mobile from '../../components/Navbar/Mobile/Mobile'
 
 import './home.css'
 
+
 function Home() {
+
     return (
         <>
             <div className='bg-[#0F213E] min-h-screen'>
@@ -25,6 +27,7 @@ function Home() {
                             <Story />
                         </div>
                         <div className='overflow-y-scroll scrollbar-hide h-[85vh] lg:h-[73vh] md:h-[85vh] am:h-[90vh]  text-white rounded-t-[10px] scrollbar-hide'>
+                            
                             <HomeMain />
                         </div>
                     </div>

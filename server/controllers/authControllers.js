@@ -95,14 +95,14 @@ export default {
     },
     userLogin: async (req, res) => {
         try {
-            userRegisterSchema.findOne({ email: req.body.email }).then((response) => {
+            userRegisterSchema.findOne({ email: req.body.email, otpStatus: true }).then((response) => {
                 if (response){
                     bcrypt.compare(req.body.password, response.password)
                     .then((loginResponse) => { 
                         loginResponse ? res.status(200).json({ status: true, name: response.fname }) 
                             : res.status(200).json({ status: false, message: 'Password is incorrect' })})
                     
-                } else res.status(200).json({ status: false, message: 'Mail is not found' })
+                } else res.status(200).json({ status: false, message: 'Mail id is not found' })
             }).catch(console.error)
         } catch (error) {
             res.status(501).json({ message: error.message });
