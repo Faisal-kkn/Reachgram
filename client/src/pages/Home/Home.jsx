@@ -1,15 +1,41 @@
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
 import Header from '../../components/Navbar/Navbar'
 import LeftSideBar from '../../components/LeftSideBar/LeftSideBar'
 import RightSideBar from '../../components/RightSideBar/RightSideBar'
 import HomeMain from '../../components/HomeMain/HomeMain'
 import Story from '../../components/Story/Story'
 import Mobile from '../../components/Navbar/Mobile/Mobile'
-
+import { NavLink, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './home.css'
-
+import jwtDecode from 'jwt-decode'
+import { UserContext } from '../../AppContext';
 
 function Home() {
+    const { setUserData } = useContext(UserContext);
+
+    const Navigate = useNavigate()
+    useEffect(() => {
+        userAuthenticeted()
+    }, []);
+
+    const userAuthenticeted =() => {
+        axios.get("http://localhost:5000/isUserAuth", {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken"),
+            },
+        }).then((response) => {
+            
+            if (response.data.auth){
+                let user = jwtDecode(localStorage.getItem("userToken"))
+                setUserData({
+                    id: user.user.split(' ')[0],
+                    name: user.user.split(' ')[1]
+                })
+                Navigate('/')
+            }else Navigate("/login");
+        });
+    };
 
     return (
         <>
@@ -27,7 +53,6 @@ function Home() {
                             <Story />
                         </div>
                         <div className='overflow-y-scroll scrollbar-hide h-[85vh] lg:h-[73vh] md:h-[85vh] am:h-[90vh]  text-white rounded-t-[10px] scrollbar-hide'>
-                            
                             <HomeMain />
                         </div>
                     </div>

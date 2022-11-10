@@ -1,14 +1,59 @@
-import React, { useContext, useState } from 'react'
-import { AppContext } from '../../AppContext';
+import React, { useContext, useState, useEffect } from 'react'
+import { AppContext, UserContext } from '../../AppContext';
+import axios from 'axios';
+import jwtDecode from 'jwt-decode'
 
 function PostUpload() {
-    const { showPostModal, setShowPostModal } = useContext(AppContext);
 
+    const { showPostModal, setShowPostModal } = useContext(AppContext);
+    const { userData } = useContext(UserContext);
+    const [postData, setPostData] = useState({ discription: '', image: '', userId: '' })
     const [file, setFile] = useState();
-    function handleChange(e) {
-        console.log(e.target.files);
-        setFile(URL.createObjectURL(e.target.files[0]));
+    const fileUpload = (e) => {
+        setFile(URL.createObjectURL(e.target.files[0]))
+        setPostData({
+            ...postData,
+            image: e.target.files[0],
+            userId: userData.id
+        })
     }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setPostData({
+            ...postData,
+            [name]: value,
+            userId: userData.id
+        })
+    }
+
+    const postUpload =async (e) => {
+        e.preventDefault()
+        
+        const formData = new FormData();
+        for (let key in postData) {
+            formData.append(key, postData[key])
+        }
+        axios.post('http://localhost:5000/new_post', formData, {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken"),
+            }
+        }).then(response => {
+            console.log(response);
+            setShowPostModal(false)
+            // if (response.data) {
+            //     setPostData({ discription: '', image: '' })
+            // }
+        }).catch(error => console.log(error))
+
+    }
+
+    useEffect(() => {
+        
+    }, [postUpload]);
+
+
+
 
     return (
         <div>
@@ -31,7 +76,7 @@ function PostUpload() {
                                             ×
                                         </span>
                                     </button>
-                                    <form className="" name="">
+                                    <form onSubmit={postUpload}>
                                         <div className=''>
                                             <div className='flex gap-3 items-start'>
                                                 <div className='w-[50px] h-[50px]  overflow-hidden relative'>
@@ -39,14 +84,14 @@ function PostUpload() {
                                                 </div>
                                                 <div className='w-full'>
                                                     <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-[#0F213E] font-bold inline-block max-w-[500px]'>Alex McCarthy</h4>
-                                                    <textarea className='block w-full text-[13px] border p-2' placeholder='Write a caption...'></textarea>
+                                                    <textarea value={postData.discription} name="discription" onChange={handleChange} className='block w-full text-[13px] border p-2' placeholder='Write a caption...'></textarea>
                                                 </div>
                                             </div>
                                             <div className='w-full overflow-hidden h-[300px] flex justify-center items-center relative mt-3 border-4 border-solid border-[#314f5f65]'>
-                                                <div id="bgimage" className='w-[80vw] md:w-[60vw] bg-cover  overflow-hidden h-[300px] flex justify-center items-center blur-[1px]' style={{ backgroundImage: `url(${file || 'https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80' })`}}></div>
-                                                <input type="file" name="" id="imgInp" className='w-[100px] absolute text-transparent custom-file-input' onChange={handleChange} />
+                                                <div id="bgimage" className='w-[80vw] md:w-[60vw] bg-cover  overflow-hidden h-[300px] flex justify-center items-center blur-[1px]' style={{ backgroundImage: `url(${file || 'https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'})` }}></div>
+                                                <input name="image" onChange={fileUpload} type="file" id="imgInp" className='w-[100px] absolute text-transparent custom-file-input' />
                                             </div>
-                                            
+
                                         </div>
                                         <div className="flex items-center justify-center pt-[1px] border-t border-solid border-slate-200 rounded-b">
                                             <button className="w-full bg-[#246EE9] rounded-b-[10px] text-white active:bg-[#2d5695] font-bold uppercase text-sm py-3 shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"> Upload </button>

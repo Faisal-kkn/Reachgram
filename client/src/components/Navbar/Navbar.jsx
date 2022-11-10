@@ -1,4 +1,4 @@
-import React,{useContext, useState} from 'react'
+import React, { useContext, useState } from 'react'
 import { Fragment } from 'react'
 import { AppContext } from '../../AppContext';
 
@@ -10,7 +10,7 @@ import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/so
 function Navbar() {
 
     const { showPostModal, setShowPostModal } = useContext(AppContext);
-    const newPost = (e)=>{
+    const newPost = (e) => {
         setShowPostModal(!showPostModal)
     }
 

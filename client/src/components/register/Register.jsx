@@ -1,29 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './register.css'
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 
 function Register() {
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
-
-
-  const [email, setEmail] = useState({
-    email: ''
-  })
-  const [emailErr, setEmailErr] = useState({
-    errMsg: ''
-  })
-  const [otpErr, setOtpErr] = useState({
-    errMsg: ''
-  })
+  const [email, setEmail] = useState({ email: '' });
+  const [emailErr, setEmailErr] = useState({ errMsg: '' });
+  const [otpErr, setOtpErr] = useState({ errMsg: '' });
   const [showModal, setShowModal] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [otpValue, setOtpValue] = useState({
-    otp1: '', otp2: '',  otp3: '', otp4: '',  otp5: '', otp6: ''
-  })
-
+  const [otpValue, setOtpValue] = useState({ otp1: '', otp2: '', otp3: '', otp4: '', otp5: '', otp6: '' });
+  const [registerData, setRegisterData] = useState({ fname: '', lname: '', phone: '', email: '', password: '' });
   const handleDataChange = (e) => {
     const { name, value } = e.target
     setOtpValue({
@@ -35,10 +25,10 @@ function Register() {
   const otpSubmit = (e) => {
     e.preventDefault()
     let mergedData = {
-      otpNum : otpValue.otp1 + otpValue.otp2 + otpValue.otp3 + otpValue.otp4 + otpValue.otp5 + otpValue.otp6,
+      otpNum: otpValue.otp1 + otpValue.otp2 + otpValue.otp3 + otpValue.otp4 + otpValue.otp5 + otpValue.otp6,
       email: email.email
     }
-   
+
     axios.post('http://localhost:5000/otpvarification', mergedData).then((response) => {
       if (response.data.otpVerify) {
         Navigate('/login')
@@ -49,18 +39,12 @@ function Register() {
         })
         console.log(otpErr);
       }
-    }) 
+    })
     // console.log(merged);
     // setShowModal(false)
   }
-  
-  const [registerData, setRegisterData] = useState({
-    fname: '',
-    lname: '',
-    phone: '',
-    email: '',
-    password: ''
-  })
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -71,16 +55,16 @@ function Register() {
     })
   }
 
-  const signUpForm =(e)=>{
+  const signUpForm = (e) => {
     setShowLoading(true)
-    axios.post('http://localhost:5000/signup', registerData).then((response)=>{
+    axios.post('http://localhost:5000/signup', registerData).then((response) => {
       console.log(response);
       setShowLoading(false)
-      if (response.data.msg){
+      if (response.data.msg) {
         setEmailErr({
           errMsg: response.data.msg
         })
-      }else{
+      } else {
         setEmail({
           email: response.data.email
         })
@@ -126,15 +110,16 @@ function Register() {
                         <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
                           <label htmlFor='email' className='text-[13px]  text-[#596C7A]'>Email</label>
                           <input {...register('email', {
-                            required: true, 
-                            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ })}
+                            required: true,
+                            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                          })}
                             value={registerData.email} onChange={handleChange} id='email' type="email" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
                           {errors.email && <p className='text-[13px] text-red-600'>Please check the Email</p>}
                         </div>
                         <p className='text-[13px] text-red-600'>{emailErr.errMsg}</p>
                         <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
                           <label htmlFor='password' className='text-[13px]  text-[#596C7A]'>Password</label>
-                          <input {...register('password', { required: true, minLength: 6})} value={registerData.password} onChange={handleChange} id='password' type="password" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          <input {...register('password', { required: true, minLength: 6 })} value={registerData.password} onChange={handleChange} id='password' type="password" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
                           {errors.password && <p className='text-[13px] text-red-600'>min length 6</p>}
                         </div>
                         <button className='border-2 border-[#ffffff80] w-fit px-5 py-3 text-white rounded-[5px] mt-4'>SIGN UP</button>
@@ -199,7 +184,7 @@ function Register() {
                     </form>
                   </div>
                   {/*footer*/}
-                  
+
                 </div>
               </div>
             </div>
@@ -210,40 +195,41 @@ function Register() {
     </>
 
 
-  )}
+  )
+}
 
- 
 
-  var otp_inputs = document.querySelectorAll(".otp__digit")
-  var mykey = "0123456789".split("")
-  otp_inputs.forEach((_) => {
-    _.addEventListener("keyup", handle_next_input)
-  })
-  function handle_next_input(event) {
-    var current = event.target
-    var index = parseInt(current.classList[1].split("__")[2])
-    current.value = event.key
 
-    if (event.keyCode == 8 && index > 1) {
-      current.previousElementSibling.focus()
-    }
-    if (index < 6 && mykey.indexOf("" + event.key + "") != -1) {
-      var next = current.nextElementSibling;
-      next.focus()
-    }
-    var _finalKey = ""
-    for (var { value } of otp_inputs) {
-      _finalKey += value
-    }
-    if (_finalKey.length == 6) { 
-      document.querySelector("#_otp").classList.replace("_notok", "_ok")
-      document.querySelector("#_otp").innerText = _finalKey
-    } else {
-      document.querySelector("#_otp").classList.replace("_ok", "_notok")
-      document.querySelector("#_otp").innerText = _finalKey
-    }
+var otp_inputs = document.querySelectorAll(".otp__digit")
+var mykey = "0123456789".split("")
+otp_inputs.forEach((_) => {
+  _.addEventListener("keyup", handle_next_input)
+})
+function handle_next_input(event) {
+  var current = event.target
+  var index = parseInt(current.classList[1].split("__")[2])
+  current.value = event.key
+
+  if (event.keyCode == 8 && index > 1) {
+    current.previousElementSibling.focus()
   }
- 
+  if (index < 6 && mykey.indexOf("" + event.key + "") != -1) {
+    var next = current.nextElementSibling;
+    next.focus()
+  }
+  var _finalKey = ""
+  for (var { value } of otp_inputs) {
+    _finalKey += value
+  }
+  if (_finalKey.length == 6) {
+    document.querySelector("#_otp").classList.replace("_notok", "_ok")
+    document.querySelector("#_otp").innerText = _finalKey
+  } else {
+    document.querySelector("#_otp").classList.replace("_ok", "_notok")
+    document.querySelector("#_otp").innerText = _finalKey
+  }
+}
+
 
 
 export default Register
