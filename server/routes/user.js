@@ -12,5 +12,6 @@ router.post('/otpvarification', user.userOtpVerification)
 router.post('/new_post', verifyJWT, upload.single('image'), user.newPost)
 router.get('/home', verifyJWT, user.homePosts)
 router.put('/likeordislike', verifyJWT, user.likeOrDisLike)
+router.put('/profile', verifyJWT, user.myProfile)
 
 export default router;

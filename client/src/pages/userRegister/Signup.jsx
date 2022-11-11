@@ -15,6 +15,7 @@ function Signup() {
           "x-access-token": localStorage.getItem("userToken"),
         },
       }).then((response) => {
+        console.log(response);
         if (response.data.auth) Navigate('/')
         else Navigate("/signup");
       });

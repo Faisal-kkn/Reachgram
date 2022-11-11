@@ -226,6 +226,25 @@ export default {
 
         }
     },
+    myProfile: async (req, res) => {
+        try {
+            console.log(req.query.userId);
+            // userPostSchema.findOne({}).then((response) => {
+            //     // response.map((item) => {
+            //     //     item.postData.user = item.user
+            //     //     item.postData.mainId = item._id
+            //     //     item.postData.userId = item.userId
+            //     // })
+            //     // let allPostData = []
+            //     // response.map((item) => {
+            //     //     allPostData.push(item.postData)
+            //     // })
+            //     res.status(200).json(response)
+            // }).catch(console.error)
+        } catch (error) {
+
+        }
+    },
 
 }
 

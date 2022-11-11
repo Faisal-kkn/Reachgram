@@ -1,0 +1,15 @@
+.hover-main .hover-data{
+    width: 100%;
+    height: 100%;
+    background: hsla(201, 32%, 28%, 0.4);
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.hover-main:hover .hover-data {
+    visibility: visible;
+    transition: .3s;
+}

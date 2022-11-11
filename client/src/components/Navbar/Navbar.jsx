@@ -1,6 +1,8 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Fragment } from 'react'
-import { AppContext } from '../../AppContext';
+import { NavLink, useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode'
+import { AppContext, UserContext } from '../../AppContext';
 
 
 import { Disclosure, Menu, Transition } from '@headlessui/react'
@@ -8,6 +10,9 @@ import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/so
 
 
 function Navbar() {
+    const { userData, setUserData } = useContext(UserContext);
+
+    const Navigate = useNavigate()
 
     const { showPostModal, setShowPostModal } = useContext(AppContext);
     const newPost = (e) => {
@@ -38,13 +43,21 @@ function Navbar() {
         { name: <BellIcon className="w-6 h-6" aria-hidden="true" />, href: '#', current: false },
     ]
     const userNavigation = [
-        { name: 'Your Profile', href: '#' },
+        { name: 'Your Profile', href: '/profile' },
         { name: 'Settings', href: '#' },
         { name: 'Sign out', href: '#' },
     ]
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
+
+    useEffect(() => {
+        let user = jwtDecode(localStorage.getItem("userToken"))
+        setUserData({
+            id: user.user.split(' ')[0],
+            name: user.user.split(' ')[1]
+        })
+    }, [Navigate]);
 
 
     return (
@@ -127,15 +140,15 @@ function Navbar() {
                                                             {userNavigation.map((item) => (
                                                                 <Menu.Item key={item.name}>
                                                                     {({ active }) => (
-                                                                        <a
-                                                                            href={item.href}
+                                                                        <NavLink
+                                                                            to={item.href}
                                                                             className={classNames(
                                                                                 active ? 'bg-gray-100' : '',
                                                                                 'block px-4 py-2 text-sm text-gray-700'
                                                                             )}
                                                                         >
                                                                             {item.name}
-                                                                        </a>
+                                                                        </NavLink>
                                                                     )}
                                                                 </Menu.Item>
                                                             ))}
