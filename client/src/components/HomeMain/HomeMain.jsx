@@ -7,13 +7,29 @@ import { AppContext, UserContext } from '../../AppContext';
 import './homeMain.css';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
+import PostEditModal from '../PostEdit/PostEdit';
 
 function HomeMain() {
     const Navigate = useNavigate()
     const { userData, setUserData } = useContext(UserContext);
-    const { setShowEditPostModal } = useContext(AppContext);
+    const { postEdit, setPostEdit } = useContext(AppContext);
 
     const [homePost, setHomePost] = useState([])
+
+    const editPost = (userId, mainId, postId, description, image)=> {
+        setPostEdit({ description: description, image: image, status: true, userId, mainId, postId, })
+    }
+
+    const deletePost = (userId, mainId, postId)=>{
+        axios.delete(`http://localhost:5000/delete_post?mainId=${mainId}&postId=${postId}`, {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken"),
+            }
+        }).then(()=>{
+            allPost()
+        })
+        console.log('delete post');
+    }
 
     const allPost = () => {
         axios.get('http://localhost:5000/home', {
@@ -21,17 +37,25 @@ function HomeMain() {
                 "x-access-token": localStorage.getItem("userToken"),
             },
         }).then((response) => {
-            let user = jwtDecode(localStorage.getItem("userToken"))
-            setUserData({
-                id: user.user.split(' ')[0],
-                name: user.user.split(' ')[1]
-            })
-            setHomePost(response.data)
+            if (response.data.auth === false) {
+                Navigate("/login");
+            } else {
+
+                console.log('home full post');
+                console.log(response.data);
+                let user = jwtDecode(localStorage.getItem("userToken"))
+                setUserData({
+                    id: user.user.split(' ')[0],
+                    name: user.user.split(' ')[1]
+                })
+                setHomePost(response.data)
+            }
+           
         })
     }
     useEffect(() => {
         allPost()
-    }, [Navigate]);
+    }, [Navigate, postEdit]);
 
     const likeAndDisLike = (userId, postId, likedUser) => {
         let data = {
@@ -47,8 +71,14 @@ function HomeMain() {
         })
     }
     const userNavigation = [
-        { name: 'Edit', icon: <PencilIcon className='w-5 h-5 inline-block mr-3' /> },
-        { name: 'Delete', icon: <TrashIcon className='w-5 h-5 inline-block mr-3' /> },
+        {
+            name: 'Edit', icon: <PencilIcon className='w-5 h-5 inline-block mr-3' />, fun: function () {
+                editPost(this.userId, this.mainId, this.postId, this.description, this.image)
+            } },
+        {
+            name: 'Delete', icon: <TrashIcon className='w-5 h-5 inline-block mr-3' />, fun: function () {
+                deletePost(this.userId, this.mainId, this.postId, this.index)
+            } },
     ]
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
@@ -58,6 +88,7 @@ function HomeMain() {
     return (
         //   bg - [#314f5f6e]
         <div>
+            <PostEditModal />
             <div className='pb-[50px] sm:pb-0'>
                 {
                     homePost.flatMap((iteam, index) => {
@@ -74,7 +105,7 @@ function HomeMain() {
                                     <div className='ml-auto'>
 
                                         {/* Profile dropdown */}
-                                        <Menu as="div" className="relative ml-3">
+                                        {iteam.userId[0] === userData.id ? <Menu as="div" className="relative ml-3">
                                             <div>
                                                 <Menu.Button className="flex max-w-xs items-center ">
                                                     <span className="sr-only">Open user menu</span>
@@ -98,8 +129,7 @@ function HomeMain() {
                                                                 <a className={classNames(
                                                                     active ? 'bg-gray-100' : '',
                                                                     'block px-4 py-2 text-sm text-gray-700 cursor-pointer'
-                                                                )} onClick={() => setShowEditPostModal(true)}
-                                                                >
+                                                                )} onClick={() => item.fun.call({ userId: userData.id, mainId: iteam.mainId, postId: iteam._id, description: iteam.description, image: iteam.image }) }>
                                                                     {item.icon}{item.name}
                                                                 </a>
                                                             )}
@@ -107,7 +137,7 @@ function HomeMain() {
                                                     ))}
                                                 </Menu.Items>
                                             </Transition>
-                                        </Menu>
+                                        </Menu> : ''}
                                     </div>
                                 </div>
                                 <div className='w-full mt-3 rounded-[10px] overflow-hidden h-[400px]  border-4 border-solid border-[#314F5F] '>

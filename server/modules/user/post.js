@@ -29,6 +29,10 @@ let postDataSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    deleteStatus: {
+        type: Boolean,
+        default: false
+    },
     Likes: Array,
     created: {
         type: Date,

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Fragment } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Navigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode'
 import { AppContext, UserContext } from '../../AppContext';
 
@@ -19,6 +19,11 @@ function Navbar() {
         setShowPostModal(!showPostModal)
     }
 
+    const logout = () => {
+        localStorage.removeItem('userToken');
+        Navigate("/login");
+    };
+
     const user = {
         name: 'Tom Cook',
         email: 'tom@example.com',
@@ -26,7 +31,7 @@ function Navbar() {
             'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     }
     const navigation = [
-        { name: <HomeIcon className="w-6 h-6" aria-hidden="true" />, href: '#', current: true },
+        { name: <HomeIcon className="w-6 h-6" aria-hidden="true" />, href: './', current: true },
         {
             name: <span className="w-6 h-6" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
                 <path d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
@@ -44,19 +49,22 @@ function Navbar() {
     ]
     const userNavigation = [
         { name: 'Your Profile', href: '/profile' },
-        { name: 'Settings', href: '#' },
-        { name: 'Sign out', href: '#' },
+        { name: 'Settings'  },
+        { name: 'Log out', fun: logout },
     ]
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
 
-    useEffect(() => {
-        let user = jwtDecode(localStorage.getItem("userToken"))
-        setUserData({
-            id: user.user.split(' ')[0],
-            name: user.user.split(' ')[1]
+    const userDetails = async()=>{
+        let userDetails = await jwtDecode(localStorage.getItem("userToken"))
+        await setUserData({
+            id: userDetails.user.split(' ')[0],
+            name: userDetails.user.split(' ')[1]
         })
+    }
+    useEffect(() => {
+        userDetails()
     }, [Navigate]);
 
 
@@ -97,7 +105,7 @@ function Navbar() {
                                             <div className="hidden sm:block">
                                                 <div className="ml-10 flex items-baseline space-x-4">
                                                     {navigation.map((item, index) => (
-                                                        <a
+                                                        <div
                                                             key={index}
                                                             // href={item.href}
                                                             className={classNames(
@@ -109,8 +117,8 @@ function Navbar() {
                                                             onClick={item.fun}
                                                             aria-current={item.current ? 'page' : undefined}
                                                         >
-                                                            {item.name}
-                                                        </a>
+                                                            <NavLink to={item.href}> {item.name}</NavLink>
+                                                        </div>
                                                     ))}
                                                 </div>
                                             </div>
@@ -140,15 +148,18 @@ function Navbar() {
                                                             {userNavigation.map((item) => (
                                                                 <Menu.Item key={item.name}>
                                                                     {({ active }) => (
-                                                                        <NavLink
+                                                                        item.fun ? <div className={classNames(
+                                                                            active ? 'bg-gray-100' : '',
+                                                                            'block px-4 py-2 text-sm text-gray-700 cursor-pointer'
+                                                                        )} onClick={item.fun}>{item.name}</div> : <NavLink
                                                                             to={item.href}
                                                                             className={classNames(
                                                                                 active ? 'bg-gray-100' : '',
-                                                                                'block px-4 py-2 text-sm text-gray-700'
+                                                                                'block px-4 py-2 text-sm text-gray-700 '
                                                                             )}
                                                                         >
                                                                             {item.name}
-                                                                        </NavLink>
+                                                                        </NavLink> 
                                                                     )}
                                                                 </Menu.Item>
                                                             ))}
@@ -175,7 +186,7 @@ function Navbar() {
                             <Disclosure.Panel className="sm:hidden">
                                 <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
                                     {navigation.map((item) => (
-                                        <Disclosure.Button
+                                        <Navigate to={item.href}> <Disclosure.Button
                                             key={item.name}
                                             as="a"
                                             href={item.href}
@@ -186,7 +197,7 @@ function Navbar() {
                                             aria-current={item.current ? 'page' : undefined}
                                         >
                                             {item.name}
-                                        </Disclosure.Button>
+                                        </Disclosure.Button></Navigate>
                                     ))}
                                 </div>
                                 <div className="border-t border-gray-700 pt-4 pb-3">

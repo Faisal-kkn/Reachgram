@@ -6,15 +6,21 @@ import jwtDecode from 'jwt-decode'
 function PostUpload() {
 
     const { showPostModal, setShowPostModal } = useContext(AppContext);
-    const { userData } = useContext(UserContext);
+    const { userData, setUserData } = useContext(UserContext);
     const [postData, setPostData] = useState({ discription: '', image: '', userId: '' })
     const [file, setFile] = useState();
     const fileUpload = (e) => {
+        let userDetails = jwtDecode(localStorage.getItem("userToken"))
+        setUserData({
+            id: userDetails.user.split(' ')[0],
+            name: userDetails.user.split(' ')[1]
+        })
+        console.log(userDetails.user.split(' ')[0]);
         setFile(URL.createObjectURL(e.target.files[0]))
         setPostData({
             ...postData,
             image: e.target.files[0],
-            userId: userData.id
+            userId: userDetails.user.split(' ')[0]
         })
     }
 
@@ -39,6 +45,7 @@ function PostUpload() {
                 "x-access-token": localStorage.getItem("userToken"),
             }
         }).then(response => {
+            console.log('responseeeeeeeeeeeeeeeeeeeeeeeee');
             console.log(response);
             setShowPostModal(false)
             // if (response.data) {
@@ -48,9 +55,7 @@ function PostUpload() {
 
     }
 
-    useEffect(() => {
-        
-    }, [postUpload]);
+    
 
 
 
@@ -83,7 +88,7 @@ function PostUpload() {
                                                     <img className='rounded-full' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
                                                 </div>
                                                 <div className='w-full'>
-                                                    <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-[#0F213E] font-bold inline-block max-w-[500px]'>Alex McCarthy</h4>
+                                                    <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-[#0F213E] font-bold inline-block max-w-[500px]'>{userData.name}</h4>
                                                     <textarea value={postData.discription} name="discription" onChange={handleChange} className='block w-full text-[13px] border p-2' placeholder='Write a caption...'></textarea>
                                                 </div>
                                             </div>

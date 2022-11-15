@@ -12,71 +12,79 @@ export default {
         res.status(200).json({ auth: true, message: "You are authenticated Congrats!" })
     },
     userRegister: async (req, res) => {
-        console.log(req.body);
         try {
-            let mailId = await userRegisterSchema.findOne({ email: req.body.email })
-            let otp;
-            async function main() {
-                otp = Math.random();
-                otp = otp * 1000000;
-                otp = parseInt(otp)
+            let userName = await userRegisterSchema.findOne({ username: req.body.username.toLowerCase() })
+            if (userName) {
+                console.log('userName');
+                console.log(userName);
+                res.status(200).json({ signup: false, msg: 'This user name is already taken', username: false })
+            } else {
+                let mailId = await userRegisterSchema.findOne({ email: req.body.email })
+                let otp;
+                async function main() {
+                    otp = Math.random();
+                    otp = otp * 1000000;
+                    otp = parseInt(otp)
 
-                let transporter = nodemailer.createTransport({
-                    service: "gmail",
-                    auth: {
-                        user: process.env.ADMIN_MAIL_ID,
-                        pass: process.env.ADMIN_PASSWORD,
-                    },
-                });
+                    let transporter = nodemailer.createTransport({
+                        service: "gmail",
+                        auth: {
+                            user: process.env.ADMIN_MAIL_ID,
+                            pass: process.env.ADMIN_PASSWORD,
+                        },
+                    });
 
-                let info = await transporter.sendMail({
-                    from: process.env.ADMIN_MAIL_ID, // sender address
-                    to: req.body.email, // list of receivers
-                    subject: "OTP Varification", // Subject line
-                    text: "OTP", // plain text body
-                    html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
-                });
+                    let info = await transporter.sendMail({
+                        from: process.env.ADMIN_MAIL_ID, // sender address
+                        to: req.body.email, // list of receivers
+                        subject: "OTP Varification", // Subject line
+                        text: "OTP", // plain text body
+                        html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
+                    });
 
-                console.log("Message sent: %s", info.messageId);
+                    console.log("Message sent: %s", info.messageId);
 
-                console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-            }
+                    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                }
 
-            if (mailId) {
-                if (!mailId.otpStatus) {
+                if (mailId) {
+                    if (!mailId.otpStatus) {
+                        main().then(async (status) => {
+                            otp = otp.toString()
+                            req.body.otp = await bcrypt.hash(otp, 10)
+                            req.body.password = await bcrypt.hash(req.body.password, 10)
+                            req.body.phone = parseInt(req.body.phone)
+                            userRegisterSchema.findOneAndUpdate({ email: req.body.email }, {
+                                $set: {
+                                    fullname: req.body.fullname,
+                                    username: req.body.username,
+                                    phone: req.body.phone,
+                                    email: req.body.email,
+                                    password: req.body.password,
+                                    otp: req.body.otp
+                                }
+                            }).then(() => {
+                                res.status(200).json({ signup: true, email: req.body.email })
+                            }).catch(console.error);
+                        }).catch(console.error);
+                    } else {
+                        res.status(200).json({ signup: false, msg: 'Mail id is already registered' })
+                    }
+                } else {
                     main().then(async (status) => {
                         otp = otp.toString()
                         req.body.otp = await bcrypt.hash(otp, 10)
                         req.body.password = await bcrypt.hash(req.body.password, 10)
                         req.body.phone = parseInt(req.body.phone)
-                        userRegisterSchema.findOneAndUpdate({ email: req.body.email }, {
-                            $set: {
-                                fname: req.body.fname,
-                                lname: req.body.lname,
-                                phone: req.body.phone,
-                                email: req.body.email,
-                                password: req.body.password,
-                                otp: req.body.otp
-                            }
-                        }).then(() => {
-                            res.status(200).json({ signup: true, email: req.body.email })
+                        let registerUser = new userRegisterSchema(req.body)
+                        registerUser.save().then(() => {
+                            res.status(200).json({ signup: true, email: registerUser.email })
                         }).catch(console.error);
                     }).catch(console.error);
-                } else {
-                    res.status(200).json({ signup: false, msg: 'Mail id is already registered' })
                 }
-            } else {
-                main().then(async (status) => {
-                    otp = otp.toString()
-                    req.body.otp = await bcrypt.hash(otp, 10)
-                    req.body.password = await bcrypt.hash(req.body.password, 10)
-                    req.body.phone = parseInt(req.body.phone)
-                    let registerUser = new userRegisterSchema(req.body)
-                    registerUser.save().then(() => {
-                        res.status(200).json({ signup: true, email: registerUser.email })
-                    }).catch(console.error);
-                }).catch(console.error);
             }
+
+
         } catch (error) {
             res.status(501).json({ message: error.message });
         }
@@ -106,7 +114,7 @@ export default {
                     bcrypt.compare(req.body.password, response.password)
                         .then((loginResponse) => {
                             if (loginResponse) {
-                                const user = response._id + ' ' + response.fname
+                                const user = response._id + ' ' + response.fullname
                                 let token = jwt.sign({ user }, "jwtSecret", { expiresIn: 30000 });
                                 res.status(200).json({ status: true, auth: true, token })
                             } else res.status(200).json({ status: false, message: 'Password is incorrect' })
@@ -133,7 +141,7 @@ export default {
                                     image: req.body.image,
                                 }
                             }
-                        }).then((rep) => console.log(rep))
+                        }).then((rep) => res.status(200).json(true))
                     } else {
                         res.status(200).json(false);
                     }
@@ -146,6 +154,7 @@ export default {
                         }
                     })
                     userPost.save()
+                    res.status(200).json(true)
                 }
             }).catch(console.error)
 
@@ -161,22 +170,23 @@ export default {
                 {
                     $unwind: "$postData"
                 },
+                { $match: { "postData.deleteStatus": false } },
                 {
                     $project: {
                         postData: 1,
-                        "user": "$user.fname",
+                        "user": "$user.fullname",
                         "userId": "$user._id",
                     }
                 },
-                
+
                 { $sort: { "postData.created": -1 } }
             ]).then((response) => {
                 response.map((item) => {
                     item.postData.user = item.user
                     item.postData.mainId = item._id
-                    item.postData.userId = item.userId 
+                    item.postData.userId = item.userId
                 })
-                let  allPostData = []
+                let allPostData = []
                 response.map((item) => {
                     allPostData.push(item.postData)
                 })
@@ -188,59 +198,174 @@ export default {
     },
     likeOrDisLike: async (req, res) => {
         try {
+            console.log('req.body');
+            console.log(req.body);
             userPostSchema.findOne({ "_id": req.body.userId, "postData._id": req.body.postId }).then((response) => {
                 console.log('response.postData');
                 console.log(response);
-                response.postData.findIndex((iteam) => {
-                    if (iteam._id.toString() === req.body.postId) {
-                        if (!iteam.Likes.includes(req.body.likedUser)) {
-                            userPostSchema.findOneAndUpdate(
-                                {
-                                    "_id": req.body.userId, "postData._id": req.body.postId
-                                },
-                                {
-                                    $push: {
-                                        "postData.$.Likes": req.body.likedUser
+                if (response) {
+                    response.postData.findIndex((iteam) => {
+                        if (iteam._id.toString() === req.body.postId) {
+                            if (!iteam.Likes.includes(req.body.likedUser)) {
+                                userPostSchema.findOneAndUpdate(
+                                    {
+                                        "_id": req.body.userId, "postData._id": req.body.postId
+                                    },
+                                    {
+                                        $push: {
+                                            "postData.$.Likes": req.body.likedUser
+                                        }
+                                    }).then((response) => {
+                                        res.status(200).json(response)
+                                    }).catch(console.error)
+                            } else {
+                                userPostSchema.findOneAndUpdate(
+                                    {
+                                        "_id": req.body.userId, "postData._id": req.body.postId
+                                    },
+                                    {
+                                        $pull: {
+                                            "postData.$.Likes": req.body.likedUser
+                                        }
                                     }
-                                }).then((response) => {
+                                ).then((response) => {
                                     res.status(200).json(response)
                                 }).catch(console.error)
-                        } else {
-                            userPostSchema.findOneAndUpdate(
-                                {
-                                    "_id": req.body.userId, "postData._id": req.body.postId
-                                },
-                                {
-                                    $pull: {
-                                        "postData.$.Likes": req.body.likedUser
-                                    }
-                                }
-                            ).then((response) => {
-                                res.status(200).json(response)
-                            }).catch(console.error)
+                            }
                         }
-                    }
-                })
+                    })
+                }
+
             })
         } catch (error) {
 
         }
     },
-    myProfile: async (req, res) => {
+    myProfile: (req, res) => {
         try {
-            console.log(req.query.userId);
-            // userPostSchema.findOne({}).then((response) => {
-            //     // response.map((item) => {
-            //     //     item.postData.user = item.user
-            //     //     item.postData.mainId = item._id
-            //     //     item.postData.userId = item.userId
-            //     // })
-            //     // let allPostData = []
-            //     // response.map((item) => {
-            //     //     allPostData.push(item.postData)
-            //     // })
-            //     res.status(200).json(response)
-            // }).catch(console.error)
+            console.log(req.query);
+            userPostSchema.aggregate([
+                { $match: { userId: mongoose.Types.ObjectId(req.query.userId) } },
+                {
+                    $unwind: "$postData"
+                },
+                { $match: { "postData.deleteStatus": false } },
+                // {
+                //     $project: {
+                //         postData: 1,
+                //         "user": "$user.fullname",
+                //         "userId": "$user._id",
+                //     }
+                // },
+
+                // { $sort: { "postData.created": -1 } }
+            ])
+                // userPostSchema.findOne({
+                //     userId: req.query.userId 
+                //  })
+                .then((response) => {
+                    response.map((item) => {
+                        item.postData.user = item.user
+                        item.postData.mainId = item._id
+                        item.postData.userId = item.userId
+                    })
+                    let allPostData = []
+                    response.map((item) => {
+                        allPostData.push(item.postData)
+                    })
+
+                    if (response) res.status(200).json(allPostData)
+                    else res.status(400).json(false)
+                }).catch(console.error)
+        } catch (error) {
+
+        }
+    },
+    myProfileData: async (req, res) => {
+        try {
+            userRegisterSchema.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(req.query.userId) } },
+                {
+                    $project: {
+                        _id: 0, fullname: 1, username: 1, phone: 1,
+                        email: 1, about: 1, profile: 1,
+                    }
+                },
+            ]).then((response) => {
+                if (response) res.status(200).json(response)
+                else res.status(400).json(false)
+            }).catch(console.error)
+        } catch (error) {
+
+        }
+    },
+    updatePost: (req, res) => {
+        try {
+            console.log('userId data');
+            console.log(req.body);
+            userPostSchema.findOneAndUpdate({ _id: req.body.mainId, userId: req.body.userId, "postData._id": req.body.postId }, {
+                $set: {
+                    "postData.$.description": req.body.description,
+                }
+            }).then((response) => {
+                if (response) res.status(200).json(true)
+                else res.status(400).json(false)
+            }).catch(console.error)
+        } catch (error) {
+
+        }
+    },
+    deletePost: (req, res) => {
+        try {
+            console.log('userId data');
+            console.log(req.query);
+            userPostSchema.findOneAndUpdate(
+                {
+                    _id: req.query.mainId, "postData._id": req.query.postId
+                },
+                {
+                    $set: {
+                        "postData.$.deleteStatus": true,
+                    }
+                }
+            )
+                .then((response) => {
+                    if (response) res.status(200).json(true)
+                    else res.status(400).json(false)
+                }).catch(console.error)
+        } catch (error) {
+
+        }
+    },
+    updateProfile: (req, res) => {
+        try {
+            console.log('req.bodyyyyyyyyy');
+            console.log(req.body);
+            const { phone, email, about, profile, fullname, username, userId } = req.body
+            if (phone && email && fullname && username && userId) {
+                const regex = /^@?(\w){1,15}$/;
+                const found = username.match(regex);
+                console.log(found);
+                if (!found) {
+                    userRegisterSchema.findOne({ _id: userId }).then(async (response) => {
+                        if (response) {
+                            let userNameValid;
+                            let emailValid;
+                            if (response.username != username) userNameValid = await userRegisterSchema.findOne({ username: username })
+                            if (response.email != email) emailValid = await userRegisterSchema.findOne({ username: username })
+                            
+                            console.log();
+                        }
+                        else res.status(400).json({ status: false, msg: 'user not found' })
+                    }).catch(console.error)
+                }else{
+                    res.json({ status: false, msg: 'please check this field' })
+                }
+            } else {
+                console.log('looooooo');
+                res.json({ status: false, msg: 'please fill the required fields' })
+            }
+
         } catch (error) {
 
         }

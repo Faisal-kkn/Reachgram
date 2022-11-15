@@ -67,16 +67,16 @@ function Login() {
                                     <form onSubmit={handleSubmit(loginSubmit)}>
                                         <div className='flex flex-wrap flex-col justify-between'>
                                             <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1'>
-                                                <label htmlFor='f-name' className='text-[13px]  text-[#596C7A]'>Email</label>
+                                                <label htmlFor='email' className='text-[13px]  text-[#596C7A]'>Email</label>
                                                 <input {...register('email', {
                                                     required: true,
                                                     pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                                                })} onChange={handleDataChange} value={login.email} id='f-name' type="email" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                                                })} onChange={handleDataChange} value={login.email} id='email' type="email" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
                                                 {errors.email && <p className='text-[13px] text-red-600'>Please check the Email</p>}
                                             </div>
                                             <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
-                                                <label htmlFor='l-name' className='text-[13px]  text-[#596C7A]'>Password</label>
-                                                <input {...register('password', { required: true, minLength: 6 })} onChange={handleDataChange} value={login.password} id='l-name' type="password" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                                                <label htmlFor='password' className='text-[13px]  text-[#596C7A]'>Password</label>
+                                                <input {...register('password', { required: true, minLength: 6 })} onChange={handleDataChange} value={login.password} id='password' type="password" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
                                                 {errors.password && <p className='text-[13px] text-red-600'>min length 6</p>}
                                             </div>
                                             <p className='text-[13px] text-red-600'>{loginErr.errMsg}</p>

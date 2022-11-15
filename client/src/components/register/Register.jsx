@@ -8,12 +8,12 @@ function Register() {
   const Navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const [email, setEmail] = useState({ email: '' });
-  const [emailErr, setEmailErr] = useState({ errMsg: '' });
+  const [registerErr, setRegisterErr] = useState({ emailErrMsg: '', usernameErrMsg: '' });
   const [otpErr, setOtpErr] = useState({ errMsg: '' });
   const [showModal, setShowModal] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [otpValue, setOtpValue] = useState({ otp1: '', otp2: '', otp3: '', otp4: '', otp5: '', otp6: '' });
-  const [registerData, setRegisterData] = useState({ fname: '', lname: '', phone: '', email: '', password: '' });
+  const [registerData, setRegisterData] = useState({ fullname: '', username: '', phone: '', email: '', password: '' });
   const handleDataChange = (e) => {
     const { name, value } = e.target
     setOtpValue({
@@ -58,11 +58,15 @@ function Register() {
   const signUpForm = (e) => {
     setShowLoading(true)
     axios.post('http://localhost:5000/signup', registerData).then((response) => {
-      console.log(response);
       setShowLoading(false)
-      if (response.data.msg) {
-        setEmailErr({
-          errMsg: response.data.msg
+      console.log(response);
+      console.log('responsewwwwwwwwwwww');
+      if (response.data.username === false){
+        setRegisterErr({ ...registerErr, usernameErrMsg: response.data.msg  })
+      }else if (response.data.msg) {
+        setRegisterErr({
+          ...registerErr,
+          emailErrMsg: response.data.msg
         })
       } else {
         setEmail({
@@ -91,14 +95,15 @@ function Register() {
                     <div className='w-full mt-[50px]'>
                       <div className='flex flex-wrap justify-between'>
                         <div className='inline-block bg-[#182D39] w-[48%] px-3 rounded-[5px] h-fit pb-1'>
-                          <label htmlFor='f-name' className='text-[13px] text-[#596C7A]'>First Name</label>
-                          <input {...register('fname', { required: true, minLength: 3 })} value={registerData.fname} onChange={handleChange} id='f-name' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
-                          {errors.fname && <p className='text-[13px] text-red-600'>Please check the First Name</p>}
+                          <label htmlFor='fullname' className='text-[13px] text-[#596C7A]'>Full Name</label>
+                          <input {...register('fullname', { required: true, minLength: 3 })} value={registerData.fullname} onChange={handleChange} id='fullname' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          {errors.fullname && <p className='text-[13px] text-red-600'>Please check the Name</p>}
                         </div>
                         <div className='inline-block  bg-[#182D39] w-[48%] px-3 rounded-[5px] h-fit pb-1'>
-                          <label htmlFor='l-name' className='text-[13px]  text-[#596C7A]'>Last Name</label>
-                          <input {...register('lname', { required: true })} value={registerData.lname} onChange={handleChange} id='l-name' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
-                          {errors.lname && <p className='text-[13px] text-red-600'>Please check the Last Name</p>}
+                          <label htmlFor='username' className='text-[13px]  text-[#596C7A]'>User Name</label>
+                          <input {...register('username', { required: true, pattern: /^@?(\w){1,15}$/   })} value={registerData.username} onChange={handleChange} id='username' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          {errors.username && <p className='text-[13px] text-red-600'>Please check the user</p>}
+                          <p className='text-[13px] text-red-600'>{registerErr.usernameErrMsg}</p>
                         </div>
                       </div>
                       <div className='flex flex-wrap flex-col justify-between'>
@@ -115,8 +120,8 @@ function Register() {
                           })}
                             value={registerData.email} onChange={handleChange} id='email' type="email" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
                           {errors.email && <p className='text-[13px] text-red-600'>Please check the Email</p>}
+                        <p className='text-[13px] text-red-600'>{registerErr.emailErrMsg}</p>
                         </div>
-                        <p className='text-[13px] text-red-600'>{emailErr.errMsg}</p>
                         <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
                           <label htmlFor='password' className='text-[13px]  text-[#596C7A]'>Password</label>
                           <input {...register('password', { required: true, minLength: 6 })} value={registerData.password} onChange={handleChange} id='password' type="password" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />

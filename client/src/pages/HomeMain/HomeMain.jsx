@@ -8,16 +8,15 @@ function HomeMain() {
     useEffect(() => {
         userAuthenticeted()
     }, [Navigate]);
+
     const userAuthenticeted = () => {
         axios.get("http://localhost:5000/isUserAuth", {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             }
         }).then((response) => {
-            console.log('home response');
-            console.log(response);
-            if (response.data.auth){}
-            else Navigate("/login");
+            console.log('dddd');
+            if (!response.data.auth) Navigate("/login")
         });
     };
 

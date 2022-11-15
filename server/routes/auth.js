@@ -10,7 +10,6 @@ export const verifyJWT = (req, res, next) => {
                 console.log(err);
                 res.json({ auth: false, message: "you are failed to authenticate" });
             } else {
-                req.userId = decoded.id;
                 next();
             }
         });

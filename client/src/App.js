@@ -11,7 +11,17 @@ import PostUpload from './components/PostUpload/PostUpload'
 function App() { 
 
   const [showPostModal, setShowPostModal] = useState(false)
-  const [showEditPostModal, setShowEditPostModal] = useState(false)
+  const [editProfileErr, setEditProfileErr] = useState('')
+  const [editProfile, setEditProfile] = useState({
+    status: false,
+    data: {}
+  })
+  const [ postEdit, setPostEdit] = useState({
+    status: false,
+    image: '',
+    description: '' 
+  });
+
   const [userData, setUserData] = useState({
     id: '',
     name: ''
@@ -20,20 +30,14 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ showPostModal, setShowPostModal, showEditPostModal, setShowEditPostModal }}>
+      <AppContext.Provider value={{ showPostModal, setShowPostModal, postEdit, setPostEdit, editProfile, setEditProfile, editProfileErr, setEditProfileErr }}>
         <UserContext.Provider value={{ userData, setUserData }}>
           <PostUpload />
           <BrowserRouter>
             <Routes>
               <Route path='/signup' element={<SignUp />} />
               <Route path='/login' element={<Signin />} />
-              {/* <Route path='/' element={<Home />} /> */}
-            </Routes>
-          </BrowserRouter> 
-
-          <BrowserRouter>
-            <Routes>
-              <Route path='/' exact element={<HomeMain />} >
+              <Route exact element={<HomeMain />} >
                 <Route path='/' element={<Home />} />
                 <Route path='/profile' element={<Profile />} />
               </Route>
