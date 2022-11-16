@@ -15,7 +15,6 @@ function HomeMain() {
                 "x-access-token": localStorage.getItem("userToken"),
             }
         }).then((response) => {
-            console.log('dddd');
             if (!response.data.auth) Navigate("/login")
         });
     };

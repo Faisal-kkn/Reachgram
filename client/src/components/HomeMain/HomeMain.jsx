@@ -15,22 +15,8 @@ function HomeMain() {
     const { postEdit, setPostEdit } = useContext(AppContext);
 
     const [homePost, setHomePost] = useState([])
-
-    const editPost = (userId, mainId, postId, description, image)=> {
-        setPostEdit({ description: description, image: image, status: true, userId, mainId, postId, })
-    }
-
-    const deletePost = (userId, mainId, postId)=>{
-        axios.delete(`http://localhost:5000/delete_post?mainId=${mainId}&postId=${postId}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then(()=>{
-            allPost()
-        })
-        console.log('delete post');
-    }
-
+    const [comment, setComment] = useState(false)
+    
     const allPost = () => {
         axios.get('http://localhost:5000/home', {
             headers: {
@@ -40,9 +26,6 @@ function HomeMain() {
             if (response.data.auth === false) {
                 Navigate("/login");
             } else {
-
-                console.log('home full post');
-                console.log(response.data);
                 let user = jwtDecode(localStorage.getItem("userToken"))
                 setUserData({
                     id: user.user.split(' ')[0],
@@ -50,18 +33,29 @@ function HomeMain() {
                 })
                 setHomePost(response.data)
             }
-           
+
         })
     }
-    useEffect(() => {
-        allPost()
-    }, [Navigate, postEdit]);
+
+    const editPost = (userId, mainId, postId, description, image) => {
+        setPostEdit({ description: description, image: image, status: true, userId, mainId, postId, })
+    }
+
+    const deletePost = (userId, mainId, postId) => {
+        axios.delete(`http://localhost:5000/delete_post?mainId=${mainId}&postId=${postId}`, {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken"),
+            }
+        }).then(() => {
+            allPost()
+        })
+        console.log('delete post');
+    }
 
     const likeAndDisLike = (userId, postId, likedUser) => {
         let data = {
             userId, postId, likedUser
         }
-        console.log(data);
         axios.put(`http://localhost:5000/likeordislike`, data, {
             headers: {
                 "x-access-token": localStorage.getItem("userToken")
@@ -70,23 +64,36 @@ function HomeMain() {
             allPost()
         })
     }
+
+    const postComment = (userId, postId, likedUser)=>{
+        console.log(userId);
+        console.log(postId);
+        console.log(likedUser);
+        setComment(!comment)
+    }
+
     const userNavigation = [
         {
             name: 'Edit', icon: <PencilIcon className='w-5 h-5 inline-block mr-3' />, fun: function () {
                 editPost(this.userId, this.mainId, this.postId, this.description, this.image)
-            } },
+            }
+        },
         {
             name: 'Delete', icon: <TrashIcon className='w-5 h-5 inline-block mr-3' />, fun: function () {
                 deletePost(this.userId, this.mainId, this.postId, this.index)
-            } },
+            }
+        },
     ]
+
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
 
+    useEffect(() => {
+        allPost()
+    }, [Navigate, postEdit]);
 
     return (
-        //   bg - [#314f5f6e]
         <div>
             <PostEditModal />
             <div className='pb-[50px] sm:pb-0'>
@@ -129,7 +136,7 @@ function HomeMain() {
                                                                 <a className={classNames(
                                                                     active ? 'bg-gray-100' : '',
                                                                     'block px-4 py-2 text-sm text-gray-700 cursor-pointer'
-                                                                )} onClick={() => item.fun.call({ userId: userData.id, mainId: iteam.mainId, postId: iteam._id, description: iteam.description, image: iteam.image }) }>
+                                                                )} onClick={() => item.fun.call({ userId: userData.id, mainId: iteam.mainId, postId: iteam._id, description: iteam.description, image: iteam.image })}>
                                                                     {item.icon}{item.name}
                                                                 </a>
                                                             )}
@@ -150,16 +157,19 @@ function HomeMain() {
                                 <div className='flex gap-3 items-center text-center pt-3'>
                                     <div onClick={() => {
                                         likeAndDisLike(iteam.mainId, iteam._id, userData.id)
-
                                     }} className=' cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><HeartIcon className={`w-6 h-6 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} /> <span className='text-[16px]'>{iteam.Likes.length}</span></div>
-                                    <div className=' px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'>
+                                    <div onClick={() => postComment(iteam.mainId, iteam._id, userData.id)} className='cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                                         </svg>
-
-                                        <span className='text-[16px] hidden md:block'>Comment</span></div>
+                                        <span className='text-[16px] hidden md:block'>Comment</span>
+                                    </div>
                                     <div className=' px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><PaperAirplaneIcon className='w-6 h-6 rotate-[-45deg]' /> <span className='text-[16px] hidden md:block'>Share</span></div>
                                 </div>
+                                {comment ? <div>
+                                    fskdjdf
+                                </div> 
+                                : ''}
                             </div>
                         )
                     })

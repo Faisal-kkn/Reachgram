@@ -250,33 +250,21 @@ export default {
                     $unwind: "$postData"
                 },
                 { $match: { "postData.deleteStatus": false } },
-                // {
-                //     $project: {
-                //         postData: 1,
-                //         "user": "$user.fullname",
-                //         "userId": "$user._id",
-                //     }
-                // },
 
-                // { $sort: { "postData.created": -1 } }
-            ])
-                // userPostSchema.findOne({
-                //     userId: req.query.userId 
-                //  })
-                .then((response) => {
-                    response.map((item) => {
-                        item.postData.user = item.user
-                        item.postData.mainId = item._id
-                        item.postData.userId = item.userId
-                    })
-                    let allPostData = []
-                    response.map((item) => {
-                        allPostData.push(item.postData)
-                    })
+            ]).then((response) => {
+                response.map((item) => {
+                    item.postData.user = item.user
+                    item.postData.mainId = item._id
+                    item.postData.userId = item.userId
+                })
+                let allPostData = []
+                response.map((item) => {
+                    allPostData.push(item.postData)
+                })
 
-                    if (response) res.status(200).json(allPostData)
-                    else res.status(400).json(false)
-                }).catch(console.error)
+                if (response) res.status(200).json(allPostData)
+                else res.status(400).json(false)
+            }).catch(console.error)
         } catch (error) {
 
         }
@@ -339,26 +327,55 @@ export default {
     },
     updateProfile: (req, res) => {
         try {
-            console.log('req.bodyyyyyyyyy');
+            console.log('ethiiiii');
+            const { phone, email, about, fullname, username, userId } = req.body
             console.log(req.body);
-            const { phone, email, about, profile, fullname, username, userId } = req.body
             if (phone && email && fullname && username && userId) {
                 const regex = /^@?(\w){1,15}$/;
                 const found = username.match(regex);
                 console.log(found);
-                if (!found) {
-                    userRegisterSchema.findOne({ _id: userId }).then(async (response) => {
+                if (found != null) {
+                    userRegisterSchema.findOne({ _id: userId, otpStatus: true }).then(async (response) => {
+                        console.log('user not asasa');
+
                         if (response) {
-                            let userNameValid;
-                            let emailValid;
-                            if (response.username != username) userNameValid = await userRegisterSchema.findOne({ username: username })
-                            if (response.email != email) emailValid = await userRegisterSchema.findOne({ username: username })
-                            
-                            console.log();
+                            let userNameValid = await userRegisterSchema.findOne({ username: username.toLowerCase(), otpStatus: true })
+
+                            if (userNameValid && response.username != username) {
+                                console.log('User name is exist');
+                                res.json({ status: false, username: false, email: true, msg: 'User name is exist' })
+                            } else {
+                                let emailValid = await userRegisterSchema.findOne({ email: email, otpStatus: true })
+
+                                if (emailValid && response.email != email) {
+                                    console.log('Email id is exist');
+                                    res.json({ status: false, username: true, email: false, msg: 'Email id is exist' })
+                                } else{
+                                    console.log('evdeeee');
+                                    userRegisterSchema.findOneAndUpdate({ _id: userId }, {
+                                        $set: {
+                                            phone,
+                                            email,
+                                            fullname,
+                                            username,
+                                            about: req.body.about,
+                                            profile: req.file?.filename,
+                                        }
+                                    }).then((response) => {
+                                        res.status(200).json(true)
+                                    })
+                                }
+                            }
+
+
+
                         }
-                        else res.status(400).json({ status: false, msg: 'user not found' })
+                        else {
+                            console.log('user not found');
+                            res.status(400).json({ status: false, msg: 'user not found' })
+                        }
                     }).catch(console.error)
-                }else{
+                } else {
                     res.json({ status: false, msg: 'please check this field' })
                 }
             } else {

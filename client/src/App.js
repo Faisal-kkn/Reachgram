@@ -11,7 +11,7 @@ import PostUpload from './components/PostUpload/PostUpload'
 function App() { 
 
   const [showPostModal, setShowPostModal] = useState(false)
-  const [editProfileErr, setEditProfileErr] = useState('')
+  const [editProfileErr, setEditProfileErr] = useState({})
   const [editProfile, setEditProfile] = useState({
     status: false,
     data: {}
