@@ -11,6 +11,7 @@ function PostUpload() {
     const [file, setFile] = useState();
     const fileUpload = (e) => {
         let userDetails = jwtDecode(localStorage.getItem("userToken"))
+        console.log(userDetails);
         setUserData({
             id: userDetails.user.split(' ')[0],
             name: userDetails.user.split(' ')[1]

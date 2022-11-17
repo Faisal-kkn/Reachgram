@@ -402,27 +402,29 @@ export default {
         try {
             console.log('lll');
             console.log(req.query);
-            // userPostSchema.aggregate([
-            //     { $match: { userId: mongoose.Types.ObjectId(req.query.userId) } },
-            //     {
-            //         $unwind: "$postData"
-            //     },
-            //     { $match: { "postData.deleteStatus": false } },
+            userCommentSchema.aggregate([
+                { $match: { postId: mongoose.Types.ObjectId(req.query.postId) } },
+                { $unwind: "$comments" },
+                { $lookup: { from: 'users', localField: 'comments.userId', foreignField: "_id", as: 'user' } },
+                { $unwind: "$user" },
+                {
+                    $project: {
+                        "comments.comment": 1,
+                        "comments.Likes": 1,
+                        "comments.created": 1,
+                        "comments._id": 1,
+                        "user.profile": 1,
+                        "user.fullname": 1,
+                        "user.username": 1,
+                    }
+                },
+                { $sort: { "comments.created": 1 } }
+            ]).then((response) => {
 
-            // ]).then((response) => {
-            //     response.map((item) => {
-            //         item.postData.user = item.user
-            //         item.postData.mainId = item._id
-            //         item.postData.userId = item.userId
-            //     })
-            //     let allPostData = []
-            //     response.map((item) => {
-            //         allPostData.push(item.postData)
-            //     })
+                if (response) res.status(200).json(response)
+                else res.status(400).json(false)
 
-            //     if (response) res.status(200).json(allPostData)
-            //     else res.status(400).json(false)
-            // }).catch(console.error)
+            }).catch(console.error)
         } catch (error) {
 
         }
@@ -453,14 +455,60 @@ export default {
                             comment: req.body.comment,
                         }
                     })
-                    userComment.save()
-                    res.status(200).json(true)
+                    userComment.save().then(()=>{
+                        res.status(200).json(true)
+                    })
                 }
             }).catch(console.error)
 
 
         } catch (error) {
             res.status(501).json({ message: error.message });
+        }
+    },
+    commentLikeorDisLike: async (req, res) => {
+        try {
+            console.log('req.body');
+            console.log(req.body);
+            userCommentSchema.findOne({ "postId": req.body.postId, "comments._id": req.body.commentId }).then((response) => {
+                console.log('response.postData');
+                console.log(response);
+                if (response) {
+                    response.comments.findIndex((iteam) => {
+                        if (iteam._id.toString() === req.body.commentId) {
+                            if (!iteam.Likes.includes(req.body.likedUser)) {
+                                userCommentSchema.findOneAndUpdate(
+                                    {
+                                        "postId": req.body.postId, "comments._id": req.body.commentId
+                                    },
+                                    {
+                                        $push: {
+                                            "comments.$.Likes": req.body.likedUser
+                                        }
+                                    }).then((response) => {
+                                        res.status(200).json(true)
+                                    }).catch(console.error)
+                            } else {
+                                userCommentSchema.findOneAndUpdate(
+                                    {
+                                        "postId": req.body.postId, "comments._id": req.body.commentId
+                                    },
+                                    {
+                                        $pull: {
+                                            "comments.$.Likes": req.body.likedUser
+                                        }
+                                    }
+                                ).then((response) => {
+                                    res.status(200).json(true)
+                                }).catch(console.error)
+                            }
+                        }
+                    })
+                }
+
+            })
+        } catch (error) {
+
         }
     },
 

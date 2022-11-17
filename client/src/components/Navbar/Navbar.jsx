@@ -114,9 +114,9 @@ function Navbar() {
                                                     <input type="text" placeholder="Search" name='search' onChange={(e) =>{ searchUser(e.target.value)}} className="w-full py-2 pl-12 pr-4  text-gray-500 rounded-[5px] outline-none bg-[#314e5e6e] focus:bg-[#314F5F] focus:border-indigo-600" />
                                                     {users.length != 0 && searchData.search != '' ? <div className='absolute w-full bg-white z-50 rounded-[10px] mt-1'>
                                                         <ul className='w-full max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
-                                                            {users.map((iteam)=>{
+                                                            {users.map((iteam, index)=>{
                                                                 return(
-                                                                    <li className='py-1'>
+                                                                    <li className='py-1' key={index}>
                                                                         <div className='flex gap-3 items-center cursor-pointer'>
                                                                             <div className='w-[50px] h-[50px] overflow-hidden my-auto'>
                                                                                 <img className='rounded-full w-[50px] h-[50px] ' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
@@ -180,8 +180,8 @@ function Navbar() {
                                                         leaveTo="transform opacity-0 scale-95"
                                                     >
                                                         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                            {userNavigation.map((item) => (
-                                                                <Menu.Item key={item.name}>
+                                                            {userNavigation.map((item, index) => (
+                                                                <Menu.Item key={index}>
                                                                     {({ active }) => (
                                                                         item.fun ? <div className={classNames(
                                                                             active ? 'bg-gray-100' : '',
@@ -220,9 +220,9 @@ function Navbar() {
 
                             <Disclosure.Panel className="sm:hidden">
                                 <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
-                                    {navigation.map((item) => (
+                                    {navigation.map((item, index) => (
                                         <Navigate to={item.href}> <Disclosure.Button
-                                            key={item.name}
+                                            key={index}
                                             as="a"
                                             href={item.href}
                                             className={classNames(
@@ -253,9 +253,9 @@ function Navbar() {
                                         </button>
                                     </div>
                                     <div className="mt-3 space-y-1 px-2">
-                                        {userNavigation.map((item) => (
+                                        {userNavigation.map((item, index) => (
                                             <Disclosure.Button
-                                                key={item.name}
+                                                key={index}
                                                 as="a"
                                                 href={item.href}
                                                 className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
