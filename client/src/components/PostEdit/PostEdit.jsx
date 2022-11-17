@@ -7,7 +7,7 @@ function PostEdit() {
 
     const updatePost = (e) => {
         e.preventDefault()
-        axios.put('http://localhost:5000/update_post', postEdit, {
+        axios.put('http://localhost:5000/updatePost', postEdit, {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             }

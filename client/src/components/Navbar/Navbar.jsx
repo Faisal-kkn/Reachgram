@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { NavLink, useNavigate, Navigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode'
 import { AppContext, UserContext } from '../../AppContext';
-
+import axios from 'axios';
 
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/solid'
@@ -11,12 +11,28 @@ import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/so
 
 function Navbar() {
     const { userData, setUserData } = useContext(UserContext);
+    const { showPostModal, setShowPostModal } = useContext(AppContext);
 
     const Navigate = useNavigate()
 
-    const { showPostModal, setShowPostModal } = useContext(AppContext);
+    const [searchData, setSearchData] = useState({ search: '' })
+    const [users, setUsers] = useState([])
+
     const newPost = (e) => {
         setShowPostModal(!showPostModal)
+    }
+
+    const searchUser = (data)=>{
+        setSearchData({ search: data })
+        console.log(data);
+        axios.get(`http://localhost:5000/search?data=${data}`, {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken"),
+            },
+        }).then((response)=>{
+            console.log(response);
+            setUsers(response.data)
+        })
     }
 
     const logout = () => {
@@ -49,14 +65,14 @@ function Navbar() {
     ]
     const userNavigation = [
         { name: 'Your Profile', href: '/profile' },
-        { name: 'Settings'  },
+        { name: 'Settings' },
         { name: 'Log out', fun: logout },
     ]
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
 
-    const userDetails = async()=>{
+    const userDetails = async () => {
         let userDetails = await jwtDecode(localStorage.getItem("userToken"))
         await setUserData({
             id: userDetails.user.split(' ')[0],
@@ -95,7 +111,26 @@ function Navbar() {
                                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                                         />
                                                     </svg>
-                                                    <input type="text" placeholder="Search" className="w-full py-2 pl-12 pr-4  text-gray-500 rounded-[5px] outline-none bg-[#314e5e6e] focus:bg-[#314F5F] focus:border-indigo-600" />
+                                                    <input type="text" placeholder="Search" name='search' onChange={(e) =>{ searchUser(e.target.value)}} className="w-full py-2 pl-12 pr-4  text-gray-500 rounded-[5px] outline-none bg-[#314e5e6e] focus:bg-[#314F5F] focus:border-indigo-600" />
+                                                    {users.length != 0 && searchData.search != '' ? <div className='absolute w-full bg-white z-50 rounded-[10px] mt-1'>
+                                                        <ul className='w-full max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
+                                                            {users.map((iteam)=>{
+                                                                return(
+                                                                    <li className='py-1'>
+                                                                        <div className='flex gap-3 items-center cursor-pointer'>
+                                                                            <div className='w-[50px] h-[50px] overflow-hidden my-auto'>
+                                                                                <img className='rounded-full w-[50px] h-[50px] ' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
+                                                                            </div>
+                                                                            <div className='w-[80%]'>
+                                                                                <h4 className='leading-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-[#0F213E] capitalize  max-w-[150px]'>{iteam.fullname}</h4>
+                                                                                <small className='leading-1 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A]'>{iteam.username}</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                )
+                                                            })}                                                          
+                                                        </ul>
+                                                    </div> : '' }
                                                 </div>
                                             </form>
                                         </div>
@@ -159,7 +194,7 @@ function Navbar() {
                                                                             )}
                                                                         >
                                                                             {item.name}
-                                                                        </NavLink> 
+                                                                        </NavLink>
                                                                     )}
                                                                 </Menu.Item>
                                                             ))}

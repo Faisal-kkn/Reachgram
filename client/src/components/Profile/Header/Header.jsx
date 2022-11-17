@@ -24,7 +24,7 @@ function Header({ data, handleSubmit, editbutton }) {
         for (let key in editProfile) {
             formData.append(key, editProfile[key])
         }
-        axios.put('http://localhost:5000/edit_profile', formData, {
+        axios.put('http://localhost:5000/editProfile', formData, {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             }

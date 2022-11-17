@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import userRegisterSchema from '../modules/user/register.js';
 import userPostSchema from '../modules/user/post.js'
+import userCommentSchema from '../modules/user/comments.js'
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken'
@@ -196,6 +197,16 @@ export default {
 
         }
     },
+    searchUser: (req, res)=>{
+        try {
+            console.log(req.query.data);
+            userRegisterSchema.find({ fullname: { $regex: new RegExp(req.query.data, 'i') }, otpStatus: true }).then((response) => {
+                res.status(200).json(response)
+            }).catch(console.error)
+        } catch (error) {
+            res.status(400).json(false)
+        }
+    },
     likeOrDisLike: async (req, res) => {
         try {
             console.log('req.body');
@@ -385,6 +396,71 @@ export default {
 
         } catch (error) {
 
+        }
+    },
+    postComments: (req, res) => {
+        try {
+            console.log('lll');
+            console.log(req.query);
+            // userPostSchema.aggregate([
+            //     { $match: { userId: mongoose.Types.ObjectId(req.query.userId) } },
+            //     {
+            //         $unwind: "$postData"
+            //     },
+            //     { $match: { "postData.deleteStatus": false } },
+
+            // ]).then((response) => {
+            //     response.map((item) => {
+            //         item.postData.user = item.user
+            //         item.postData.mainId = item._id
+            //         item.postData.userId = item.userId
+            //     })
+            //     let allPostData = []
+            //     response.map((item) => {
+            //         allPostData.push(item.postData)
+            //     })
+
+            //     if (response) res.status(200).json(allPostData)
+            //     else res.status(400).json(false)
+            // }).catch(console.error)
+        } catch (error) {
+
+        }
+    },
+    commentPost: (req, res)=>{
+        try {
+            console.log(req.body);
+            userCommentSchema.findOne({ postId: req.body.postId }).then((response) => {
+                console.log(response);
+                if (response) {
+                    if (req.body.userId && req.body.postId && req.body.comment) {
+                        userCommentSchema.findOneAndUpdate({ postId: req.body.postId }, {
+                            $push: {
+                                comments: {
+                                    userId: req.body.userId,
+                                    comment: req.body.comment,
+                                }
+                            }
+                        }).then((rep) => res.status(200).json(true))
+                    } else {
+                        res.status(200).json(false);
+                    }
+                } else {
+                    let userComment = new userCommentSchema({
+                        postId: req.body.postId,
+                        comments: {
+                            userId: req.body.userId,
+                            comment: req.body.comment,
+                        }
+                    })
+                    userComment.save()
+                    res.status(200).json(true)
+                }
+            }).catch(console.error)
+
+
+        } catch (error) {
+            res.status(501).json({ message: error.message });
         }
     },
 

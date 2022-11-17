@@ -8,15 +8,15 @@ import './homeMain.css';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import PostEditModal from '../PostEdit/PostEdit';
-
 function HomeMain() {
     const Navigate = useNavigate()
     const { userData, setUserData } = useContext(UserContext);
     const { postEdit, setPostEdit } = useContext(AppContext);
 
     const [homePost, setHomePost] = useState([])
-    const [comment, setComment] = useState(false)
-    
+    const [comment, setComment] = useState({ id: '', status: false })
+    const [commentData, setCommentData] = useState('')
+
     const allPost = () => {
         axios.get('http://localhost:5000/home', {
             headers: {
@@ -42,7 +42,7 @@ function HomeMain() {
     }
 
     const deletePost = (userId, mainId, postId) => {
-        axios.delete(`http://localhost:5000/delete_post?mainId=${mainId}&postId=${postId}`, {
+        axios.delete(`http://localhost:5000/deletePost?mainId=${mainId}&postId=${postId}`, {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             }
@@ -65,11 +65,26 @@ function HomeMain() {
         })
     }
 
-    const postComment = (userId, postId, likedUser)=>{
-        console.log(userId);
+    const allCommentData = (postId, status) => {
         console.log(postId);
-        console.log(likedUser);
-        setComment(!comment)
+        console.log(status);
+        if (status) {
+            axios.get(`http://localhost:5000/postComments?postId=${postId}`, {
+                headers: {
+                    "x-access-token": localStorage.getItem("userToken"),
+                }
+            })
+        }
+        setComment({ id: postId, status: !comment.status })
+    }
+
+    const postComment = (postId, userId) => {
+        axios.post('http://localhost:5000/commentPost', { userId: userId, postId: postId, comment: commentData }, {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken"),
+            }
+        })
+
     }
 
     const userNavigation = [
@@ -158,7 +173,7 @@ function HomeMain() {
                                     <div onClick={() => {
                                         likeAndDisLike(iteam.mainId, iteam._id, userData.id)
                                     }} className=' cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><HeartIcon className={`w-6 h-6 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} /> <span className='text-[16px]'>{iteam.Likes.length}</span></div>
-                                    <div onClick={() => postComment(iteam.mainId, iteam._id, userData.id)} className='cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'>
+                                    <div onClick={() => allCommentData(iteam._id, comment.status)} className={` transition ease-in-out delay-150 cursor-pointer px-4 min-w-[70px] py-3   rounded-[5px] flex justify-center items-center gap-2 md:px-8 ${comment.status && comment.id == iteam._id ? 'bg-white text-black font-semibold' : 'bg-[#314f5f6e]'}`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                                         </svg>
@@ -166,10 +181,39 @@ function HomeMain() {
                                     </div>
                                     <div className=' px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><PaperAirplaneIcon className='w-6 h-6 rotate-[-45deg]' /> <span className='text-[16px] hidden md:block'>Share</span></div>
                                 </div>
-                                {comment ? <div>
-                                    fskdjdf
-                                </div> 
-                                : ''}
+                                {comment.status && comment.id == iteam._id ?
+                                    <>
+                                        <div className='mt-4 transition ease-in-out delay-150 max-h-[300px] overflow-y-scroll scrollbar-hide-comment'>
+                                            <div className='flex gap-3 items-start pb-3'>
+                                                <div className='w-[50px] h-[50px]  overflow-hidden relative'>
+                                                    <img className='rounded-full' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
+                                                </div>
+                                                <div className='w-[85%]'>
+                                                    <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{iteam.user[0]}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@alex_mcCarthy</small>
+                                                    <div className='text-[14px]'>Lorem Ipsum is simply dummy text of the printing and typesetting industryLorem Ipsum is simply dummy text of the printing and typesetting industryLorem Ipsum is simply dummy text of the printing and typesetting industryLorem Ipsum is simply dummy text of the printing and typesetting industry</div>
+                                                    <span className='text-[13px] text-[#596C7A]'>1{iteam.Likes.length} Likes</span>
+                                                </div>
+                                                <div className='ml-auto'>
+                                                    {/* <HeartIcon className={`w-5 h-5 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} /> */}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className='pt-4 pb-1'>
+                                            <div className='flex items-center h-[50px] border-[#314F5F] border-[2px] bg-[#05141c2b] rounded-l-3xl rounded-[10px]'>
+
+                                                <div className='w-[70px] h-[70px]  overflow-hidden relative left-[-10px]'>
+                                                    <img className='rounded-full' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
+                                                </div>
+                                                <div className='w-[90%] h-full'>
+                                                    <input type="text" onChange={(e) => setCommentData(e.target.value)} className='w-full border-transparent bg-transparent outline-none h-full' />
+                                                </div>
+                                                <div className='ml-auto  px-2'>
+                                                    <button className='text-[#F5F5F5]' onClick={() => postComment(iteam._id, userData.id)}>Post</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                    : ''}
                             </div>
                         )
                     })

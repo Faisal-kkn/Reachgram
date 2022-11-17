@@ -15,7 +15,6 @@ function PostUpload() {
             id: userDetails.user.split(' ')[0],
             name: userDetails.user.split(' ')[1]
         })
-        console.log(userDetails.user.split(' ')[0]);
         setFile(URL.createObjectURL(e.target.files[0]))
         setPostData({
             ...postData,
@@ -37,10 +36,12 @@ function PostUpload() {
         e.preventDefault()
         
         const formData = new FormData();
-        for (let key in postData) {
+        for(let key in postData) {
             formData.append(key, postData[key])
         }
-        axios.post('http://localhost:5000/new_post', formData, {
+        console.log(postData);
+        console.log(formData);
+        axios.post('http://localhost:5000/newPost', formData, {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             }
@@ -54,11 +55,6 @@ function PostUpload() {
         }).catch(error => console.log(error))
 
     }
-
-    
-
-
-
 
     return (
         <div>

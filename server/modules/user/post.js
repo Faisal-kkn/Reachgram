@@ -2,15 +2,15 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 
-let likeSchema = new mongoose.Schema({
-    userId: {
-        type: String,
-    },
-    time: {
-        type: Date,
-        default: Date.now
-    }
-})
+// let likeSchema = new mongoose.Schema({
+//     userId: {
+//         type: String,
+//     },
+//     time: {
+//         type: Date,
+//         default: Date.now
+//     }
+// })
 
 
 let postDataSchema = new mongoose.Schema({
