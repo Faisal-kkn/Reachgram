@@ -8,7 +8,7 @@ import jwtDecode from 'jwt-decode'
 
 
 function Login() {
-    const { setUserData } = useContext(UserContext);
+    const { userData, setUserData } = useContext(UserContext);
 
     const Navigate = useNavigate()
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -34,12 +34,13 @@ function Login() {
     const loginSubmit = (e) => {
         axios.post('http://localhost:5000/login', login).then((response) => {
             if (response.data.status && response.data.auth) {
-                let userName = jwtDecode(response.data.token)
-                console.log(response);
-                setUserData({
-                    id: response.data.id,
-                    name: userName.name
-                })
+                // let userName = jwtDecode(response.data.token)
+                // console.log(userName);
+                // setUserData({
+                //     ...userData,
+                //     id: response.data.id,
+                //     name: userName.name
+                // })
                 localStorage.setItem("userToken", response.data.token)
                 Navigate('/')
             } else {

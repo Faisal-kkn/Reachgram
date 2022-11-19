@@ -12,6 +12,15 @@ export default {
     jwtCheck: (req, res) => {
         res.status(200).json({ auth: true, message: "You are authenticated Congrats!" })
     },
+    myData: (req, res)=>{
+        try {
+            userRegisterSchema.findOne({_id: req.query.userId}).then((response)=>{
+                if (response) res.status(200).json({ profile: response.profile, fullname: response.fullname, username: response.username})
+            })
+        } catch (error) {
+            res.status(501).json({ message: error.message });
+        }
+    },
     userRegister: async (req, res) => {
         try {
             let userName = await userRegisterSchema.findOne({ username: req.body.username.toLowerCase() })
@@ -194,6 +203,7 @@ export default {
                 res.status(200).json(allPostData)
             }).catch(console.error)
         } catch (error) {
+            res.status(501).json({ message: error.message });
 
         }
     },

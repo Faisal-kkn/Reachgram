@@ -1,11 +1,12 @@
 import express from "express";
 import user from '../controllers/authControllers.js';
 const router = express.Router()
-import {upload} from './multer.js'
-import {verifyJWT} from './auth.js'
+import { upload } from './multer.js'
+import { verifyJWT } from './auth.js'
 
 
 router.get('/isUserAuth', verifyJWT, user.jwtCheck)
+router.get('/myData', verifyJWT, user.myData)
 router.post('/login', user.userLogin)
 router.post('/signup', user.userRegister)
 router.post('/otpvarification', user.userOtpVerification)

@@ -74,9 +74,16 @@ function Navbar() {
 
     const userDetails = async () => {
         let userDetails = await jwtDecode(localStorage.getItem("userToken"))
-        await setUserData({
-            id: userDetails.user.split(' ')[0],
-            name: userDetails.user.split(' ')[1]
+        axios.get(`http://localhost:5000/myData?userId=${userDetails.user.split(' ')[0]}`, {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken")
+            }
+        }).then(async (response)=>{
+            await setUserData({
+                image: response.data.profile,
+                id: userDetails.user.split(' ')[0],
+                name: response.data.fullname
+            })
         })
     }
     useEffect(() => {
@@ -167,7 +174,7 @@ function Navbar() {
                                                     <div>
                                                         <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ring-2 ring-gray ring-offset-2 ring-offset-gray-800 ring-gray focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                             <span className="sr-only">Open user menu</span>
-                                                            <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+                                                            <img className="h-8 w-8 rounded-full" src={'/images/' + userData.image} alt="" />
                                                         </Menu.Button>
                                                     </div>
                                                     <Transition

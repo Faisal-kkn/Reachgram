@@ -10,18 +10,21 @@ function PostUpload() {
     const [postData, setPostData] = useState({ discription: '', image: '', userId: '' })
     const [file, setFile] = useState();
     const fileUpload = (e) => {
-        let userDetails = jwtDecode(localStorage.getItem("userToken"))
-        console.log(userDetails);
-        setUserData({
-            id: userDetails.user.split(' ')[0],
-            name: userDetails.user.split(' ')[1]
-        })
-        setFile(URL.createObjectURL(e.target.files[0]))
-        setPostData({
-            ...postData,
-            image: e.target.files[0],
-            userId: userDetails.user.split(' ')[0]
-        })
+        console.log(userData);
+        console.log('e.target.files[0');
+        console.log(e.target.files);
+        // let userDetails = jwtDecode(localStorage.getItem("userToken"))
+        // console.log(userDetails);
+        // setUserData({
+        //     ...userData,
+        //     id: userDetails.user.split(' ')[0]
+        // })
+        // setFile(URL.createObjectURL(e.target.files[0]))
+        // setPostData({
+        //     ...postData,
+        //     image: e.target.files[0],
+        //     userId: userDetails.user.split(' ')[0]
+        // })
     }
 
     const handleChange = (e) => {
@@ -91,7 +94,7 @@ function PostUpload() {
                                             </div>
                                             <div className='w-full overflow-hidden h-[300px] flex justify-center items-center relative mt-3 border-4 border-solid border-[#314f5f65]'>
                                                 <div id="bgimage" className='w-[80vw] md:w-[60vw] bg-cover  overflow-hidden h-[300px] flex justify-center items-center blur-[1px]' style={{ backgroundImage: `url(${file || 'https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'})` }}></div>
-                                                <input name="image" onChange={fileUpload} type="file" id="imgInp" className='w-[100px] absolute text-transparent custom-file-input' />
+                                                <input name="image" onChange={fileUpload}  multiple type="file" id="imgInp" className='w-[100px] absolute text-transparent custom-file-input' />
                                             </div>
 
                                         </div>

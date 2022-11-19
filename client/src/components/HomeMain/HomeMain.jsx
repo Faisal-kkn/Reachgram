@@ -8,6 +8,8 @@ import './homeMain.css';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import PostEditModal from '../PostEdit/PostEdit';
+import { format, render, cancel, register } from 'timeago.js';
+
 function HomeMain() {
     const Navigate = useNavigate()
     const { userData, setUserData } = useContext(UserContext);
@@ -29,6 +31,7 @@ function HomeMain() {
             } else {
                 let user = jwtDecode(localStorage.getItem("userToken"))
                 setUserData({
+                    ...userData,
                     id: user.user.split(' ')[0],
                     name: user.user.split(' ')[1]
                 })
@@ -137,11 +140,11 @@ function HomeMain() {
                             <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] ' key={index}>
                                 <div className='flex gap-3 items-center'>
                                     <div className='w-[50px] h-[50px]  overflow-hidden relative'>
-                                        <img className='rounded-full' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
+                                        <img className='rounded-full' src={`${'/images/'+iteam.image || "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
                                     </div>
                                     <div>
                                         <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{iteam.user[0]}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@alex_mcCarthy</small>
-                                        <small className='overflow-hidden overflow-ellipsis whitespace-nowrap text-[#596C7A] block'>{iteam.created}</small>
+                                        <small className='overflow-hidden overflow-ellipsis whitespace-nowrap text-[#596C7A] block'>{format(iteam.created)}</small>
                                     </div>
                                     <div className='ml-auto'>
 
@@ -184,7 +187,7 @@ function HomeMain() {
                                 <div className='w-full mt-3 rounded-[10px] overflow-hidden h-[400px]  border-4 border-solid border-[#314F5F] '>
                                     <img className='w-full rounded-[10px]' src={`/images/${iteam.image}`} alt="" />
                                 </div>
-                                <div className='pt-2 text-[14px]' style={{ 'display': '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', 'overflow': 'hidden' }}>
+                                <div className='pt-2 text-[14px] post-cnt' > {/*  style={{ 'display': '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', 'overflow': 'hidden' }} */}
                                     {iteam.description}
                                 </div>
                                 <a href="#" className='text-[#246EE9] underline'>ReadMore</a>
@@ -224,7 +227,7 @@ function HomeMain() {
                                             <div className='flex items-center h-[50px] border-[#314F5F] border-[2px] bg-[#05141c2b] rounded-l-3xl rounded-[10px]'>
 
                                                 <div className='w-[70px] h-[70px]  overflow-hidden relative left-[-10px]'>
-                                                    <img className='rounded-full' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
+                                                    <img className='rounded-full' src={`${'/images/'+userData.image || "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
                                                 </div>
                                                 <div className='w-[90%] h-full'>
                                                     <input type="text" value={commentData} onChange={(e) => setCommentData(e.target.value)} className='w-full border-transparent bg-transparent outline-none h-full' />

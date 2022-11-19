@@ -9,11 +9,11 @@
 .scrollbar-hide-comment::-webkit-scrollbar {
         width: 5px;
         height: 8px;
-        background-color: #314f5f6e;
+        background-color: #1e304c;
         border-radius: 10px;
 }
 
 .scrollbar-hide-comment::-webkit-scrollbar-thumb {
         border-radius: 100px;
-        background: #0F213E;
+        background: #314f5f6e;
 }

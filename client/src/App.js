@@ -23,6 +23,7 @@ function App() {
   });
 
   const [userData, setUserData] = useState({
+    image: '',
     id: '',
     name: ''
   })
@@ -41,6 +42,7 @@ function App() {
                 <Route path='/' element={<Home />} />
                 <Route path='/profile' element={<Profile />} />
               </Route>
+              
             </Routes>
           </BrowserRouter> 
         </UserContext.Provider>
