@@ -1,8 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import userRegisterSchema from '../modules/user/register.js';
-import userPostSchema from '../modules/user/post.js'
-import userCommentSchema from '../modules/user/comments.js'
+import userPostSchema from '../modules/user/post.js';
+import userCommentSchema from '../modules/user/comments.js';
+import userFriendsSchema from '../modules/user/friends.js';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken'
@@ -12,10 +13,10 @@ export default {
     jwtCheck: (req, res) => {
         res.status(200).json({ auth: true, message: "You are authenticated Congrats!" })
     },
-    myData: (req, res)=>{
+    myData: (req, res) => {
         try {
-            userRegisterSchema.findOne({_id: req.query.userId}).then((response)=>{
-                if (response) res.status(200).json({ profile: response.profile, fullname: response.fullname, username: response.username})
+            userRegisterSchema.findOne({ _id: req.query.userId }).then((response) => {
+                if (response) res.status(200).json({ profile: response.profile, fullname: response.fullname, username: response.username })
             })
         } catch (error) {
             res.status(501).json({ message: error.message });
@@ -207,10 +208,11 @@ export default {
 
         }
     },
-    searchUser: (req, res)=>{
+    searchUser: (req, res) => {
         try {
             console.log(req.query.data);
             userRegisterSchema.find({ fullname: { $regex: new RegExp(req.query.data, 'i') }, otpStatus: true }).then((response) => {
+                // let profiledata = 
                 res.status(200).json(response)
             }).catch(console.error)
         } catch (error) {
@@ -282,7 +284,7 @@ export default {
                 response.map((item) => {
                     allPostData.push(item.postData)
                 })
-
+                
                 if (response) res.status(200).json(allPostData)
                 else res.status(400).json(false)
             }).catch(console.error)
@@ -294,13 +296,15 @@ export default {
         try {
             userRegisterSchema.aggregate([
                 { $match: { _id: mongoose.Types.ObjectId(req.query.userId) } },
+                { $lookup: { from: 'friends', localField: '_id', foreignField: "userId", as: 'friends' } },
                 {
                     $project: {
-                        _id: 0, fullname: 1, username: 1, phone: 1,
-                        email: 1, about: 1, profile: 1,
+                        _id: 1, fullname: 1, username: 1, phone: 1,
+                        email: 1, about: 1, profile: 1, friends: 1
                     }
                 },
             ]).then((response) => {
+                
                 if (response) res.status(200).json(response)
                 else res.status(400).json(false)
             }).catch(console.error)
@@ -371,7 +375,7 @@ export default {
                                 if (emailValid && response.email != email) {
                                     console.log('Email id is exist');
                                     res.json({ status: false, username: true, email: false, msg: 'Email id is exist' })
-                                } else{
+                                } else {
                                     console.log('evdeeee');
                                     userRegisterSchema.findOneAndUpdate({ _id: userId }, {
                                         $set: {
@@ -439,7 +443,7 @@ export default {
 
         }
     },
-    commentPost: (req, res)=>{
+    commentPost: (req, res) => {
         try {
             console.log(req.body);
             userCommentSchema.findOne({ postId: req.body.postId }).then((response) => {
@@ -465,7 +469,7 @@ export default {
                             comment: req.body.comment,
                         }
                     })
-                    userComment.save().then(()=>{
+                    userComment.save().then(() => {
                         res.status(200).json(true)
                     })
                 }
@@ -521,6 +525,78 @@ export default {
 
         }
     },
+    followAndUnfollow: async (req, res) => {
+        try {
+            console.log('req.body');
+            console.log(req.body);
+            if (req.body.userId && req.body.myId) {
+                let followingUser = false;
+                let followersUser = false;
+                await userFriendsSchema.findOne({ userId: req.body.myId }).then((response) => {
+                    if (response) {
+                        if (!response.following.includes(req.body.userId)) {
+                            userFriendsSchema.findOneAndUpdate({ userId: req.body.myId }, {
+                                $push: {
+                                    following: req.body.userId
+                                }
+                            }).then((rep) => followingUser = true)
+                        } else {
+                            userFriendsSchema.findOneAndUpdate({ userId: req.body.myId }, {
+                                $pull: {
+                                    following: req.body.userId
+                                }
+                            }).then((rep) => followingUser = true)
+                        }
+
+                    } else {
+                        let userfollowing = new userFriendsSchema({
+                            userId: req.body.myId,
+                            following: req.body.userId
+                        })
+                        userfollowing.save()
+                        followingUser = true
+                    }
+                }).catch(console.error)
+
+                await userFriendsSchema.findOne({ userId: req.body.userId }).then((response) => {
+                    if (response) {
+                        if (!response.followers.includes(req.body.myId)) {
+                            userFriendsSchema.findOneAndUpdate({ userId: req.body.userId }, {
+                                $push: {
+                                    followers: req.body.myId
+                                }
+                            }).then((rep) => followersUser = true)
+                        } else {
+                            userFriendsSchema.findOneAndUpdate({ userId: req.body.userId }, {
+                                $pull: {
+                                    followers: req.body.myId
+                                }
+                            }).then((rep) => followersUser = true)
+                        }
+
+                    } else {
+                        let userfollowers = new userFriendsSchema({
+                            userId: req.body.userId,
+                            followers: req.body.myId
+                        })
+                        userfollowers.save()
+                        followersUser = true
+                    }
+                }).catch(console.error)
+
+                if (followingUser && followersUser){
+                    res.status(200).json(true)
+                }
+
+            } else {
+                res.status(200).json(false);
+            }
+
+        } catch (error) {
+
+        }
+
+    }
 
 }
 

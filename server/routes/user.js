@@ -22,5 +22,6 @@ router.delete('/deletePost', verifyJWT, user.deletePost)
 router.get('/postComments', verifyJWT, user.postComments)
 router.post('/commentPost', verifyJWT, user.commentPost)
 router.put('/commentLikeAndDisLike', verifyJWT, user.commentLikeorDisLike)
+router.post('/followAndUnfollow', verifyJWT, user.followAndUnfollow)
 
 export default router;

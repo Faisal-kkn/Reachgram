@@ -3,7 +3,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import SignUp from "./pages/userRegister/Signup";
 import Signin from "./pages/userLogin/Signin";
 import Profile from "./pages/Profile/Profile";
+import User from "./pages/User/User";
 import Home from "./pages/Home/Home";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import HomeMain from "./pages/HomeMain/HomeMain";
 import { AppContext, UserContext } from './AppContext';
 import PostUpload from './components/PostUpload/PostUpload'
@@ -41,8 +43,10 @@ function App() {
               <Route exact element={<HomeMain />} >
                 <Route path='/' element={<Home />} />
                 <Route path='/profile' element={<Profile />} />
+                <Route path='/UserProfile' element={<User />} />
               </Route>
-              
+              <Route path='/admin' element={<Dashboard />} >
+              </Route>
             </Routes>
           </BrowserRouter> 
         </UserContext.Provider>

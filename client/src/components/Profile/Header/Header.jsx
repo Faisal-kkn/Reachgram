@@ -61,11 +61,11 @@ function Header({ data, handleSubmit, editbutton }) {
                         <p>Posts</p>
                     </div>
                     <div className='text-center'>
-                        <p>5673</p>
+                        {/* <p>{userDetails.friends[0]?.followers.length}</p> */}
                         <p>Followers</p>
                     </div>
                     <div className='text-center'>
-                        <p>2493</p>
+                        {/* <p>{userDetails.friends[0]?.following.length}</p> */}
                         <p>Following</p>
                     </div>
                 </div>

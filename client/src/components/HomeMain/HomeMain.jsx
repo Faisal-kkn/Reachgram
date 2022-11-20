@@ -148,7 +148,6 @@ function HomeMain() {
                                     </div>
                                     <div className='ml-auto'>
 
-                                        {/* Profile dropdown */}
                                         {iteam.userId[0] === userData.id ? <Menu as="div" className="relative ml-3">
                                             <div>
                                                 <Menu.Button className="flex max-w-xs items-center ">

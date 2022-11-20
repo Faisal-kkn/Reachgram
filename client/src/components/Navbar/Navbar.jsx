@@ -1,13 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Fragment } from 'react'
-import { NavLink, useNavigate, Navigate } from 'react-router-dom';
+import { NavLink, useNavigate, Navigate, Link } from 'react-router-dom';
 import jwtDecode from 'jwt-decode'
 import { AppContext, UserContext } from '../../AppContext';
 import axios from 'axios';
 
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/solid'
-
 
 function Navbar() {
     const { userData, setUserData } = useContext(UserContext);
@@ -30,7 +29,6 @@ function Navbar() {
                 "x-access-token": localStorage.getItem("userToken"),
             },
         }).then((response)=>{
-            console.log(response);
             setUsers(response.data)
         })
     }
@@ -102,7 +100,7 @@ function Navbar() {
                                     <div className="flex items-center">
                                         <div className="flex-shrink-0 flex items-center gap-4">
                                             <img className="h-8 w-8" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
-                                            <form className="max-w-sm hidden sm:block">
+                                            <div className="max-w-sm hidden sm:block">
                                                 <div className="relative">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -120,26 +118,31 @@ function Navbar() {
                                                     </svg>
                                                     <input type="text" placeholder="Search" name='search' onChange={(e) =>{ searchUser(e.target.value)}} className="w-full py-2 pl-12 pr-4  text-gray-500 rounded-[5px] outline-none bg-[#314e5e6e] focus:bg-[#314F5F] focus:border-indigo-600" />
                                                     {users.length != 0 && searchData.search != '' ? <div className='absolute w-full bg-white z-50 rounded-[10px] mt-1'>
-                                                        <ul className='w-full max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
+                                                        <div className='w-full max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
                                                             {users.map((iteam, index)=>{
                                                                 return(
-                                                                    <li className='py-1' key={index}>
-                                                                        <div className='flex gap-3 items-center cursor-pointer'>
-                                                                            <div className='w-[50px] h-[50px] overflow-hidden my-auto'>
-                                                                                <img className='rounded-full w-[50px] h-[50px] ' src="https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80" alt="" />
+                                                                    <div className='py-1 hover:bg-[#00000014]'>
+                                                                        <Link className=' ' key={index} to='/UserProfile' state={{ user: iteam }} onClick={() => {
+                                                                            setSearchData({ search: '' })
+                                                                            searchUser('')
+                                                                        }}>
+                                                                            <div className='flex gap-3 items-center cursor-pointer'>
+                                                                                <div className='w-[50px] h-[50px] overflow-hidden my-auto'>
+                                                                                    <img className='rounded-full w-[50px] h-[50px] ' src={`${iteam.profile ? '/images/' + iteam.profile : "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
+                                                                                </div>
+                                                                                <div className='w-[80%]'>
+                                                                                    <h4 className='leading-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-[#0F213E] capitalize  max-w-[150px]'>{iteam.fullname}</h4>
+                                                                                    <small className='leading-1 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A]'>{iteam.username}</small>
+                                                                                </div>
                                                                             </div>
-                                                                            <div className='w-[80%]'>
-                                                                                <h4 className='leading-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-[#0F213E] capitalize  max-w-[150px]'>{iteam.fullname}</h4>
-                                                                                <small className='leading-1 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A]'>{iteam.username}</small>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
+                                                                        </Link>
+                                                                    </div>
                                                                 )
                                                             })}                                                          
-                                                        </ul>
+                                                        </div>
                                                     </div> : '' }
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="hidden sm:block ">

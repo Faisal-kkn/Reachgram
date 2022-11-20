@@ -34,6 +34,8 @@ function Profile() {
             } else {
                 setProfilePosts(response.data.reverse())
                 setProfilePostsId({ postMainId: response.data[0].mainId })
+                console.log('response.data[0]');
+                console.log(response.data[0]);
             }
         })
 
