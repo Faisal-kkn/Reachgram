@@ -9,12 +9,15 @@ function Header({ data, handleSubmit, editbutton }) {
 
     const [userDetails, setUserDetails] = useState([])
     const ProfileData = () => {
+        console.log('sdfsd');
         let userDetail = jwtDecode(localStorage.getItem("userToken"))
         axios.get(`http://localhost:5000/profiledata?userId=${userDetail.user.split(' ')[0]}`, {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             }
-        }).then((response) => {
+        })
+        .then((response) => {
+            console.log('asdadsa');
             setUserDetails(response.data[0])
         })
     }
@@ -38,9 +41,10 @@ function Header({ data, handleSubmit, editbutton }) {
             }
         })
     }
+
     useEffect(() => {
         ProfileData()
-    }, [Navigate, submitProfile]);
+    }, [Navigate]);
 
 
     return (
@@ -62,10 +66,12 @@ function Header({ data, handleSubmit, editbutton }) {
                     </div>
                     <div className='text-center'>
                         {/* <p>{userDetails.friends[0]?.followers.length}</p> */}
+                        {userDetails.friends && userDetails.friends.length != 0 ? userDetails.friends[0].followers.length : '0'}
                         <p>Followers</p>
                     </div>
                     <div className='text-center'>
                         {/* <p>{userDetails.friends[0]?.following.length}</p> */}
+                        {userDetails.friends && userDetails.friends.length != 0 ? userDetails.friends[0].following.length : '0'}
                         <p>Following</p>
                     </div>
                 </div>

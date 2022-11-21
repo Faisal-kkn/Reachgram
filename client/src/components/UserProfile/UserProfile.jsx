@@ -12,16 +12,21 @@ function UserProfile() {
     
     const [profilePosts, setProfilePosts] = useState([])
     const { userData } = useContext(UserContext);
-    const userProfileData = useLocation().state?.user
-    // const [userProfileDatas, setUserProfileDatas] = useState(useLocation().state?.user)
+    const userProfileData = useLocation({ isLoading: true }).state?.user
+    
+    const [userProfileDatas, setUserProfileDatas] = useState(userProfileData)
 
     const [profilePostsId, setProfilePostsId] = useState({
         postMainId: ''
     })
 
     let userPost = () => {
-        // setUserProfileDatas(...userProfileDatas, userProfileData)
-        axios.get(`http://localhost:5000/profile?userId=${userProfileData?._id}`, {
+        console.log('userProfileDataaaaaaaaa');
+        // setUserProfileDatas(userProfileData)
+        console.log(userProfileData);
+        console.log('userProfileDatas');
+        console.log(userProfileDatas);
+        axios.get(`http://localhost:5000/profile?userId=${userProfileData ? userProfileData?._id : userProfileDatas?._id }`, {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             },
@@ -32,7 +37,7 @@ function UserProfile() {
                 console.log('responseeeeeeeeeeeeee');
                 console.log(response);
                 setProfilePosts(response.data.reverse())
-                setProfilePostsId({ postMainId: response.data[0].mainId })
+                setProfilePostsId({ postMainId: response.data[0]?.mainId })
             }
         })
 
@@ -52,6 +57,7 @@ function UserProfile() {
                 "x-access-token": localStorage.getItem("userToken")
             },
         }).then((response) => {
+            console.log(response);
             userPost()
         })
     }
@@ -63,7 +69,7 @@ function UserProfile() {
 
     return (
         <div className='px-1 sm:px-3 lg:px-2 md:pt-3  pt-1'>
-            <ProfilHead head={userProfileData} data={profilePosts.length} />
+            <ProfilHead head={userProfileData ? userProfileData : userProfileDatas} data={profilePosts.length} />
 
             <div className={`mx-auto max-w-7xl gap-3 w-12/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white mt-[15px] overflow-y-scroll scrollbar-hide md:h-[70vh]`}>
                 {profilePosts.length === 0 ? <div className='w-full bg-[#f8f8fa]'><img className='mx-auto h-full' src="https://cdn.dribbble.com/users/1785628/screenshots/5605512/media/097297f8e21d501ba45d7ce437ed77bd.gif" alt="" /></div> :

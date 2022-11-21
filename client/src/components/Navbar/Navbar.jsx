@@ -177,7 +177,7 @@ function Navbar() {
                                                     <div>
                                                         <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ring-2 ring-gray ring-offset-2 ring-offset-gray-800 ring-gray focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                             <span className="sr-only">Open user menu</span>
-                                                            <img className="h-8 w-8 rounded-full" src={'/images/' + userData.image} alt="" />
+                                                            <img className="h-8 w-8 rounded-full" src={'/images/' + userData?.image} alt="" />
                                                         </Menu.Button>
                                                     </div>
                                                     <Transition

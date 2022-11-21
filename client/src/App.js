@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import SignUp from "./pages/userRegister/Signup";
 import Signin from "./pages/userLogin/Signin";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import Profile from "./pages/Profile/Profile";
 import User from "./pages/User/User";
 import Home from "./pages/Home/Home";
@@ -40,6 +41,7 @@ function App() {
             <Routes>
               <Route path='/signup' element={<SignUp />} />
               <Route path='/login' element={<Signin />} />
+              <Route path='/forgot' element={<ForgotPassword />} />
               <Route exact element={<HomeMain />} >
                 <Route path='/' element={<Home />} />
                 <Route path='/profile' element={<Profile />} />

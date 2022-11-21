@@ -33,9 +33,10 @@ export default {
                 let mailId = await userRegisterSchema.findOne({ email: req.body.email })
                 let otp;
                 async function main() {
-                    otp = Math.random();
-                    otp = otp * 1000000;
-                    otp = parseInt(otp)
+                    // otp = Math.random();
+                    // otp = otp * 1000000;
+                    // otp = parseInt(otp)
+                    otp = Math.floor(100000 + Math.random() * 900000)
 
                     let transporter = nodemailer.createTransport({
                         service: "gmail",
@@ -136,6 +137,87 @@ export default {
             res.status(501).json({ message: error.message });
         }
     },
+    forgotPassword: async (req, res) => {
+        try {
+            console.log(req.body);
+            userRegisterSchema.findOne({ email: req.body.email, otpStatus: true }).then((response) => {
+                if (response) {
+                    let otp;
+                    async function main() {
+                        // otp = Math.random();
+                        // otp = otp * 1000000;
+                        otp = Math.floor(100000 + Math.random() * 900000)
+                        
+
+                        let transporter = nodemailer.createTransport({
+                            service: "gmail",
+                            auth: {
+                                user: process.env.ADMIN_MAIL_ID,
+                                pass: process.env.ADMIN_PASSWORD,
+                            },
+                        });
+
+                        let info = await transporter.sendMail({
+                            from: process.env.ADMIN_MAIL_ID, // sender address
+                            to: req.body.email, // list of receivers
+                            subject: "OTP Varification", // Subject line
+                            text: "OTP", // plain text body
+                            html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
+                        });
+
+                        console.log("Message sent: %s", info.messageId);
+
+                        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                    }
+                    main().then(async (response)=>{
+                        otp = otp.toString()
+                        console.log(req.body);
+                        req.body.otp = await bcrypt.hash(otp, 10)
+                        console.log(req.body);
+                        userRegisterSchema.findOneAndUpdate({ email: req.body.email }, {
+                            $set: {
+                                otp: req.body.otp
+                            }
+                        }).then((response)=>{
+                            res.status(200).json({ status: true })
+                        })
+                    })
+                } else res.status(200).json({ status: false, message: 'Mail id is not found' })
+            }).catch(console.error)
+        } catch (error) {
+            res.status(501).json({ message: error.message });
+        }
+    },
+    newPassword: async (req, res) => {
+        try {
+            console.log(req.body);
+            if (req.body.email && req.body.otp && req.body.password){
+                userRegisterSchema.findOne({ email: req.body.email }).then((response) => {
+                    bcrypt.compare(req.body.otp, response.otp).then(async (otpResponse) => {
+                        console.log('gggggggggggggg');
+                        console.log(otpResponse);
+                        if (otpResponse) {
+                            req.body.password = await bcrypt.hash(req.body.password, 10)
+                            userRegisterSchema.findOneAndUpdate({ email: req.body.email }, {
+                                $set: {
+                                    password: req.body.password
+                                }
+                            }).then(() => {
+                                res.status(200).json({ otpVerify: true })
+                            })
+                        } else {
+                            res.status(200).json({ otpVerify: false, message: 'otp is incorrect' })
+                        }
+                    }).catch(error => res.status(400).json({ otpVerify: false, message: 'otp is incorrect' }))
+                }).catch(console.error)
+            }else{
+                res.json({status: false})
+            }
+            
+        } catch (error) {
+            res.status(501).json({ message: error.message });
+        }
+    },
     newPost: (req, res) => {
         try {
             req.body.image = req.file.filename
@@ -221,7 +303,7 @@ export default {
     },
     likeOrDisLike: async (req, res) => {
         try {
-            console.log('req.body');
+            console.log('req.bodyyyyy');
             console.log(req.body);
             userPostSchema.findOne({ "_id": req.body.userId, "postData._id": req.body.postId }).then((response) => {
                 console.log('response.postData');
@@ -239,6 +321,8 @@ export default {
                                             "postData.$.Likes": req.body.likedUser
                                         }
                                     }).then((response) => {
+                                        console.log('responsssssssseeeeeeeeeeeee');
+                                        console.log(response);
                                         res.status(200).json(response)
                                     }).catch(console.error)
                             } else {
@@ -252,6 +336,8 @@ export default {
                                         }
                                     }
                                 ).then((response) => {
+                                    console.log('responsssssssse');
+                                    console.log(response);
                                     res.status(200).json(response)
                                 }).catch(console.error)
                             }
@@ -304,7 +390,8 @@ export default {
                     }
                 },
             ]).then((response) => {
-                
+                console.log('responseeeeeeee');
+                console.log(response);
                 if (response) res.status(200).json(response)
                 else res.status(400).json(false)
             }).catch(console.error)
@@ -530,18 +617,18 @@ export default {
             console.log('req.body');
             console.log(req.body);
             if (req.body.userId && req.body.myId) {
-                let followingUser = false;
-                let followersUser = false;
-                await userFriendsSchema.findOne({ userId: req.body.myId }).then((response) => {
+                var followingUser = false;
+                var followersUser = false;
+                await userFriendsSchema.findOne({ userId: req.body.myId }).then(async(response) => {
                     if (response) {
                         if (!response.following.includes(req.body.userId)) {
-                            userFriendsSchema.findOneAndUpdate({ userId: req.body.myId }, {
+                            await userFriendsSchema.findOneAndUpdate({ userId: req.body.myId }, {
                                 $push: {
                                     following: req.body.userId
                                 }
                             }).then((rep) => followingUser = true)
                         } else {
-                            userFriendsSchema.findOneAndUpdate({ userId: req.body.myId }, {
+                            await userFriendsSchema.findOneAndUpdate({ userId: req.body.myId }, {
                                 $pull: {
                                     following: req.body.userId
                                 }
@@ -558,16 +645,16 @@ export default {
                     }
                 }).catch(console.error)
 
-                await userFriendsSchema.findOne({ userId: req.body.userId }).then((response) => {
+                await userFriendsSchema.findOne({ userId: req.body.userId }).then(async (response) => {
                     if (response) {
                         if (!response.followers.includes(req.body.myId)) {
-                            userFriendsSchema.findOneAndUpdate({ userId: req.body.userId }, {
+                            await userFriendsSchema.findOneAndUpdate({ userId: req.body.userId }, {
                                 $push: {
                                     followers: req.body.myId
                                 }
                             }).then((rep) => followersUser = true)
                         } else {
-                            userFriendsSchema.findOneAndUpdate({ userId: req.body.userId }, {
+                            await userFriendsSchema.findOneAndUpdate({ userId: req.body.userId }, {
                                 $pull: {
                                     followers: req.body.myId
                                 }
@@ -583,6 +670,11 @@ export default {
                         followersUser = true
                     }
                 }).catch(console.error)
+
+                console.log('followingUser');
+                console.log(followingUser);
+                console.log('followersUser');
+                console.log(followersUser);
 
                 if (followingUser && followersUser){
                     res.status(200).json(true)

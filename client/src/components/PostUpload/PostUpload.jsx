@@ -13,18 +13,18 @@ function PostUpload() {
         console.log(userData);
         console.log('e.target.files[0');
         console.log(e.target.files);
-        // let userDetails = jwtDecode(localStorage.getItem("userToken"))
-        // console.log(userDetails);
-        // setUserData({
-        //     ...userData,
-        //     id: userDetails.user.split(' ')[0]
-        // })
-        // setFile(URL.createObjectURL(e.target.files[0]))
-        // setPostData({
-        //     ...postData,
-        //     image: e.target.files[0],
-        //     userId: userDetails.user.split(' ')[0]
-        // })
+        let userDetails = jwtDecode(localStorage.getItem("userToken"))
+        console.log(userDetails);
+        setUserData({
+            ...userData,
+            id: userDetails.user.split(' ')[0]
+        })
+        setFile(URL.createObjectURL(e.target.files[0]))
+        setPostData({
+            ...postData,
+            image: e.target.files[0],
+            userId: userDetails.user.split(' ')[0]
+        })
     }
 
     const handleChange = (e) => {

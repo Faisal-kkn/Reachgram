@@ -82,7 +82,7 @@ function Login() {
                                             </div>
                                             <p className='text-[13px] text-red-600'>{loginErr.errMsg}</p>
                                             <button className='border-2 border-[#ffffff80] w-fit px-5 py-3 text-white rounded-[5px] mt-4'>LOGIN</button>
-                                            <p className='text-white font-light text-[14px] mt-[15px]'>Forgot <NavLink to='/'><span className='text-[#006FC0] text-[16px] font-normal'> &nbsp; Password!</span></NavLink></p>
+                                            <p className='text-white font-light text-[14px] mt-[15px]'>Forgot <NavLink to='/forgot'><span className='text-[#006FC0] text-[16px] font-normal'> &nbsp; Password!</span></NavLink></p>
                                         </div>
                                     </form>
                                 </div>
