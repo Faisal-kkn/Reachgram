@@ -1,0 +1,44 @@
+.trapezoid {
+vertical-align: middle;
+    background: transparent;
+    padding-left: 25px;
+    height: 32px;
+    width: 100%;
+    position: relative;
+    border-radius: 51px 51px 10px 15px;
+    overflow: hidden;
+    background-clip: content-box;
+}
+
+.trapezoid:after {
+    content: '';
+        margin-left: -33px;
+        top: 0;
+        height: 39px;
+        background: white;
+        transform: skew(327deg, 01deg);
+        -o-transform: skew(-31deg, 0deg);
+        -ms-transform: skew(-31deg, 0deg);
+        -moz-transform: skew(-31deg, 0deg);
+        -webkit-transform: skew(9deg, 320deg);
+        position: absolute;
+        width: 56px;
+        border-top-left-radius: 35px;
+}
+
+.trapezoid-right::after {
+    right: 0;
+    content: '';
+    margin-left: -33px;
+    top: 0;
+    height: 80px;
+    background: white;
+    transform: skew(327deg, 01deg);
+    -o-transform: skew(-31deg, 0deg);
+    -ms-transform: skew(-31deg, 0deg);
+    -moz-transform: skew(-31deg, 0deg);
+    -webkit-transform: skew(34deg, 323deg);
+    position: absolute;
+    width: 45px;
+    border-top-left-radius: 35px;
+}

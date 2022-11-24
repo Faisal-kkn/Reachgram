@@ -126,12 +126,16 @@ export default {
                     bcrypt.compare(req.body.password, response.password)
                         .then((loginResponse) => {
                             if (loginResponse) {
-                                const user = response._id + ' ' + response.fullname
-                                let token = jwt.sign({ user }, "jwtSecret", { expiresIn: 30000 });
-                                res.status(200).json({ status: true, auth: true, token })
-                            } else res.status(200).json({ status: false, message: 'Password is incorrect' })
+                                if (response.status){
+                                    res.json({ status: false, message: 'Your Account was blocked' })
+                                }else{
+                                    const user = response._id + ' ' + response.fullname
+                                    let token = jwt.sign({ user }, "jwtSecret", { expiresIn: 30000 });
+                                    res.status(200).json({ status: true, auth: true, token })
+                                }
+                            } else res.json({ status: false, message: 'Password is incorrect' })
                         })
-                } else res.status(200).json({ status: false, message: 'Mail id is not found' })
+                } else res.json({ status: false, message: 'Mail id is not found' })
             }).catch(console.error)
         } catch (error) {
             res.status(501).json({ message: error.message });
@@ -263,11 +267,13 @@ export default {
                 {
                     $unwind: "$postData"
                 },
-                { $match: { "postData.deleteStatus": false } },
+                { $match: { "postData.deleteStatus": false, "postData.report_status": false } },
                 {
                     $project: {
                         postData: 1,
                         "user": "$user.fullname",
+                        "username": "$user.username",
+                        "profile": "$user.profile",
                         "userId": "$user._id",
                     }
                 },
@@ -276,6 +282,8 @@ export default {
             ]).then((response) => {
                 response.map((item) => {
                     item.postData.user = item.user
+                    item.postData.username = item.username
+                    item.postData.profile = item.profile
                     item.postData.mainId = item._id
                     item.postData.userId = item.userId
                 })
@@ -521,6 +529,7 @@ export default {
                 },
                 { $sort: { "comments.created": 1 } }
             ]).then((response) => {
+                console.log(response);
 
                 if (response) res.status(200).json(response)
                 else res.status(400).json(false)

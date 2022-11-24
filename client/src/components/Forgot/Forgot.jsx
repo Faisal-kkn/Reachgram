@@ -23,8 +23,10 @@ function Forgot() {
         axios.post('http://localhost:5000/forgotPassword', { email: forgotData.email }).then((response) => {
             console.log('rrrrrrrrrrrrrresponse');
             console.log(response);
-            if (!response.data.status) setForgotErr({ ...forgotErr, email: true, msg: response.data.message })
-            else{
+            if (!response.data.status){
+                 setForgotErr({ ...forgotErr, email: true, msg: response.data.message })
+                setShowLoading(false)
+            } else{
                 setForgotErr({ ...forgotErr, email: false, msg: '', emailStatus: true })
                 setShowLoading(false)
             }

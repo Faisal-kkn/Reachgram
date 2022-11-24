@@ -10,7 +10,7 @@ function Header({head, data}) {
     const [userDetails, setUserDetails] = useState({})
     const [userId, setUserId] = useState(head?._id)
     const ProfileData = () => {
-        if (userData.id != head._id){
+       
             axios.get(`http://localhost:5000/profiledata?userId=${head?._id}`, {
                 headers: {
                     "x-access-token": localStorage.getItem("userToken"),
@@ -21,9 +21,7 @@ function Header({head, data}) {
                 await setUserDetails(response.data[0])
                 
             })
-        }else{
-            Navigate('/profile')
-        }
+        
     }
 
     const followAction = (myId)=>{

@@ -6,11 +6,14 @@ import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import Profile from "./pages/Profile/Profile";
 import User from "./pages/User/User";
 import Home from "./pages/Home/Home";
+import Chat from './pages/Chat/Chat';
 import Dashboard from "./pages/Dashboard/Dashboard";
 import HomeMain from "./pages/HomeMain/HomeMain";
 import { AppContext, UserContext } from './AppContext';
-import PostUpload from './components/PostUpload/PostUpload'
-
+import PostUpload from './components/PostUpload/PostUpload';
+import AdminDashboard from './components/Admin/Dashboard/Dashboard';
+import AdminUsers from './components/Admin/Users/Users';
+import AdminPosts from './components/Admin/Posts/Posts';
 function App() { 
 
   const [showPostModal, setShowPostModal] = useState(false)
@@ -46,8 +49,14 @@ function App() {
                 <Route path='/' element={<Home />} />
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/UserProfile' element={<User />} />
+                <Route path='/chat' element={<Chat />} />
               </Route>
-              <Route path='/admin' element={<Dashboard />} >
+
+              <Route path='/admin' element={<AdminDashboard />} />
+              <Route element={<Dashboard />} >
+                <Route path='/admin/dashboard' element={<AdminDashboard />} />
+                <Route path='/admin/users' element={<AdminUsers />} />
+                <Route path='/admin/posts' element={<AdminPosts />} />
               </Route>
             </Routes>
           </BrowserRouter> 

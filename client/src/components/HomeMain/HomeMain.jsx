@@ -35,6 +35,8 @@ function HomeMain() {
                     id: user.user.split(' ')[0],
                     name: user.user.split(' ')[1]
                 })
+                console.log('response.dataaaaaaa');
+                console.log(response.data);
                 setHomePost(response.data)
             }
 
@@ -79,6 +81,7 @@ function HomeMain() {
                     "x-access-token": localStorage.getItem("userToken"),
                 }
             }).then((response)=>{
+                console.log('rrrrrresponse');
                 console.log(response);
                 setAllComments(response.data)
             })
@@ -140,10 +143,10 @@ function HomeMain() {
                             <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] ' key={index}>
                                 <div className='flex gap-3 items-center'>
                                     <div className='w-[50px] h-[50px]  overflow-hidden relative'>
-                                        <img className='rounded-full' src={`${'/images/'+iteam.image || "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
+                                        <img className='rounded-full' src={`${'/images/' + iteam.profile || "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
                                     </div>
                                     <div>
-                                        <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{iteam.user[0]}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@alex_mcCarthy</small>
+                                        <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{iteam.user[0]}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{iteam.username[0]}</small>
                                         <small className='overflow-hidden overflow-ellipsis whitespace-nowrap text-[#596C7A] block'>{format(iteam.created)}</small>
                                     </div>
                                     <div className='ml-auto'>
@@ -191,7 +194,7 @@ function HomeMain() {
                                 </div>
                                 <a href="#" className='text-[#246EE9] underline'>ReadMore</a>
                                 <div className='flex gap-3 items-center text-center pt-3'>
-                                    <div onClick={() => { likeAndDisLike(iteam.mainId, iteam._id, userData.id)}} className=' cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><HeartIcon className={`w-6 h-6 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} /> <span className='text-[16px]'>{iteam.Likes.length}</span></div>
+                                    <div onClick={() => { likeAndDisLike(iteam.mainId, iteam._id, userData.id) }} className=' cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><HeartIcon className={`w-6 h-6 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} /> <span className='text-[16px]'>{iteam.Likes.length == 0 ? '' : iteam.Likes.length}</span></div>
                                     <div onClick={() =>{ allCommentData(iteam._id, comment.status)
                                         setComment({ id: iteam._id, status: !comment.status }) }} className={` transition ease-in-out delay-150 cursor-pointer px-4 min-w-[70px] py-3   rounded-[5px] flex justify-center items-center gap-2 md:px-8 ${comment.status && comment.id == iteam._id ? 'bg-white text-black font-semibold' : 'bg-[#314f5f6e]'}`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -207,13 +210,14 @@ function HomeMain() {
                                             {allComments.map((comment)=>{
                                                 return(
                                                     <div className='flex gap-3 items-start pb-3'>
-                                                        <div className='w-[50px] h-[50px]  overflow-hidden relative'>
+                                                        <div className='w-[50px] h-[50px] rounded-full overflow-hidden relative'>
                                                             <img className='rounded-full' src={`${'/images/' + comment.user.profile || 'https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'}`} alt="" />
                                                         </div>
                                                         <div className='w-[85%]'>
-                                                            <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{comment.user.fullname}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{comment.user.username}</small>
+                                                            <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{comment.user.fullname}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{comment.user.username}</small> 
                                                             <div className='text-[14px]'>{comment.comments.comment}</div>
                                                             <span className='text-[13px] text-[#596C7A]'>{comment.comments.Likes.length} Likes</span>
+                                                            <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>&nbsp; &nbsp; &nbsp; &nbsp; {format(comment.comments.created)}</small>
                                                         </div>
                                                         <div className='ml-auto'>
                                                             <HeartIcon onClick={() => { commentLikeAndDisLike(iteam._id, comment.comments._id, userData.id) }} className={`w-5 h-5 cursor-pointer ${comment.comments.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} />
@@ -225,7 +229,7 @@ function HomeMain() {
                                         <div className='pt-4 pb-1'>
                                             <div className='flex items-center h-[50px] border-[#314F5F] border-[2px] bg-[#05141c2b] rounded-l-3xl rounded-[10px]'>
 
-                                                <div className='w-[70px] h-[70px]  overflow-hidden relative left-[-10px]'>
+                                                <div className='w-[70px] h-[70px] rounded-full overflow-hidden relative left-[-10px]'>
                                                     <img className='rounded-full' src={`${'/images/'+userData.image || "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
                                                 </div>
                                                 <div className='w-[90%] h-full'>

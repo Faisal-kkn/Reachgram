@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import user from './routes/user.js'
+import admin from './routes/admin.js'
 
 const app = express();
 
@@ -23,6 +24,7 @@ await mongoose.connect(CONNECTION_URL, () => {
 }, e => console.error(e))
 
 app.use('/', user)
+app.use('/admin', admin)
 
 
 
