@@ -2,8 +2,6 @@ import express from 'express';
 const router = express.Router();
 import userRegisterSchema from '../modules/user/register.js';
 import userPostSchema from '../modules/user/post.js';
-import userCommentSchema from '../modules/user/comments.js';
-import userFriendsSchema from '../modules/user/friends.js';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken'

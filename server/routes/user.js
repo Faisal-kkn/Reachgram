@@ -1,5 +1,6 @@
 import express from "express";
 import user from '../controllers/authControllers.js';
+import chat from '../controllers/chatControllers.js';
 const router = express.Router()
 import { upload } from './multer.js'
 import { verifyJWT } from './auth.js'
@@ -25,5 +26,6 @@ router.get('/postComments', verifyJWT, user.postComments)
 router.post('/commentPost', verifyJWT, user.commentPost)
 router.put('/commentLikeAndDisLike', verifyJWT, user.commentLikeorDisLike)
 router.post('/followAndUnfollow', verifyJWT, user.followAndUnfollow)
+// router.post('/chatList', verifyJWT, chat.chatList)
 
 export default router;

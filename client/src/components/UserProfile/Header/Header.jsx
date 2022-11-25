@@ -39,6 +39,18 @@ function Header({head, data}) {
         })
 
     }
+
+    const MessageAction = (myId, userId)=> {
+        console.log("myId" + myId);
+        console.log("userId" + userId);
+        axios.post('http://localhost:5000/chat/newChat', { myId, userId }, {
+            headers: {
+                "x-access-token": localStorage.getItem("userToken"),
+            }
+        }).then((response)=>{
+            Navigate('/chat', { state: {userId} })
+        })
+    }
    
     useEffect(() => {
         ProfileData()
@@ -64,21 +76,17 @@ function Header({head, data}) {
                     </div>
                     <div className='text-center'>
                         {userDetails.friends && userDetails.friends.length != 0 ? userDetails.friends[0].followers.length : '0'}
-                        {/* <p>{userDetails.friends.length != 0 ? userDetails.friends[0].followers.length : 0}</p> */}
                         <p>Followers</p>
                     </div>
                     <div className='text-center'>
                         {userDetails.friends && userDetails.friends.length != 0 ? userDetails.friends[0].following.length : '0'}
-                        {/* {userDetails.friends && userDetails.friends[0].following.length || 0 } */}
-                        {/* {userDetails.friends} */}
-                        {/* {userDetails.friends.length} */}
-                        {/* <p>{userDetails.friends.length != 0 ? userDetails.friends[0].following.length : 0}</p> */}
                         <p>Following</p>
                     </div>
                 </div>
-                <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => followAction(userData.id)}>{(userDetails.friends && userDetails.friends.length != 0) && (userDetails.friends[0].followers.includes(userData.id) && userDetails.friends[0].following.includes(userData.id) ? 'UnFollow' : userDetails.friends[0].following.includes(userData.id) ? 'Follow Back' : userDetails.friends[0].followers.includes(userData.id) ? 'UnFollow' : 'Follow' )   }</div>
-                {/* <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => followAction(userData.id)}>{userDetails.friends && userDetails.friends.length != 0 && ((userDetails.friends[0].followers.includes(userData.id) && userDetails.friends[0].followers.includes(userData.id)) && userDetails.friends[0].following.includes(userData.id) ? 'UnFollow' : userDetails.friends[0].followers.includes(userData.id) ? 'Follow Back' : userDetails.friends[0].following.includes(userData.id) ? 'Follow' : 'Follow' )}</div> */}
-                {/* <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => followAction(userData.id)}> {userDetails.friends.length != null && userDetails.friends[0].followers.includes(userData.id) && userDetails.friends[0].following.includes(userData.id) ? 'UnFollow' : userDetails.friends[0].followers.includes(userData.id) ? 'Follow Back' : userDetails.friends[0].following.includes(userData.id) ? 'Requested' : 'Follow'}</div> */}
+                <div className='flex gap-5'>
+                    <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => followAction(userData.id)}>{(userDetails.friends && userDetails.friends.length != 0) && (userDetails.friends[0].followers.includes(userData.id) && userDetails.friends[0].following.includes(userData.id) ? 'UnFollow' : userDetails.friends[0].following.includes(userData.id) ? 'Follow Back' : userDetails.friends[0].followers.includes(userData.id) ? 'UnFollow' : 'Follow')}</div>
+                    <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => MessageAction(userData.id, userDetails._id)}>Message</div>
+                </div>
             </div>
         </>
     )
