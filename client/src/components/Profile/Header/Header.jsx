@@ -159,8 +159,8 @@ function Header({ data, handleSubmit, editbutton }) {
                 </div>
                 {editProfile.status ?
 
-                    editbutton ? <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => setEditProfile({ ...editProfile, status: false })}> cancel</div> : <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={handleSubmit(submitProfile)}> Save</div>
-                    : <div className=' px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => setEditProfile({ status: true, phone: userDetails.phone, email: userDetails.email, about: userDetails.about, profile: userDetails.profile, fullname: userDetails.fullname, username: userDetails.username })}> Edit Profile</div>}
+                    editbutton ? <div className='w-full sm:w-auto px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => setEditProfile({ ...editProfile, status: false })}> cancel</div> : <div className='w-full sm:w-auto px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={handleSubmit(submitProfile)}> Save</div>
+                    : <div className=' w-full sm:w-auto px-4 min-w-[70px] py-3 border-[2px] hover:bg-[#314f5f6e] transition-all rounded-[5px] flex justify-center items-center gap-2 md:px-8 cursor-pointer' onClick={() => setEditProfile({ status: true, phone: userDetails.phone, email: userDetails.email, about: userDetails.about, profile: userDetails.profile, fullname: userDetails.fullname, username: userDetails.username })}> Edit Profile</div>}
             </div>
         </>
     )

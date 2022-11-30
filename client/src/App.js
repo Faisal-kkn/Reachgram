@@ -18,6 +18,7 @@ import AdminPosts from './components/Admin/Posts/Posts';
 function App() { 
 
   const [showPostModal, setShowPostModal] = useState(false)
+  const [showSingleChat, setShowSingleChat] = useState(true)
   const [editProfileErr, setEditProfileErr] = useState({})
   const [editProfile, setEditProfile] = useState({
     status: false,
@@ -38,7 +39,7 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={{ showPostModal, setShowPostModal, postEdit, setPostEdit, editProfile, setEditProfile, editProfileErr, setEditProfileErr }}>
+      <AppContext.Provider value={{ showSingleChat, setShowSingleChat, showPostModal, setShowPostModal, postEdit, setPostEdit, editProfile, setEditProfile, editProfileErr, setEditProfileErr }}>
         <UserContext.Provider value={{ userData, setUserData }}>
           <PostUpload />
           <BrowserRouter>

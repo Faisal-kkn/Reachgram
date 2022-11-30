@@ -79,9 +79,9 @@ function Profile() {
         <div className='px-1 sm:px-3 lg:px-2 md:pt-3  pt-1'>
             <ProfilHead data={profilePosts.length} handleSubmit={handleSubmit} editbutton={editProfileBtn} />
 
-            <div className={`mx-auto max-w-7xl gap-3 w-12/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white mt-[15px] overflow-y-scroll scrollbar-hide ${editProfile.status ? 'h-auto' : 'md:h-[70vh] '}`}>
+            <div className={`mx-auto max-w-7xl gap-3 w-12/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white mt-[15px] overflow-y-scroll scrollbar-hide pb-[50px] ${editProfile.status ? 'h-auto' : 'md:h-[70vh] '}`}>
                 {editProfile.status ? <div>
-                    <div className='grid grid-cols-2 gap-5'>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
                         <div className='bg-[#182D39] px-3 rounded-[5px] h-fit pb-1 w-full'>
                             <label htmlFor='fullname' className='text-[13px]  text-[#596C7A]'>Full Name</label>
                             <input {...register('fullname', { required: true, minLength: 3 })} value={editProfile.fullname} onChange={handleChange} id='fullname' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />

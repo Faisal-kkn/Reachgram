@@ -178,7 +178,7 @@ function HomeMain() {
             <ToastContainer />
 
             <PostEditModal />
-            <div className='pb-[50px] sm:pb-0'>
+            <div className='pb-[0px] sm:pb-0'>
                 {
                     homePost.flatMap((iteam, index) => {
                         return (
@@ -248,7 +248,7 @@ function HomeMain() {
                                         </>}
                                     </div>
                                 </div>
-                                <div className='w-full mt-3 rounded-[10px] overflow-hidden h-[400px]  border-4 border-solid border-[#314F5F] '>
+                                <div className='w-full mt-3 rounded-[10px] overflow-hidden h-auto md:h-[400px] border-4 border-solid border-[#314F5F] '>
                                     <img className='w-full rounded-[10px]' src={`/images/${iteam.image}`} alt="" />
                                 </div>
                                 <div className='pt-2 text-[14px] post-cnt' > {/*  style={{ 'display': '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', 'overflow': 'hidden' }} */}
