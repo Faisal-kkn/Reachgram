@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import HomeMain from "./pages/HomeMain/HomeMain";
 import { AppContext, UserContext } from './AppContext';
 import PostUpload from './components/PostUpload/PostUpload';
+import AdminSignIn from './pages/AdminSignin/AdminSignin';
 import AdminDashboard from './components/Admin/Dashboard/Dashboard';
 import AdminUsers from './components/Admin/Users/Users';
 import AdminPosts from './components/Admin/Posts/Posts';
@@ -52,7 +53,7 @@ function App() {
                 <Route path='/chat' element={<Chat />} />
               </Route>
 
-              <Route path='/admin' element={<AdminDashboard />} />
+              <Route path='/admin' element={<AdminSignIn />} />
               <Route element={<Dashboard />} >
                 <Route path='/admin/dashboard' element={<AdminDashboard />} />
                 <Route path='/admin/users' element={<AdminUsers />} />

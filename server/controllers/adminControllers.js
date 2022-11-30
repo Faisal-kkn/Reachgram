@@ -2,12 +2,34 @@ import express from 'express';
 const router = express.Router();
 import userRegisterSchema from '../modules/user/register.js';
 import userPostSchema from '../modules/user/post.js';
+import adminLoginSchema from '../modules/admin/adminLogin.js'
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 
 export default {
+    jwtCheck: (req, res) => {
+        res.status(200).json({ auth: true, message: "You are authenticated Congrats!" })
+    },
+    adminLogin: (req, res)=>{
+        try {
+            adminLoginSchema.findOne({email: req.body.email}).then((response) => {
+                if (response) {
+                    bcrypt.compare(req.body.password, response.password)
+                        .then((loginResponse) => {
+                            if (loginResponse) {
+                                const admin = response._id
+                                let token = jwt.sign({ admin }, process.env.ADMIN_JWT_SECRET, { expiresIn: 30000 });
+                                res.status(200).json({ status: true, auth: true, token })
+                            } else res.json({ status: false, message: 'Password is incorrect' })
+                        })
+                } else res.json({ status: false, message: 'Mail id is not found' })
+            }).catch(console.error)
+        } catch (error) {
+            res.status(501).json({ message: error.message });
+        }
+    },
     allUsers: (req, res) => {
         try {
             userRegisterSchema.aggregate([

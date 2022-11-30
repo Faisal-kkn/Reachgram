@@ -48,7 +48,8 @@ function Header({head, data}) {
                 "x-access-token": localStorage.getItem("userToken"),
             }
         }).then((response)=>{
-            Navigate('/chat', { state: {userId} })
+            let chatId = response.data._id
+            Navigate('/chat', { state: { chatId } })
         })
     }
    

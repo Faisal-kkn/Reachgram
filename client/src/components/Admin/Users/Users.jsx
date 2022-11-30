@@ -6,19 +6,31 @@ function Users() {
     const [allUsers, setAllUsers] = useState([])
 
     const adminUsers = ()=>{
-        axios.get('http://localhost:5000/admin/allUsers').then(({data}) => {
+        axios.get('http://localhost:5000/admin/allUsers', {
+            headers: {
+                "x-access-token": localStorage.getItem("adminToken"),
+            },
+        }).then(({data}) => {
             setAllUsers(data)
         })
     }
 
     const blockUser = (userId)=>{
-        axios.put('http://localhost:5000/admin/blockUser', { userId: userId}).then(({ data }) => {
+        axios.put('http://localhost:5000/admin/blockUser', { userId: userId }, {
+            headers: {
+                "x-access-token": localStorage.getItem("adminToken"),
+            },
+        }).then(({ data }) => {
             adminUsers()
         })
     }
     
     const unBlockUser = (userId) => {
-        axios.put('http://localhost:5000/admin/unBlockUser', { userId: userId }).then(({ data }) => {
+        axios.put('http://localhost:5000/admin/unBlockUser', { userId: userId }, {
+            headers: {
+                "x-access-token": localStorage.getItem("adminToken"),
+            },
+        }).then(({ data }) => {
             adminUsers()
         })
     }

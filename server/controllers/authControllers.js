@@ -24,7 +24,7 @@ export default {
     },
     userRegister: async (req, res) => {
         try {
-            let userName = await userRegisterSchema.findOne({ username: req.body.username.toLowerCase() })
+            let userName = await userRegisterSchema.findOne({ username: req.body.username.toLowerCase(), otpStatus: true })
             if (userName) {
                 console.log('userName');
                 console.log(userName);
@@ -198,8 +198,6 @@ export default {
             if (req.body.email && req.body.otp && req.body.password){
                 userRegisterSchema.findOne({ email: req.body.email }).then((response) => {
                     bcrypt.compare(req.body.otp, response.otp).then(async (otpResponse) => {
-                        console.log('gggggggggggggg');
-                        console.log(otpResponse);
                         if (otpResponse) {
                             req.body.password = await bcrypt.hash(req.body.password, 10)
                             userRegisterSchema.findOneAndUpdate({ email: req.body.email }, {
@@ -207,6 +205,9 @@ export default {
                                     password: req.body.password
                                 }
                             }).then(() => {
+                                const user = response._id + ' ' + response.fullname
+                                console.log(user);
+                                jwt.sign({ user }, "jwtSecret", { expiresIn: 30000 });
                                 res.status(200).json({ otpVerify: true })
                             })
                         } else {
@@ -262,40 +263,46 @@ export default {
     },
     homePosts: async (req, res) => {
         try {
-            userPostSchema.aggregate([
-                { $lookup: { from: 'users', localField: 'userId', foreignField: "_id", as: 'user' } },
-                {
-                    $unwind: "$postData"
-                },
-                { $match: { "postData.deleteStatus": false, "postData.report_status": false } },
-                {
-                    $project: {
-                        postData: 1,
-                        "user": "$user.fullname",
-                        "username": "$user.username",
-                        "profile": "$user.profile",
-                        "userId": "$user._id",
-                    }
-                },
+            let userFriends = await userFriendsSchema.findOne({ userId: req.query.userId })
 
-                { $sort: { "postData.created": -1 } }
-            ]).then((response) => {
-                response.map((item) => {
-                    item.postData.user = item.user
-                    item.postData.username = item.username
-                    item.postData.profile = item.profile
-                    item.postData.mainId = item._id
-                    item.postData.userId = item.userId
-                })
-                let allPostData = []
-                response.map((item) => {
-                    allPostData.push(item.postData)
-                })
-                res.status(200).json(allPostData)
-            }).catch(console.error)
+            if (userFriends){
+                var userFriend = userFriends.following.map(function (el) { return mongoose.Types.ObjectId(el) })
+                userFriend.push(mongoose.Types.ObjectId(req.query.userId))
+                userPostSchema.aggregate([
+                    { $match: { userId: { $in: userFriend } } },
+                    { $lookup: { from: 'users', localField: 'userId', foreignField: "_id", as: 'user' } },
+                    { $unwind: "$postData" },
+                    { $match: { "postData.deleteStatus": false, "postData.report_status": false } },
+                    {
+                        $project: {
+                            postData: 1,
+                            "user": "$user.fullname",
+                            "username": "$user.username",
+                            "profile": "$user.profile",
+                            "userId": "$user._id",
+                        }
+                    },
+
+                    { $sort: { "postData.created": -1 } }
+                ]).then((response) => {
+                    response.map((item) => {
+                        item.postData.user = item.user
+                        item.postData.username = item.username
+                        item.postData.profile = item.profile
+                        item.postData.mainId = item._id
+                        item.postData.userId = item.userId
+                    })
+                    let allPostData = []
+                    response.map((item) => {
+                        allPostData.push(item.postData)
+                    })
+                    res.status(200).json(allPostData)
+                }).catch(console.error)
+            }else{
+                res.status(200).json()
+            }
         } catch (error) {
             res.status(501).json({ message: error.message });
-
         }
     },
     searchUser: (req, res) => {
@@ -366,8 +373,7 @@ export default {
                 {
                     $unwind: "$postData"
                 },
-                { $match: { "postData.deleteStatus": false } },
-
+                { $match: { "postData.deleteStatus": false, "postData.report_status": false } },
             ]).then((response) => {
                 response.map((item) => {
                     item.postData.user = item.user
@@ -697,6 +703,34 @@ export default {
 
         }
 
+    },
+    friends: (req, res)=>{
+        console.log(req.query);
+        try {
+            userFriendsSchema.find({ userId : req.query.userId}).then((response)=>{
+                res.status(200).json(response)
+            })
+        } catch (error) {
+            
+        }
+    },
+    onlineFriends: (req, res) => {
+        try {
+            userRegisterSchema.find({ _id: { $in: JSON.parse(req.query.friendId) } }).then((response) => {
+                res.status(200).json(response)
+            })
+        } catch (error) {
+
+        }
+    },
+    FollowersList: (req, res) => {
+        try {
+            userRegisterSchema.find({ _id: { $in: JSON.parse(req.query.FollowersList) } }).then((response) => {
+                res.status(200).json(response)
+            })
+        } catch (error) {
+
+        }
     }
 
 }

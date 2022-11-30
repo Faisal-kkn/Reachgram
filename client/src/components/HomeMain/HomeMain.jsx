@@ -21,7 +21,8 @@ function HomeMain() {
     const [allComments, setAllComments] = useState([])
 
     const allPost = () => {
-        axios.get('http://localhost:5000/home', {
+        let userId = jwtDecode(localStorage.getItem("userToken"))
+        axios.get('http://localhost:5000/home?userId=' + userId.user.split(' ')[0], {
             headers: {
                 "x-access-token": localStorage.getItem("userToken"),
             },
@@ -143,7 +144,7 @@ function HomeMain() {
                             <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] ' key={index}>
                                 <div className='flex gap-3 items-center'>
                                     <div className='w-[50px] h-[50px]  overflow-hidden relative'>
-                                        <img className='rounded-full' src={`${'/images/' + iteam.profile || "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
+                                        <img className='rounded-full' src={`${'/images/' + iteam.profile || "https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f"}`} alt="" />
                                     </div>
                                     <div>
                                         <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{iteam.user[0]}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{iteam.username[0]}</small>
@@ -211,7 +212,7 @@ function HomeMain() {
                                                 return(
                                                     <div className='flex gap-3 items-start pb-3'>
                                                         <div className='w-[50px] h-[50px] rounded-full overflow-hidden relative'>
-                                                            <img className='rounded-full' src={`${'/images/' + comment.user.profile || 'https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'}`} alt="" />
+                                                            <img className='rounded-full' src={comment.user?.profile ? '/images/' + comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                         </div>
                                                         <div className='w-[85%]'>
                                                             <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{comment.user.fullname}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{comment.user.username}</small> 
@@ -230,7 +231,7 @@ function HomeMain() {
                                             <div className='flex items-center h-[50px] border-[#314F5F] border-[2px] bg-[#05141c2b] rounded-l-3xl rounded-[10px]'>
 
                                                 <div className='w-[70px] h-[70px] rounded-full overflow-hidden relative left-[-10px]'>
-                                                    <img className='rounded-full' src={`${'/images/'+userData.image || "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
+                                                    <img className='rounded-full' src={comment.user?.profile ? '/images/' + comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                 </div>
                                                 <div className='w-[90%] h-full'>
                                                     <input type="text" value={commentData} onChange={(e) => setCommentData(e.target.value)} className='w-full border-transparent bg-transparent outline-none h-full' />

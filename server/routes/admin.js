@@ -5,14 +5,14 @@ import { upload } from './multer.js'
 import { AdminverifyJWT } from './auth.js'
 
 
-// router.get('/isUserAuth');
-router.get('/allUsers', admin.allUsers)
-router.put('/blockUser', admin.blockUser)
-router.put('/unBlockUser', admin.unBlockUser)
-router.get('/allPosts', admin.allPosts)
-router.put('/blockPost', admin.blockPost)
-router.put('/unBlockPost', admin.unBlockPost)
-// router.post('/login', user.userLogin)
+router.get('/isAdminAuth', AdminverifyJWT, admin.jwtCheck);
+router.post('/adminLogin', admin.adminLogin)
+router.get('/allUsers', AdminverifyJWT, admin.allUsers)
+router.put('/blockUser', AdminverifyJWT, admin.blockUser)
+router.put('/unBlockUser',AdminverifyJWT, admin.unBlockUser)
+router.get('/allPosts',AdminverifyJWT, admin.allPosts)
+router.put('/blockPost',AdminverifyJWT, admin.blockPost)
+router.put('/unBlockPost',AdminverifyJWT, admin.unBlockPost)
 // router.post('/signup', user.userRegister)
 
 export default router;

@@ -56,18 +56,24 @@ io.on("connection", (socket) => {
 
     socket.on('send-message', ({senderId, reciverId, text})=>{
         const user = getUser(reciverId)
-        io.to(user.socketId).emit("getMessage", {
-            senderId,
-            text,
-        })
+        if (user?.socketId){
+            io.to(user.socketId).emit("getMessage", {
+                senderId,
+                text,
+            })
+        }
     });
-
-    socket.on('disconnect', ()=>{
+    
+    socket.on("disconnect", () => {
+        console.log('disssss');
+        console.log(users);
         removeUser(socket.id)
+        console.log(users);
         socket.emit('getUsers', users)
     })
 
 });
+
 
 await mongoose.connect(CONNECTION_URL, () => {
     httpServer.listen(PORT, () => console.log(`Server is running on port ${PORT}`))

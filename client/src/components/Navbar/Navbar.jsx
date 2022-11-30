@@ -15,10 +15,16 @@ function Navbar() {
     const Navigate = useNavigate()
 
     const [searchData, setSearchData] = useState({ search: '' })
+    const [showNotifications, setShowNotifications] = useState(false)
     const [users, setUsers] = useState([])
 
     const newPost = (e) => {
         setShowPostModal(!showPostModal)
+    }
+
+    const notifications = (e)=>{
+        console.log('notiiiiiiiiii');
+        setShowNotifications(!showNotifications)
     }
 
     const searchUser = (data)=>{
@@ -60,7 +66,7 @@ function Navbar() {
                 </svg>
             </span>, href: '#', current: false, fun: newPost
         },
-        { name: <BellIcon className="w-6 h-6" aria-hidden="true" />, href: '#', current: false },
+        { name: <BellIcon className="w-6 h-6" aria-hidden="true" />, href: 'notification', current: false, fun: notifications },
     ]
     const userNavigation = [
         { name: 'Your Profile', href: '/profile' },
@@ -118,7 +124,8 @@ function Navbar() {
                                                         />
                                                     </svg>
                                                     <input type="text" placeholder="Search" name='search' onChange={(e) =>{ searchUser(e.target.value)}} className="w-full py-2 pl-12 pr-4  text-gray-500 rounded-[5px] outline-none bg-[#314e5e6e] focus:bg-[#314F5F] focus:border-indigo-600" />
-                                                    {users.length != 0 && searchData.search != '' ? <div className='absolute w-full bg-white z-50 rounded-[10px] mt-1'>
+                                                    {users.length != 0 && searchData.search != '' ? 
+                                                    <div className='absolute w-full bg-white z-50 rounded-[10px] mt-1'>
                                                         <div className='w-full max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
                                                             {users.map((iteam, index)=>{
                                                                 return(
@@ -164,6 +171,31 @@ function Navbar() {
                                                             aria-current={item.current ? 'page' : undefined}
                                                         >
                                                             <NavLink to={item.href}> {item.name}</NavLink>
+                                                            {/* {showNotifications && item.href == 'notification' &&
+                                                                <div className='absolute w-[200px] bg-white z-50 rounded-[10px] mt-1'>
+                                                                    <div className='w-[200px] max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
+                                                                        {users.map((iteam, index) => {
+                                                                            return (
+                                                                                <div className='py-1 hover:bg-[#00000014]'>
+                                                                                    <Link className=' ' key={index} to='/UserProfile' state={{ user: iteam }} onClick={() => {
+                                                                                        setSearchData({ search: '' })
+                                                                                        searchUser('')
+                                                                                    }}>
+                                                                                        <div className='flex gap-3 items-center cursor-pointer'>
+                                                                                            <div className='w-[50px] h-[50px] overflow-hidden my-auto'>
+                                                                                                <img className='rounded-full w-[50px] h-[50px] ' src={`${iteam.profile ? '/images/' + iteam.profile : "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
+                                                                                            </div>
+                                                                                            <div className='w-[80%]'>
+                                                                                                <h4 className='leading-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-[#0F213E] capitalize  max-w-[150px]'>{iteam.fullname}</h4>
+                                                                                                <small className='leading-1 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A]'>{iteam.username}</small>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </Link>
+                                                                                </div>
+                                                                            )
+                                                                        })}
+                                                                    </div>
+                                                                </div>} */}
                                                         </div>
                                                     ))}
                                                 </div>
@@ -171,6 +203,7 @@ function Navbar() {
                                             <div className="ml-4 flex items-center md:ml-6">
                                                 <button type="button" className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none ring-gray focus:ring-2  focus:ring-gray focus:ring-offset-2 focus:ring-offset-gray-800" >
                                                     <span className="sr-only">View notifications</span>
+                                                    
                                                 </button>
 
                                                 {/* Profile dropdown */}
@@ -178,7 +211,7 @@ function Navbar() {
                                                     <div>
                                                         <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ring-2 ring-gray ring-offset-2 ring-offset-gray-800 ring-gray focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                             <span className="sr-only">Open user menu</span>
-                                                            <img className="h-8 w-8 rounded-full" src={'/images/' + userData?.image} alt="" />
+                                                            <img className="h-8 w-8 rounded-full" src={userData?.image ? '/images/' + userData?.image : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                         </Menu.Button>
                                                     </div>
                                                     <Transition

@@ -1,8 +1,30 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { HomeIcon, UserIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/solid';
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import axios from 'axios';
 
 function Dashboard() {
+
+  const Navigate = useNavigate()
+  useEffect(() => {
+    userAuthenticeted()
+  }, [Navigate]);
+
+  const userAuthenticeted = () => {
+    axios.get("http://localhost:5000/admin/isAdminAuth", {
+      headers: {
+        "x-access-token": localStorage.getItem("adminToken"),
+      }
+    }).then((response) => {
+      if (!response.data.auth) Navigate("/admin");
+    });
+  };
+
+  const logout = () => {
+    localStorage.removeItem('adminToken');
+    Navigate("/admin");
+  };
+  
   return (
     <div>
 
@@ -34,11 +56,11 @@ function Dashboard() {
             </div>
           </div>
           <div className="p-4">
-            <button type="button" className="inline-flex items-center justify-center h-9 px-4 rounded-xl bg-gray-900 text-gray-300 hover:text-white text-sm font-semibold transition">
+            <button onClick={logout} type="button" className="inline-flex items-center justify-center h-9 px-4 rounded-xl bg-gray-900 text-gray-300 hover:text-white text-sm font-semibold transition">
               <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" className="" viewBox="0 0 16 16">
                 <path d="M12 1a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2a1 1 0 0 1 1-1h8zm-2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-              </svg>
-            </button> <span className="font-bold text-sm ml-2">Logout</span>
+              </svg><span className="font-bold text-sm ml-2">Logout</span>
+            </button> 
           </div>
         </div>
       </aside>

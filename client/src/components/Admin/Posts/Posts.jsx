@@ -6,19 +6,31 @@ function Posts() {
     const [allPosts, setAllPosts] = useState([])
 
     const adminPosts = () => {
-        axios.get('http://localhost:5000/admin/allPosts').then(({ data }) => {
+        axios.get('http://localhost:5000/admin/allPosts', {
+            headers: {
+                "x-access-token": localStorage.getItem("adminToken"),
+            },
+        }).then(({ data }) => {
             setAllPosts(data)
         })
     }
 
     const blockpost = (postId, userId) => {
-        axios.put('http://localhost:5000/admin/blockPost', { postId, userId }).then(({ data }) => {
+        axios.put('http://localhost:5000/admin/blockPost', { postId, userId }, {
+            headers: {
+                "x-access-token": localStorage.getItem("adminToken"),
+            },
+        }).then(({ data }) => {
             adminPosts()
         })
     }
 
     const unBlockPost = (postId, userId) => {
-        axios.put('http://localhost:5000/admin/unBlockPost', { postId, userId }).then(({ data }) => {
+        axios.put('http://localhost:5000/admin/unBlockPost', { postId, userId }, {
+            headers: {
+                "x-access-token": localStorage.getItem("adminToken"),
+            },
+        }).then(({ data }) => {
             adminPosts()
         })
     }

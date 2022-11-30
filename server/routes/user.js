@@ -26,6 +26,8 @@ router.get('/postComments', verifyJWT, user.postComments)
 router.post('/commentPost', verifyJWT, user.commentPost)
 router.put('/commentLikeAndDisLike', verifyJWT, user.commentLikeorDisLike)
 router.post('/followAndUnfollow', verifyJWT, user.followAndUnfollow)
-// router.post('/chatList', verifyJWT, chat.chatList)
+router.get('/friends', verifyJWT, user.friends)
+router.get('/onlineFriends', verifyJWT, user.onlineFriends)
+router.get('/FollowersList', verifyJWT, user.FollowersList)
 
 export default router;
