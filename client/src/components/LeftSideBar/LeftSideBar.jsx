@@ -14,10 +14,6 @@ function LeftSideBar() {
     const [onlineFriends, setOnlineFriends] = useState([])
     const [onlineFriendsData, setOnlineFriendsData] = useState([])
 
-    useEffect(() => {
-        setSocket(io('http://localhost:5000'))
-        getFriends()
-    }, [])
     const getFriends = () => {
         let user = jwtDecode(localStorage.getItem("userToken"))
         setUserData({
@@ -34,18 +30,20 @@ function LeftSideBar() {
     }
 
     useEffect(() => {
-        console.log('onlineeeeeeeeeeeee usersssssssssssssss');
+        setSocket(io('http://localhost:5000'))
+        getFriends()
+    }, [])
+
+   
+    useEffect(() => {
         if (!socket) return;
         socket.emit("addUser", userData.id)
         socket.on("getUsers", users => {
-            console.log(users);
             setOnlineUsers(users)
         })
-    }, [userData, socket])
+    }, [socket, userData, friends])
 
     const getUser = async (online) => {
-        
-        console.log(online);
         let onlineUser = JSON.stringify(online) 
         axios.get('http://localhost:5000/onlineFriends?friendId[]=' + onlineUser, {
             headers: {
@@ -53,30 +51,21 @@ function LeftSideBar() {
             },
         }).then((response) => {
             setOnlineFriendsData(response.data)
-            console.log('responsesssssssssss');
-            console.log(response);
         })
     }
 
 
     useEffect(()=>{
-        console.log('friendssss');
-        console.log(friends);
-        
-        // console.log('onlineUsers.includes');
         setOnlineFriends(onlineUsers.filter(f => friends.includes(f.userId)))
         // setOnlineFriends(friends.filter(f => console.log(onlineUsers.includes(f))))
         let onlineFriendsArr = []
         onlineFriends.map((item)=>{
             onlineFriendsArr.push(item.userId !== userData.id && item.userId )
         })
-        console.log('onlineFriendsArr');
-        console.log(onlineFriendsArr);
-        console.log('onlinefriendsssssss');
-        console.log(onlineFriends);
-       
+        
         getUser(onlineFriendsArr)
-    },[friends, onlineUsers])
+
+    }, [friends, onlineUsers])
 
 
     return (

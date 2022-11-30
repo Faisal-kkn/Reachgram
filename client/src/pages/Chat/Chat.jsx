@@ -17,14 +17,10 @@ function Chat() {
     const [messages, setMessages] = useState(null)
     const [arrivalMessages, setArrivalMessages] = useState(null)
 
-    const [onlineUsers, setOnlineUsers] = useState([])
-
     const scrollRef = useRef()
-
+    const [onlineUsers, setOnlineUsers] = useState([])
     const [socket, setSocket] = useState(null)
-    
     const [newMessage, setNewMessage] = useState('')
-
     const [chatProfile, setChatProfile] = useState([])
 
     useEffect(() => {
@@ -40,8 +36,6 @@ function Chat() {
         if (!socket) return;
         socket.emit("addUser", userData.id)
         socket.on("getUsers", users=>{
-            console.log('online users');
-            console.log(users);
             setOnlineUsers(users)
         })
     }, [userData])

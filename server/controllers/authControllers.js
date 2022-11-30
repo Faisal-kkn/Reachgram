@@ -451,6 +451,22 @@ export default {
 
         }
     },
+    reportPost: (req, res) => {
+        try {
+            console.log('dassssss data')
+            console.log(req.body);
+            userPostSchema.findOneAndUpdate({ _id: req.body.mainId, "postData._id": req.body.postId }, {
+                $push: {
+                    "postData.$.reported_by": req.body.userId
+                }
+            }).then((response) => {
+                if (response) res.status(200).json(true)
+                else res.status(400).json(false)
+            }).catch(console.error)
+        } catch (error) {
+
+        }
+    },
     updateProfile: (req, res) => {
         try {
             console.log('ethiiiii');
