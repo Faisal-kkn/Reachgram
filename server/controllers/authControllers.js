@@ -218,7 +218,6 @@ export default {
             }else{
                 res.json({status: false})
             }
-            
         } catch (error) {
             res.status(501).json({ message: error.message });
         }
@@ -241,7 +240,7 @@ export default {
                             }
                         }).then((rep) => res.status(200).json(true))
                     } else {
-                        res.status(200).json(false);
+                        res.json(false);
                     }
                 } else {
                     let userPost = new userPostSchema({
@@ -745,7 +744,7 @@ export default {
                 res.status(200).json(response)
             })
         } catch (error) {
-
+            
         }
     }
 

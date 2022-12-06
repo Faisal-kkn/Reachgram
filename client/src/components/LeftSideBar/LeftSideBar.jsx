@@ -1,14 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react'
 import './leftSideBar.css'
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import { UserContext } from "../../AppContext";
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-function LeftSideBar() {
+function LeftSideBar({ socketio }) {
     const { userData, setUserData } = useContext(UserContext);
 
-    const [socket, setSocket] = useState(null)
+    // const [socket, setSocket] = useState(null)
     const [onlineUsers, setOnlineUsers] = useState([])
     const [friends, setFriends] = useState([])
     const [onlineFriends, setOnlineFriends] = useState([])
@@ -30,18 +30,18 @@ function LeftSideBar() {
     }
 
     useEffect(() => {
-        setSocket(io('http://localhost:5000'))
+        // setSocket(io('http://localhost:5000'))
         getFriends()
     }, [])
 
    
     useEffect(() => {
-        if (!socket) return;
-        socket.emit("addUser", userData.id)
-        socket.on("getUsers", users => {
+        // if (!socket) return;
+        socketio?.emit("addUser", userData.id)
+        socketio?.on("getUsers", users => {
             setOnlineUsers(users)
         })
-    }, [socket, userData, friends])
+    }, [socketio, userData, friends])
 
     const getUser = async (online) => {
         let onlineUser = JSON.stringify(online) 

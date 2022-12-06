@@ -3,7 +3,7 @@ import axios from 'axios'; import { NavLink, useNavigate, Outlet } from 'react-r
 import Header from '../../components/Navbar/Navbar'
 import Mobile from '../../components/Navbar/Mobile/Mobile'
 
-function HomeMain() {
+function HomeMain({ socket }) {
     const Navigate = useNavigate()
     useEffect(() => {
         userAuthenticeted()
@@ -23,7 +23,7 @@ function HomeMain() {
         <>
             <div className='bg-[#0F213E] min-h-screen'>
                 <div className='hidden sm:block'>
-                    <Header />
+                    <Header socketio={socket} />
                 </div>
                 <div className='block sm:hidden'>
                     <Mobile />

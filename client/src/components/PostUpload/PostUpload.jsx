@@ -9,22 +9,32 @@ function PostUpload() {
     const { userData, setUserData } = useContext(UserContext);
     const [postData, setPostData] = useState({ discription: '', image: '', userId: '' })
     const [file, setFile] = useState();
+    const [fileErr, setFileErr] = useState('');
     const fileUpload = (e) => {
-        console.log(userData);
-        console.log('e.target.files[0');
-        console.log(e.target.files);
-        let userDetails = jwtDecode(localStorage.getItem("userToken"))
-        console.log(userDetails);
-        setUserData({
-            ...userData,
-            id: userDetails.user.split(' ')[0]
-        })
-        setFile(URL.createObjectURL(e.target.files[0]))
-        setPostData({
-            ...postData,
-            image: e.target.files[0],
-            userId: userDetails.user.split(' ')[0]
-        })
+        const isValidFileUploaded = (file) => {
+            const validExtensions = ['png', 'jpeg', 'jpg']
+            const fileExtension = file.type.split('/')[1]
+            return validExtensions.includes(fileExtension)
+        }
+
+        const file = e.target.files[0];
+        if (isValidFileUploaded(file)) {
+            setFileErr('')
+            let userDetails = jwtDecode(localStorage.getItem("userToken"))
+            console.log(userDetails);
+            setUserData({
+                ...userData,
+                id: userDetails.user.split(' ')[0]
+            })
+            setFile(URL.createObjectURL(e.target.files[0]))
+            setPostData({
+                ...postData,
+                image: e.target.files[0],
+                userId: userDetails.user.split(' ')[0]
+            })
+        } else {
+            setFileErr('this file is not will support ')
+        }
     }
 
     const handleChange = (e) => {
@@ -36,27 +46,33 @@ function PostUpload() {
         })
     }
 
-    const postUpload =async (e) => {
+    const postUpload = async (e) => {
         e.preventDefault()
-        
-        const formData = new FormData();
-        for(let key in postData) {
-            formData.append(key, postData[key])
-        }
-        console.log(postData);
-        console.log(formData);
-        axios.post('http://localhost:5000/newPost', formData, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
+
+        if(fileErr == ''){
+            setFileErr('')
+            const formData = new FormData();
+            for (let key in postData) {
+                formData.append(key, postData[key])
             }
-        }).then(response => {
-            console.log('responseeeeeeeeeeeeeeeeeeeeeeeee');
-            console.log(response);
-            setShowPostModal(false)
-            // if (response.data) {
-            //     setPostData({ discription: '', image: '' })
-            // }
-        }).catch(error => console.log(error))
+            console.log(postData);
+            console.log(formData);
+            axios.post('http://localhost:5000/newPost', formData, {
+                headers: {
+                    "x-access-token": localStorage.getItem("userToken"),
+                }
+            }).then(response => {
+                console.log('responseeeeeeeeeeeeeeeeeeeeeeeee');
+                console.log(response);
+                setShowPostModal(false)
+                // if (response.data) {
+                //     setPostData({ discription: '', image: '' })
+                // }
+            }).catch(error => console.log(error))
+        }else{
+            setFileErr('Please select image')
+        }  
+       
 
     }
 
@@ -94,8 +110,10 @@ function PostUpload() {
                                             </div>
                                             <div className='w-full overflow-hidden h-[300px] flex justify-center items-center relative mt-3 border-4 border-solid border-[#314f5f65]'>
                                                 <div id="bgimage" className='w-[80vw] md:w-[60vw] bg-cover  overflow-hidden h-[300px] flex justify-center items-center blur-[1px]' style={{ backgroundImage: `url(${file || 'https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'})` }}></div>
-                                                <input name="image" onChange={fileUpload}  multiple type="file" id="imgInp" className='w-[100px] absolute text-transparent custom-file-input' />
+                                                <input name="image" onChange={fileUpload} multiple type="file" id="imgInp" className='w-[100px] absolute text-transparent custom-file-input' />
                                             </div>
+                                            {fileErr ? <p className='text-[13px] text-red-600'>{fileErr}</p> : ''}
+
 
                                         </div>
                                         <div className="flex items-center justify-center pt-[1px] border-t border-solid border-slate-200 rounded-b">

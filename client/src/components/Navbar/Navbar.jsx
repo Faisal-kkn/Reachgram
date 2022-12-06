@@ -8,7 +8,39 @@ import axios from 'axios';
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/solid'
 
-function Navbar() {
+function Navbar({ socketio }) {
+    const [notificationsData, setNotificationsData] = useState([])
+
+    useEffect(() => {
+        socketio?.on("getNotification", data=>{
+            setNotificationsData((prev)=>[...prev, data])
+        })
+    }, [socketio]);
+
+    const displayNotifications = ({ senderName, type})=>{
+        let action;
+        let cmnt;
+
+        if (type === 1){
+            action = "liked";
+            cmnt = "post";
+        }else if(type === 2){
+            action = "commented";
+            cmnt = "post";
+        }else{
+            cmnt = "comment";
+            action = "liked";
+        }
+
+        return(
+            <span className='notification'>{`${senderName} ${action} your ${cmnt}`}</span>
+        )
+    }
+
+    console.log('notificationsData');
+    console.log(notificationsData);
+
+
     const { userData, setUserData } = useContext(UserContext);
     const { showPostModal, setShowPostModal } = useContext(AppContext);
 
@@ -23,7 +55,6 @@ function Navbar() {
     }
 
     const notifications = (e)=>{
-        console.log('notiiiiiiiiii');
         setShowNotifications(!showNotifications)
     }
 
@@ -66,7 +97,7 @@ function Navbar() {
                 </svg>
             </span>, href: '#', current: false, fun: newPost
         },
-        { name: <BellIcon className="w-6 h-6" aria-hidden="true" />, href: 'notification', current: false, fun: notifications },
+        { name: <span className='relative'><BellIcon className="w-6 h-6 " aria-hidden="true" />{notificationsData.length != 0 && <span className='absolute top-[10px] left-[14px] rounded w-[9px] h-[9px] bg-red-500'>&nbsp;</span>}</span>, hrefs: 'notification', current: false, fun: notifications },
     ]
     const userNavigation = [
         { name: 'Your Profile', href: '/profile' },
@@ -129,7 +160,7 @@ function Navbar() {
                                                         <div className='w-full max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
                                                             {users.map((iteam, index)=>{
                                                                 return(
-                                                                    <div className='py-1 hover:bg-[#00000014]'>
+                                                                    <div className='py-1 hover:bg-[#00000014]' key={index}>
                                                                         <Link className=' ' key={index} to='/UserProfile' state={{ user: iteam }} onClick={() => {
                                                                             setSearchData({ search: '' })
                                                                             searchUser('')
@@ -171,33 +202,15 @@ function Navbar() {
                                                             aria-current={item.current ? 'page' : undefined}
                                                         >
                                                             <NavLink to={item.href}> {item.name}</NavLink>
-                                                            {/* {showNotifications && item.href == 'notification' &&
-                                                                <div className='absolute w-[200px] bg-white z-50 rounded-[10px] mt-1'>
-                                                                    <div className='w-[200px] max-h-[300px] overflow-y-scroll scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px]'>
-                                                                        {users.map((iteam, index) => {
-                                                                            return (
-                                                                                <div className='py-1 hover:bg-[#00000014]'>
-                                                                                    <Link className=' ' key={index} to='/UserProfile' state={{ user: iteam }} onClick={() => {
-                                                                                        setSearchData({ search: '' })
-                                                                                        searchUser('')
-                                                                                    }}>
-                                                                                        <div className='flex gap-3 items-center cursor-pointer'>
-                                                                                            <div className='w-[50px] h-[50px] overflow-hidden my-auto'>
-                                                                                                <img className='rounded-full w-[50px] h-[50px] ' src={`${iteam.profile ? '/images/' + iteam.profile : "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
-                                                                                            </div>
-                                                                                            <div className='w-[80%]'>
-                                                                                                <h4 className='leading-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-[#0F213E] capitalize  max-w-[150px]'>{iteam.fullname}</h4>
-                                                                                                <small className='leading-1 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A]'>{iteam.username}</small>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </Link>
-                                                                                </div>
-                                                                            )
-                                                                        })}
+                                                            {(notificationsData.length != 0 && item.hrefs == 'notification' && showNotifications) &&
+                                                                <div className='absolute w-[200px] text-gray-700 bg-white  z-50 rounded-[10px] mt-1'>
+                                                                    <div className='w-[200px] max-h-[300px] overflow-y-scroll  scrollbar-hide-comment border-[10px] border-[#fff] rounded-[10px] flex flex-col gap-2'>
+                                                                        {notificationsData.map((iteam, index) => displayNotifications(iteam))}
                                                                     </div>
-                                                                </div>} */}
+                                                                </div>}
                                                         </div>
                                                     ))}
+                                                    
                                                 </div>
                                             </div>
                                             <div className="ml-4 flex items-center md:ml-6">

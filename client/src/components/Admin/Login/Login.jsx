@@ -42,10 +42,10 @@ function Login() {
         <div>
             <section className="bg-[#0F213E]  dark:bg-[#0F213E] ">
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                    <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-[#0F213E] dark:text-white">
+                    <div className="flex items-center mb-6 text-2xl font-semibold text-[#0F213E] dark:text-white">
                         <img className="w-8 h-8 mr-2" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="logo" />
                         {/* Flowbite */}
-                    </a>
+                    </div>
                     <div className="w-full bg-white rounded-[6px] shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div className="p-5 space-y-4 md:space-y-6 sm:p-8">
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-[#0F213E]  md:text-2xl dark:text-white">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { EllipsisVerticalIcon, HeartIcon, PaperAirplaneIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/solid';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode'
 import { AppContext, UserContext } from '../../AppContext';
@@ -163,11 +163,11 @@ function HomeMain() {
     }
 
     const handleNotification = (userName, type) => {
-        // socket.emit('sendNotification', {
-        //     senderName: userData.name,
-        //     receiverName: userName,
-        //     type: type
-        // })
+        socket.emit('sendNotification', {
+            senderName: userData.name,
+            receiverName: userName,
+            type: type
+        })
     }
     useEffect(() => {
         allPost()
@@ -203,15 +203,15 @@ function HomeMain() {
                                             <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95" >
                                                 <Menu.Items className="absolute right-0 z-10 mt-2 w-[120px] origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                     {userNavigation.map((item, index) => (
-                                                        <Menu.Item key={index}>
+                                                        <Menu.Item key={0+index}>
                                                             {({ active }) => (
 
-                                                                <a key={item.name} className={classNames(
+                                                                <Link key={item.name} className={classNames(
                                                                     active ? 'bg-gray-100' : '',
                                                                     'block px-4 py-2 text-sm text-gray-700 cursor-pointer'
                                                                 )} onClick={() => item.fun.call({ userId: userData.id, mainId: iteam.mainId, postId: iteam._id, description: iteam.description, image: iteam.image })}>
                                                                     {item.icon}{item.name}
-                                                                </a>
+                                                                </Link>
                                                             )}
                                                         </Menu.Item>
                                                     ))}
@@ -233,12 +233,12 @@ function HomeMain() {
                                                                 <Menu.Item key={index}>
                                                                     {({ active }) => (
 
-                                                                        <a key={item.name} className={classNames(
+                                                                        <Link key={item.name} className={classNames(
                                                                             active ? 'bg-gray-100' : '',
                                                                             'block px-4 py-2 text-sm text-gray-700 cursor-pointer'
                                                                         )} onClick={() => item.fun.call({ userId: userData.id, mainId: iteam.mainId, postId: iteam._id })}>
                                                                             {item.icon}{item.name}
-                                                                        </a>
+                                                                        </Link>
                                                                     )}
                                                                 </Menu.Item>
                                                             ))}
@@ -254,12 +254,11 @@ function HomeMain() {
                                 <div className='pt-2 text-[14px] post-cnt' > {/*  style={{ 'display': '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', 'overflow': 'hidden' }} */}
                                     {iteam.description}
                                 </div>
-                                <a href="#" className='text-[#246EE9] underline'>ReadMore</a>
+                                <Link className='text-[#246EE9] underline'>ReadMore</Link>
                                 <div className='flex gap-3 items-center text-center pt-3'>
                                     <div onClick={() => { likeAndDisLike(iteam.mainId, iteam._id, userData.id)
-                                        handleNotification(iteam.user[0], 1) }} className=' cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><HeartIcon className={`w-6 h-6 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} /> <span className='text-[16px]'>{iteam.Likes.length == 0 ? '' : iteam.Likes.length}</span></div>
+                                        !iteam.Likes.includes(userData.id) && iteam.userId[0] != userData.id  && handleNotification(iteam.user[0], 1) }} className=' cursor-pointer px-4 min-w-[70px] py-3 bg-[#314f5f6e] rounded-[5px] flex justify-center items-center gap-2 md:px-8'><HeartIcon className={`w-6 h-6 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} /> <span className='text-[16px]'>{iteam.Likes.length == 0 ? '' : iteam.Likes.length}</span></div>
                                     <div onClick={() =>{ allCommentData(iteam._id, comment.status)
-                                        handleNotification(iteam.user[0], 2)
                                         setComment({ id: iteam._id, status: !comment.status }) }} className={` transition ease-in-out delay-150 cursor-pointer px-4 min-w-[70px] py-3   rounded-[5px] flex justify-center items-center gap-2 md:px-8 ${comment.status && comment.id == iteam._id ? 'bg-white text-black font-semibold' : 'bg-[#314f5f6e]'}`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
@@ -271,9 +270,9 @@ function HomeMain() {
                                 {comment.status && comment.id == iteam._id ?
                                     <>
                                         <div className={`mt-4 transition ease-in-out delay-150 max-h-[300px] ${allComments.length > 3 ? 'overflow-y-scroll scrollbar-hide-comment' : ''}`}>
-                                            {allComments.map((comment)=>{
+                                            {allComments.map((comment, index)=>{
                                                 return(
-                                                    <div className='flex gap-3 items-start pb-3'>
+                                                    <div className='flex gap-3 items-start pb-3' key={index}>
                                                         <div className='w-[50px] h-[50px] rounded-full overflow-hidden relative'>
                                                             <img className='rounded-full' src={comment.user?.profile ? '/images/' + comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                         </div>
@@ -284,7 +283,10 @@ function HomeMain() {
                                                             <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>&nbsp; &nbsp; &nbsp; &nbsp; {format(comment.comments.created)}</small>
                                                         </div>
                                                         <div className='ml-auto'>
-                                                            <HeartIcon onClick={() => { commentLikeAndDisLike(iteam._id, comment.comments._id, userData.id) }} className={`w-5 h-5 cursor-pointer ${comment.comments.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} />
+                                                            <HeartIcon onClick={() => { 
+                                                                commentLikeAndDisLike(iteam._id, comment.comments._id, userData.id)
+                                                                !comment.comments.Likes.includes(userData.id) && handleNotification(iteam.user[0], 3)
+                                                            }} className={`w-5 h-5 cursor-pointer ${comment.comments.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'}`} />
                                                         </div>
                                                     </div>
                                                 )
@@ -300,7 +302,10 @@ function HomeMain() {
                                                     <input type="text" value={commentData} onChange={(e) => setCommentData(e.target.value)} className='w-full border-transparent bg-transparent outline-none h-full' />
                                                 </div>
                                                 <div className='ml-auto  px-2'>
-                                                    <button className='text-[#F5F5F5]' onClick={() => postComment(iteam._id, userData.id)}>Post</button>
+                                                    <button className='text-[#F5F5F5]' onClick={() =>{
+                                                         postComment(iteam._id, userData.id)
+                                                        handleNotification(iteam.user[0], 2)
+                                                    }}>Post</button>
                                                 </div>
                                             </div>
                                         </div>

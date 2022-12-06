@@ -48,24 +48,51 @@ const getUser = (userId)=>{
     return users.find(user => user.userId === userId);
 }
 
+
+let onlineUsers = []
+
+const addNewUser = (username, socketId) => {
+    !onlineUsers.some((user) => user.username === username) && onlineUsers.push({ username, socketId })
+}
+
+const removeOnlineUser = (socketId) => {
+    onlineUsers = onlineUsers.filter(user => user.socketId !== socketId)
+}
+
+
+const getOneUser = (username) => {
+    return onlineUsers.find(user => user.username === username);
+}
+
 io.on("connection", (socket) => {
     socket.on('addUser', userId=>{
         addUser(userId, socket.id)
         io.emit('getUsers', users)
     })
+
+    socket.on('newUser', (username)=>{
+        addNewUser(username, socket.id)
+    })
+
+    socket.on('sendNotification', ({ senderName, receiverName, type })=>{
+        const reciver = getOneUser(receiverName)
+        io.to(reciver?.socketId).emit("getNotification", {
+            senderName, 
+            type
+        })
+    })
     
     socket.on('send-message', ({senderId, reciverId, text})=>{
         const user = getUser(reciverId)
-        if (user?.socketId){
-            io.to(user.socketId).emit("getMessage", {
-                senderId,
-                text,
-            })
-        }
+        io.to(user?.socketId).emit("getMessage", {
+            senderId,
+            text,
+        });
     });
     
     socket.on("disconnect", () => {
         removeUser(socket.id)
+        removeOnlineUser(socket.id)
         io.emit('getUsers', users)
     })
 

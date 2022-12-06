@@ -5,7 +5,7 @@ import { AppContext, UserContext } from '../../../AppContext';
 import axios from 'axios';
 
 import { Menu, Transition } from '@headlessui/react'
-import { BellIcon, HomeIcon } from '@heroicons/react/24/solid'
+import { BellIcon, HomeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
 function Mobile() {
 
@@ -57,7 +57,7 @@ function Mobile() {
     }
     const navigation = [
         { name: <HomeIcon className="w-7 h-7" aria-hidden="true" />, href: './', current: true },
-        { name: <BellIcon className="w-7 h-7" aria-hidden="true" />, href: 'notification', current: false, fun: notifications },
+        { name: <MagnifyingGlassIcon className="w-7 h-7" aria-hidden="true" />, current: false },
         {
             name: <Link to='/chat' className="w-7 h-7" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-7 h-7">
@@ -87,7 +87,7 @@ function Mobile() {
             <section id="bottom-navigation" className="block pt-2 sm:pt-0 fixed inset-x-0 bottom-0 z-10 bg-[#0f213ede]  shadow px-4 sm:px-3 lg:px-2 mobile-menu">
                 <div id="tabs" className="flex justify-between items-center">
                     {navigation.map((item, index) => (
-                        <a
+                        <div
                             key={index}
                             href={item.href}
                             className={classNames(
@@ -99,8 +99,8 @@ function Mobile() {
                             onClick={item.fun}
                             aria-current={item.current ? 'page' : undefined}
                         >
-                            {item.name}
-                        </a>
+                            <NavLink to={item.href}> {item.name}</NavLink>
+                        </div>
                     ))}
 
                     <div className="ml-4 flex items-center md:ml-6">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import SignUp from "./pages/userRegister/Signup";
 import Signin from "./pages/userLogin/Signin";
@@ -15,8 +15,12 @@ import AdminSignIn from './pages/AdminSignin/AdminSignin';
 import AdminDashboard from './components/Admin/Dashboard/Dashboard';
 import AdminUsers from './components/Admin/Users/Users';
 import AdminPosts from './components/Admin/Posts/Posts';
-function App() { 
+// import { io } from 'socket.io-client';
+const socket = require("socket.io-client")("http://localhost:5000");
 
+
+function App() { 
+  // const [socket, setSocket] = useState(null)
   const [showPostModal, setShowPostModal] = useState(false)
   const [showSingleChat, setShowSingleChat] = useState(true)
   const [editProfileErr, setEditProfileErr] = useState({})
@@ -29,12 +33,23 @@ function App() {
     image: '',
     description: '' 
   });
+  console.log('socket Iddd');
+  console.log(socket);
 
   const [userData, setUserData] = useState({
     image: '',
     id: '',
     name: ''
   })
+
+  // useEffect(() => {
+  //   setSocket(io('http://localhost:5000'))
+  // }, [])
+
+  useEffect(() => {
+    socket?.emit("addUser", userData.id)
+    socket?.emit("newUser", userData.name)
+  }, [userData, socket])
   
 
   return (
@@ -47,11 +62,11 @@ function App() {
               <Route path='/signup' element={<SignUp />} />
               <Route path='/login' element={<Signin />} />
               <Route path='/forgot' element={<ForgotPassword />} />
-              <Route exact element={<HomeMain />} >
-                <Route path='/' element={<Home />} />
+              <Route exact element={<HomeMain socket={socket}  />} >
+                <Route path='/' element={<Home socket={socket} />} />
                 <Route path='/profile' element={<Profile />} />
-                <Route path='/UserProfile' element={<User />} />
-                <Route path='/chat' element={<Chat />} />
+                <Route path='/UserProfile' element={<User socket={socket} />} />
+                <Route path='/chat' element={<Chat socket={socket} />} />
               </Route>
 
               <Route path='/admin' element={<AdminSignIn />} />

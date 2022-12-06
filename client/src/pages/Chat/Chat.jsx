@@ -2,14 +2,15 @@ import React, { useEffect, useState, useContext, useRef} from 'react'
 import { useLocation } from 'react-router-dom'
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid'
 import './chat.css';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import axios from 'axios';
 import { UserContext, AppContext } from '../../AppContext';
 import jwtDecode from 'jwt-decode';
 import Conversation from './Conversation/Conversation';
 import Message from './Message/Message';
+// const socket = require("socket.io-client")("http://localhost:5000");
 
-function Chat() {
+function Chat({ socket }) {
     const { userData, setUserData } = useContext(UserContext);
     const { showSingleChat, setShowSingleChat } = useContext(AppContext);
     const userChatId = useLocation({ isLoading: true }).state?.chatId
@@ -20,13 +21,13 @@ function Chat() {
 
     const scrollRef = useRef()
     const [onlineUsers, setOnlineUsers] = useState([])
-    const [socket, setSocket] = useState(null)
+    // const [socket, setSocket] = useState(null)
     const [newMessage, setNewMessage] = useState('')
     const [chatProfile, setChatProfile] = useState([])
 
-    useEffect(() => {
-        setSocket(io('http://localhost:5000'))
-    }, [])
+    // useEffect(() => {
+    //     setSocket(io('http://localhost:5000'))
+    // }, [])
 
     useEffect(()=>{
         arrivalMessages && currentChat?.members.includes(arrivalMessages.sender) && 
@@ -34,22 +35,24 @@ function Chat() {
     },[arrivalMessages, currentChat])
 
     useEffect(() => {
-        if (!socket) return;
-        socket.emit("addUser", userData.id)
-        socket.on("getUsers", users=>{
+        // if (!socket) return;
+        // socket?.emit("addUser", userData.id)
+        socket?.on("getUsers", users=>{
             setOnlineUsers(users)
         })
     }, [userData])
 
     useEffect(() => {
         socket?.on('getMessage', (data) => {
-             setArrivalMessages({
+            console.log('hloooooo');
+            console.log(socket.id);
+            setArrivalMessages({
                 sender: data.senderId,
                 text: data.text,
                 createdAt: Date.now(),
             })
         })
-    }, [socket])
+    }, [socket, messages, arrivalMessages])
 
     const chatSubmit = (e) => {
         e.preventDefault()
@@ -61,11 +64,13 @@ function Chat() {
 
         const reciverId = currentChat.members.find(member => member !== userData.id)
 
-        socket.emit('send-message', { 
+        socket?.emit('send-message', { 
             senderId: userData.id,
             reciverId: reciverId,
             text: newMessage, 
          });
+        console.log('socket.id');
+        console.log(socket.id);
         axios.post('http://localhost:5000/chat/conversation', message).then((response)=>{
             setMessages([...messages, message])
             setNewMessage('')
@@ -113,7 +118,7 @@ function Chat() {
     return (
         <>
             <div className='mx-auto max-w-7xl px-1 sm:px-3 lg:px-2 flex justify-between gap-3 w-12/12 pt-1 md:pt-3'>
-                <div className={`w-full   md:w-5/12 lg:w-3/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white ${showSingleChat ? 'hidden' : ''}`}>
+                <div className={`w-full   md:w-5/12 lg:w-3/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white sm:block ${showSingleChat ? 'hidden' : 'block'}`}>
                     <div className="max-w-sm ">
                         <div className="relative">
                             <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"  fill="none" viewBox="0 0 24 24" stroke="currentColor" >
@@ -128,7 +133,7 @@ function Chat() {
                                         setCurrentChat(chat)
                                         getUser(chat)
                                         setShowSingleChat(true)
-                                        } } >
+                                    }} key={index}>
                                         <Conversation key={index} currentChatId={currentChat?._id} conversation={chat} currentUser={userData.id}  />
                                     </div>
                                 )

@@ -5,12 +5,12 @@ import HomeMain from '../../components/HomeMain/HomeMain'
 import Story from '../../components/Story/Story'
 import './home.css'
 
-function Home() {
+function Home({ socket }) {
     return (
         <>
 
             <div className='mx-auto max-w-7xl px-1 sm:px-3 lg:px-2 flex justify-between gap-3 w-12/12 pt-1 md:pt-3'>
-                <div className='hidden lg:block w-3/12'><LeftSideBar /></div>
+                <div className='hidden lg:block w-3/12'><LeftSideBar socketio={socket} /></div>
                 <div className='lg:w-7/12 md:w-7/12 block'>
                     {/* <div className='mb-1 md:mb-3 '>
                         <Story />

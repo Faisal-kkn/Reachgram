@@ -97,7 +97,7 @@ function Header({ data, handleSubmit, editbutton }) {
                                             {
                                                 friendsList.data.map((item, index)=>{
                                                     return(
-                                                        <Link className=' ' key={index} to='/UserProfile' state={{ user: item }}>
+                                                        <Link className='cursor-pointer ' key={index} to='/UserProfile' state={{ user: item }}>
                                                             <li>
                                                                 <div className='my-2 flex gap-3 items-center' >
                                                                     <div className='w-[50px] h-[50px]  overflow-hidden relative rounded-full'>
@@ -146,12 +146,12 @@ function Header({ data, handleSubmit, editbutton }) {
                         <p>{data}</p>
                         <p>Posts</p>
                     </div>
-                    <div className='text-center' onClick={userDetails.friends && userDetails.friends.length != 0 ? () => userFollowersList(userDetails.friends[0].followers) : ''}>
+                    <div className='text-center cursor-pointer' onClick={userDetails.friends && userDetails.friends.length != 0 ? () => userFollowersList(userDetails.friends[0].followers) : ''}>
                         {/* <p>{userDetails.friends[0]?.followers.length}</p> */}
                         {userDetails.friends && userDetails.friends.length != 0 ? userDetails.friends[0].followers.length : '0'}
                         <p>Followers</p>
                     </div>
-                    <div className='text-center' onClick={userDetails.friends && userDetails.friends.length != 0 ? () => userFollowingList(userDetails.friends[0].following) : ''}>
+                    <div className='text-center cursor-pointer' onClick={userDetails.friends && userDetails.friends.length != 0 ? () => userFollowingList(userDetails.friends[0].following) : ''}>
                         {/* <p>{userDetails.friends[0]?.following.length}</p> */}
                         {userDetails.friends && userDetails.friends.length != 0 ? userDetails.friends[0].following.length : '0'}
                         <p>Following</p>
