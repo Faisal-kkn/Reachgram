@@ -8,7 +8,6 @@ import { UserContext, AppContext } from '../../AppContext';
 import jwtDecode from 'jwt-decode';
 import Conversation from './Conversation/Conversation';
 import Message from './Message/Message';
-// const socket = require("socket.io-client")("http://localhost:5000");
 
 function Chat({ socket }) {
     const { userData, setUserData } = useContext(UserContext);
@@ -44,8 +43,6 @@ function Chat({ socket }) {
 
     useEffect(() => {
         socket?.on('getMessage', (data) => {
-            console.log('hloooooo');
-            console.log(socket.id);
             setArrivalMessages({
                 sender: data.senderId,
                 text: data.text,

@@ -33,7 +33,7 @@ function PostUpload() {
                 userId: userDetails.user.split(' ')[0]
             })
         } else {
-            setFileErr('this file is not will support ')
+            setFileErr('this file is not will support')
         }
     }
 
