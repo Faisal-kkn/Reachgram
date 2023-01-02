@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 
+import {adminLogin} from '../../../Api/AdminApi/AdminRequest'
+
 function Login() {
     const Navigate = useNavigate()
 
@@ -25,17 +27,20 @@ function Login() {
         })
     }
 
-    const AdminSubmit = () => {
-        axios.post('http://localhost:5000/admin/adminLogin', loginData).then((response) => {
-            if (response.data.status && response.data.auth) {
-                localStorage.setItem("adminToken", response.data.token)
+    const AdminSubmit = async () => {
+        try {
+            const { data } = await adminLogin(loginData)
+            if (data.status && data.auth) {
+                localStorage.setItem("adminToken", data.token)
                 Navigate('/admin/dashboard')
             } else {
                 setLoginErr({
-                    errMsg: response.data.message
+                    errMsg: data.message
                 })
             }
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     return (

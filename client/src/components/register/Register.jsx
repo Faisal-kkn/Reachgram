@@ -4,6 +4,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 
+import { userRegister, userRegisterOtp } from '../../Api/UserApi/UserRequest'
+
 function Register() {
   const Navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -22,26 +24,25 @@ function Register() {
     })
   }
 
-  const otpSubmit = (e) => {
+  const otpSubmit = async (e) => {
     e.preventDefault()
-    let mergedData = {
-      otpNum: otpValue.otp1 + otpValue.otp2 + otpValue.otp3 + otpValue.otp4 + otpValue.otp5 + otpValue.otp6,
-      email: email.email
-    }
+    try {
+      let mergedData = {
+        otpNum: otpValue.otp1 + otpValue.otp2 + otpValue.otp3 + otpValue.otp4 + otpValue.otp5 + otpValue.otp6,
+        email: email.email
+      }
 
-    axios.post('http://localhost:5000/otpvarification', mergedData).then((response) => {
-      if (response.data.otpVerify) {
+      const { data } = await userRegisterOtp(mergedData)
+      if (data.otpVerify) {
         Navigate('/login')
       } else {
-        console.log(response);
         setOtpErr({
-          errMsg: response.data.message
+          errMsg: data.message
         })
-        console.log(otpErr);
       }
-    })
-    // console.log(merged);
-    // setShowModal(false)
+    } catch (error) {
+      console.log(error, 'catch error');
+    }
   }
 
 
@@ -55,26 +56,27 @@ function Register() {
     })
   }
 
-  const signUpForm = (e) => {
-    setShowLoading(true)
-    axios.post('http://localhost:5000/signup', registerData).then((response) => {
+  const signUpForm = async (e) => {
+    try {
+      setShowLoading(true)
+      const { data } = await userRegister(registerData)
       setShowLoading(false)
-      console.log(response);
-      console.log('responsewwwwwwwwwwww');
-      if (response.data.username === false){
-        setRegisterErr({ ...registerErr, usernameErrMsg: response.data.msg  })
-      }else if (response.data.msg) {
+      if (data.username === false) {
+        setRegisterErr({ ...registerErr, usernameErrMsg: data.msg })
+      } else if (data.msg) {
         setRegisterErr({
           ...registerErr,
-          emailErrMsg: response.data.msg
+          emailErrMsg: data.msg
         })
       } else {
         setEmail({
-          email: response.data.email
+          email: data.email
         })
         setShowModal(true)
       }
-    })
+    } catch (error) {
+      console.log(error, 'catch error');
+    }
   }
 
   return (
@@ -101,7 +103,7 @@ function Register() {
                         </div>
                         <div className='inline-block  bg-[#182D39] w-[48%] px-3 rounded-[5px] h-fit pb-1'>
                           <label htmlFor='username' className='text-[13px]  text-[#596C7A]'>User Name</label>
-                          <input {...register('username', { required: true, pattern: /^@?(\w){1,15}$/   })} value={registerData.username} onChange={handleChange} id='username' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
+                          <input {...register('username', { required: true, pattern: /^@?(\w){1,15}$/ })} value={registerData.username} onChange={handleChange} id='username' type="text" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
                           {errors.username && <p className='text-[13px] text-red-600'>Please check the user</p>}
                           <p className='text-[13px] text-red-600'>{registerErr.usernameErrMsg}</p>
                         </div>
@@ -120,7 +122,7 @@ function Register() {
                           })}
                             value={registerData.email} onChange={handleChange} id='email' type="email" className='w-full h-[30px] bg-transparent text-white focus:outline-none' />
                           {errors.email && <p className='text-[13px] text-red-600'>Please check the Email</p>}
-                        <p className='text-[13px] text-red-600'>{registerErr.emailErrMsg}</p>
+                          <p className='text-[13px] text-red-600'>{registerErr.emailErrMsg}</p>
                         </div>
                         <div className='bg-[#182D39] w-full px-3 rounded-[5px] h-fit pb-1 mt-4'>
                           <label htmlFor='password' className='text-[13px]  text-[#596C7A]'>Password</label>
@@ -172,7 +174,7 @@ function Register() {
 
                       <div className="title">
                         <h3>OTP VERIFICATION</h3>
-                        <p className="info">An otp has been sent to ********k876@gmail.com</p>
+                        {/* <p className="info">An otp has been sent to ********k876@gmail.com</p> */}
                       </div>
                       <div className="otp-input-fields">
                         <input onChange={handleDataChange} value={otpValue.otp1} name='otp1' type="number" className="otp__digit otp__field__1" />

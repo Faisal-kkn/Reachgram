@@ -3,6 +3,7 @@ import UserProfile from '../../components/UserProfile/UserProfile'
 import axios from 'axios';
 import { NavLink, useNavigate ,useLocation } from 'react-router-dom';
 import { UserContext } from '../../AppContext';
+import { userAuth } from '../../Api/UserApi/UserRequest'
 
 function User() {    
   const Navigate = useNavigate()
@@ -13,13 +14,10 @@ function User() {
     userAuthenticeted()
   }, [Navigate]);
 
-  const userAuthenticeted = () => {
-    axios.get("http://localhost:5000/isUserAuth", {
-      headers: {
-        "x-access-token": localStorage.getItem("userToken"),
-      }
-    }).then((response) => {
-      if (response.data.auth) { 
+  const userAuthenticeted = async () => {
+    try {
+      const { data } = await userAuth()
+       if (data.auth) { 
         if (userData.id != userProfileData._id) {
           Navigate("/UserProfile"); 
         } else {
@@ -27,7 +25,9 @@ function User() {
         }
       }
       else Navigate("/login");
-    });
+    } catch (error) {
+      console.log(error, 'catch error');
+    }
   };
 
   

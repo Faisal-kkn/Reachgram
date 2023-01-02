@@ -1,16 +1,21 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 
+import { getChatUser } from '../../../Api/UserApi/UserRequest'
+
 function Conversation({ currentChatId, conversation, currentUser }) {
 
     const [user, setUser] = useState(null)
 
     useEffect(()=>{
         const getUser = async ()=>{
-            const friendId = conversation.members?.find((member) => member != currentUser)
-            axios.get('http://localhost:5000/chat/users?friendId=' + friendId).then((response)=>{
-                setUser(response.data[0])
-            })
+            try {
+                const friendId = conversation.members?.find((member) => member != currentUser)
+                const { data } = await getChatUser(friendId)
+                setUser(data[0])
+            } catch (error) {
+                console.log(error, 'catch error');
+            }
         }
         getUser()
 

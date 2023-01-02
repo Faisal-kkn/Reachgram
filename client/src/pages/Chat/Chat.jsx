@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef} from 'react'
+import React, { useEffect, useState, useContext, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid'
 import './chat.css';
@@ -8,6 +8,8 @@ import { UserContext, AppContext } from '../../AppContext';
 import jwtDecode from 'jwt-decode';
 import Conversation from './Conversation/Conversation';
 import Message from './Message/Message';
+
+import { newConversation, getChatIds, getConversationData, getChatUser } from '../../Api/UserApi/UserRequest'
 
 function Chat({ socket }) {
     const { userData, setUserData } = useContext(UserContext);
@@ -20,23 +22,15 @@ function Chat({ socket }) {
 
     const scrollRef = useRef()
     const [onlineUsers, setOnlineUsers] = useState([])
-    // const [socket, setSocket] = useState(null)
     const [newMessage, setNewMessage] = useState('')
     const [chatProfile, setChatProfile] = useState([])
-
-    // useEffect(() => {
-    //     setSocket(io('http://localhost:5000'))
-    // }, [])
-
-    useEffect(()=>{
-        arrivalMessages && currentChat?.members.includes(arrivalMessages.sender) && 
+    useEffect(() => {
+        arrivalMessages && currentChat?.members.includes(arrivalMessages.sender) &&
             setMessages((prev) => [...prev, arrivalMessages])
-    },[arrivalMessages, currentChat])
+    }, [arrivalMessages, currentChat])
 
     useEffect(() => {
-        // if (!socket) return;
-        // socket?.emit("addUser", userData.id)
-        socket?.on("getUsers", users=>{
+        socket?.on("getUsers", users => {
             setOnlineUsers(users)
         })
     }, [userData])
@@ -51,57 +45,65 @@ function Chat({ socket }) {
         })
     }, [socket, messages, arrivalMessages])
 
-    const chatSubmit = (e) => {
+    const chatSubmit = async (e) => {
         e.preventDefault()
-        const message = {
-            sender: userData.id,
-            text: newMessage,
-            conversationId: currentChat._id
-        }
 
-        const reciverId = currentChat.members.find(member => member !== userData.id)
+        try {
+            const message = {
+                sender: userData.id,
+                text: newMessage,
+                conversationId: currentChat._id
+            }
 
-        socket?.emit('send-message', { 
-            senderId: userData.id,
-            reciverId: reciverId,
-            text: newMessage, 
-         });
-        console.log('socket.id');
-        console.log(socket.id);
-        axios.post('http://localhost:5000/chat/conversation', message).then((response)=>{
+            const reciverId = currentChat.members.find(member => member !== userData.id)
+
+            socket?.emit('send-message', {
+                senderId: userData.id,
+                reciverId: reciverId,
+                text: newMessage,
+            });
+            
+            const { data } = await newConversation(message)
             setMessages([...messages, message])
             setNewMessage('')
-        })
+        } catch (error) {
+            console.log(error, 'catch error')
+        }
     }
 
-    const getChatListId = () => {
-        let user = jwtDecode(localStorage.getItem("userToken"))
-        setUserData({
-            ...userData,
-            id: user.user.split(' ')[0]
-        })
-        axios.get(`http://localhost:5000/chat/chatList?userId=${user.user.split(' ')[0]}`).then((response) => {
-            setChatList(response.data)
-        })
-
+    const getChatListId = async () => {
+        try {
+            let user = jwtDecode(localStorage.getItem("userToken"))
+            setUserData({ ...userData, id: user.user.split(' ')[0] })
+            const { data } = await getChatIds(user.user.split(' ')[0])
+            setChatList(data)
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     useEffect(() => {
         getChatListId()
     }, [userData.id])
 
-    const getConversation = (conversationId) => {
-        axios.get(`http://localhost:5000/chat/conversation?conversationId=${conversationId}`).then((response) => {
-            setMessages(response.data)
-        })
-
+    const getConversation = async (conversationId) => {
+        try {
+            const { data } = await getConversationData(conversationId)
+            setMessages(data)
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     const getUser = async (conversation) => {
         const friendId = conversation.members?.find((member) => member != userData.id)
-        axios.get('http://localhost:5000/chat/users?friendId=' + friendId).then((response) => {
-            setChatProfile(response.data[0])
-        })
+
+        try {
+            const { data } = await getChatUser(friendId)
+            setChatProfile(data[0])
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     useEffect(() => {
@@ -109,7 +111,7 @@ function Chat({ socket }) {
     }, [currentChat])
 
     useEffect(() => {
-        scrollRef.current?.scrollIntoView({behavior: "smooth"})
+        scrollRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [messages])
 
     return (
@@ -118,7 +120,7 @@ function Chat({ socket }) {
                 <div className={`w-full   md:w-5/12 lg:w-3/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white sm:block ${showSingleChat ? 'hidden' : 'block'}`}>
                     <div className="max-w-sm ">
                         <div className="relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3"  fill="none" viewBox="0 0 24 24" stroke="currentColor" >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-0 bottom-0 w-6 h-6 my-auto text-gray-400 left-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input type="text" placeholder="Search" name='search' className="w-full py-2 pl-12 pr-4  text-gray-500 rounded-[5px] outline-none bg-[#314e5e6e] focus:bg-[#314F5F] focus:border-indigo-600" />
@@ -131,7 +133,7 @@ function Chat({ socket }) {
                                         getUser(chat)
                                         setShowSingleChat(true)
                                     }} key={index}>
-                                        <Conversation key={index} currentChatId={currentChat?._id} conversation={chat} currentUser={userData.id}  />
+                                        <Conversation key={index} currentChatId={currentChat?._id} conversation={chat} currentUser={userData.id} />
                                     </div>
                                 )
                             })}
@@ -139,7 +141,7 @@ function Chat({ socket }) {
                     </div>
                 </div>
                 <div className={`lg:w-9/12 md:w-7/12 w-full md:block text-white ${showSingleChat ? '' : 'hidden'}`}>
-                    <div className={`h-full lg:h-[88vh] md:h-fit sm:h-[90vh] p-[15px]  text-white rounded-[10px] ${currentChat ? 'bg-[#314f5f6e]' : 'bg-[#fff]' }`} >
+                    <div className={`h-full lg:h-[88vh] md:h-fit sm:h-[90vh] p-[15px]  text-white rounded-[10px] ${currentChat ? 'bg-[#314f5f6e]' : 'bg-[#fff]'}`} >
                         {
                             currentChat ?
                                 <>
@@ -160,8 +162,8 @@ function Chat({ socket }) {
 
                                         <div className='overflow-y-scroll h-[75vh] lg:h-[67vh] md:h-[77vh] sm:h-[90vh] p-[15px] text-black scrollbar-hide'>
                                             {
-                                                messages.map((msg, index)=>{
-                                                    return(
+                                                messages.map((msg, index) => {
+                                                    return (
                                                         <div key={index} ref={scrollRef}>
                                                             <Message message={msg} own={msg.sender === userData.id} />
                                                         </div>
@@ -184,7 +186,7 @@ function Chat({ socket }) {
                                         </div>
                                     </div>
                                 </>
-                                : 
+                                :
                                 <div className='h-full my-auto'>
                                     <img className='lg:h-[80%] lg:w-auto md:h-auto md:w-full mx-auto my-auto' src="/assets/Messaging.gif" alt="" />
                                     <h1 className='text-black text-center font-bold text-[20px]'>Start Your Chat</h1>

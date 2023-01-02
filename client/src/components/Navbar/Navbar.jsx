@@ -8,6 +8,8 @@ import axios from 'axios';
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/solid'
 
+import { getUserData, getSearch } from '../../Api/UserApi/UserRequest'
+
 function Navbar({ socketio }) {
     const [notificationsData, setNotificationsData] = useState([])
 
@@ -37,10 +39,6 @@ function Navbar({ socketio }) {
         )
     }
 
-    console.log('notificationsData');
-    console.log(notificationsData);
-
-
     const { userData, setUserData } = useContext(UserContext);
     const { showPostModal, setShowPostModal } = useContext(AppContext);
 
@@ -58,16 +56,15 @@ function Navbar({ socketio }) {
         setShowNotifications(!showNotifications)
     }
 
-    const searchUser = (data)=>{
-        setSearchData({ search: data })
-        console.log(data);
-        axios.get(`http://localhost:5000/search?data=${data}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            },
-        }).then((response)=>{
-            setUsers(response.data)
-        })
+    const searchUser = async (searchData)=>{
+        try {
+            setSearchData({ search: searchData })
+            const { data } = await getSearch(searchData)
+            setUsers(data)
+
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     const logout = () => {
@@ -104,24 +101,22 @@ function Navbar({ socketio }) {
         { name: 'Settings' },
         { name: 'Log out', fun: logout },
     ]
-    function classNames(...classes) {
-        return classes.filter(Boolean).join(' ')
-    }
+    function classNames(...classes) { return classes.filter(Boolean).join(' ') }
 
     const userDetails = async () => {
-        let userDetails = await jwtDecode(localStorage.getItem("userToken"))
-        axios.get(`http://localhost:5000/myData?userId=${userDetails.user.split(' ')[0]}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken")
-            }
-        }).then(async (response)=>{
-            await setUserData({
-                image: response.data.profile,
+        try {
+            let userDetails = jwtDecode(localStorage.getItem("userToken"))
+            const { data } = await getUserData(userDetails.user.split(' ')[0])
+            setUserData({
+                image: data.profile,
                 id: userDetails.user.split(' ')[0],
-                name: response.data.fullname
+                name: data.fullname
             })
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
+
     useEffect(() => {
         userDetails()
     }, [Navigate]);
@@ -161,7 +156,7 @@ function Navbar({ socketio }) {
                                                             {users.map((iteam, index)=>{
                                                                 return(
                                                                     <div className='py-1 hover:bg-[#00000014]' key={index}>
-                                                                        <Link className=' ' key={index} to='/UserProfile' state={{ user: iteam }} onClick={() => {
+                                                                        <Link className=' ' key={index} to={iteam._id == userData.id ? '/profile' : '/UserProfile'} state={{ user: iteam }} onClick={() => {
                                                                             setSearchData({ search: '' })
                                                                             searchUser('')
                                                                         }}>

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import UserProfile from '../../components/Profile/Profile'
 import axios from 'axios';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { userAuth } from '../../Api/UserApi/UserRequest'
 
 function Profile() {    
   const Navigate = useNavigate()
@@ -9,15 +10,14 @@ function Profile() {
     userAuthenticeted()
   }, [Navigate]);
 
-  const userAuthenticeted = () => {
-    axios.get("http://localhost:5000/isUserAuth", {
-      headers: {
-        "x-access-token": localStorage.getItem("userToken"),
-      }
-    }).then((response) => {
-      if (response.data.auth) { Navigate("/profile"); }
-      else Navigate("/login");
-    });
+  const userAuthenticeted = async () => {
+    try {
+      const { data } = await userAuth()
+      if (data.auth) Navigate("/profile")
+      else Navigate("/signup");
+    } catch (error) {
+      console.log(error, 'catch error');
+    }
   };
   
     

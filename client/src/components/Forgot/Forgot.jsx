@@ -5,6 +5,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 
+import { passwordForgot, OtpForm } from '../../Api/UserApi/UserRequest'
+
 
 
 function Forgot() {
@@ -18,34 +20,38 @@ function Forgot() {
     const [forgotData, setForgotData] = useState({ email: '', otp: '', password: '' });
     const [forgotErr, setForgotErr] = useState({ email: false, otp: false, msg: '', emailStatus: false });
 
-    const fogotForm = (e) => {
-        setShowLoading(true)
-        axios.post('http://localhost:5000/forgotPassword', { email: forgotData.email }).then((response) => {
-            console.log('rrrrrrrrrrrrrresponse');
-            console.log(response);
-            if (!response.data.status){
-                 setForgotErr({ ...forgotErr, email: true, msg: response.data.message })
+    const fogotForm = async (e) => {
+        try {
+            setShowLoading(true)
+            const { data } = await passwordForgot({ email: forgotData.email })
+
+            if (!data.status) {
+                 setForgotErr({ ...forgotErr, email: true, msg: data.message })
                 setShowLoading(false)
             } else{
                 setForgotErr({ ...forgotErr, email: false, msg: '', emailStatus: true })
                 setShowLoading(false)
             }
-        })
+
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const fogotOtpForm = (e) =>{
+    const fogotOtpForm = async (e) =>{
         console.log('forgotDataaaaaaaaaaaaa');
         console.log(forgotData);
-        axios.post('http://localhost:5000/newPassword', forgotData).then((response) => {
-            console.log('rrrrrrrrrrrrrresponse');
-            console.log(response);
-            if(response.data.status == false){
+
+        try {
+            const { data } = await OtpForm(forgotData)
+
+            if (data.status == false) {
                 setForgotErr({ ...forgotErr, emailStatus: false })
-            }else{
-                if (!response.data.otpVerify) setForgotErr({ ...forgotErr, otp: true, msg: response.data.message })
+            } else {
+                if (!data.otpVerify) setForgotErr({ ...forgotErr, otp: true, msg: data.message })
                 else {
                     setTimeout(() => {
-                        setForgotData({email: '', otp: '', password: ''})
+                        setForgotData({ email: '', otp: '', password: '' })
                         setForgotErr({ email: false, otp: false, msg: '', emailStatus: false })
                         setShowLoading(false)
                         Navigate('/login')
@@ -54,8 +60,9 @@ function Forgot() {
                     notify()
                 }
             }
-        })
-
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     return (

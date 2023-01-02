@@ -33,18 +33,12 @@ function App() {
     image: '',
     description: '' 
   });
-  console.log('socket Iddd');
-  console.log(socket);
 
   const [userData, setUserData] = useState({
     image: '',
     id: '',
     name: ''
   })
-
-  // useEffect(() => {
-  //   setSocket(io('http://localhost:5000'))
-  // }, [])
 
   useEffect(() => {
     socket?.emit("addUser", userData.id)
@@ -62,8 +56,8 @@ function App() {
               <Route path='/signup' element={<SignUp />} />
               <Route path='/login' element={<Signin />} />
               <Route path='/forgot' element={<ForgotPassword />} />
-              <Route exact element={<HomeMain socket={socket}  />} >
-                <Route path='/' element={<Home socket={socket} />} />
+              <Route element={<HomeMain socket={socket}  />} >
+                <Route path='/'  element={<Home socket={socket} />} />
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/UserProfile' element={<User socket={socket} />} />
                 <Route path='/chat' element={<Chat socket={socket} />} />

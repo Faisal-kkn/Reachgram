@@ -1,7 +1,8 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { HomeIcon, UserIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/solid';
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import {AdminAuth} from '../../Api/AdminApi/AdminRequest'
 
 function Dashboard() {
 
@@ -10,21 +11,20 @@ function Dashboard() {
     userAuthenticeted()
   }, [Navigate]);
 
-  const userAuthenticeted = () => {
-    axios.get("http://localhost:5000/admin/isAdminAuth", {
-      headers: {
-        "x-access-token": localStorage.getItem("adminToken"),
-      }
-    }).then((response) => {
-      if (!response.data.auth) Navigate("/admin");
-    });
+  const userAuthenticeted = async () => {
+    try {
+      const { data } = await AdminAuth()
+      if (!data.auth) Navigate("/admin");
+    } catch (error) {
+      console.log(error, 'catch error');
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('adminToken');
     Navigate("/admin");
   };
-  
+
   return (
     <div>
 
@@ -51,7 +51,7 @@ function Dashboard() {
                     <ClipboardDocumentCheckIcon className='w-8 h-8' />  Posts
                   </Link>
                 </li>
-                
+
               </ul>
             </div>
           </div>
@@ -60,7 +60,7 @@ function Dashboard() {
               <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" className="" viewBox="0 0 16 16">
                 <path d="M12 1a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2a1 1 0 0 1 1-1h8zm-2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
               </svg><span className="font-bold text-sm ml-2">Logout</span>
-            </button> 
+            </button>
           </div>
         </div>
       </aside>

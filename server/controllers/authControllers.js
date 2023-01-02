@@ -9,6 +9,9 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 
+var regex = /^[a-z0 -9_.-]*$/;
+
+
 export default {
     jwtCheck: (req, res) => {
         res.status(200).json({ auth: true, message: "You are authenticated Congrats!" })

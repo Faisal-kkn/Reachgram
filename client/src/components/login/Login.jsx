@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { UserContext } from '../../AppContext'
 import jwtDecode from 'jwt-decode'
 
+import { userLogin } from '../../Api/UserApi/UserRequest'
+
 
 function Login() {
     const { userData, setUserData } = useContext(UserContext);
@@ -31,25 +33,23 @@ function Login() {
     }
 
 
-    const loginSubmit = (e) => {
-        axios.post('http://localhost:5000/login', login).then((response) => {
-            if (response.data.status && response.data.auth) {
-                // let userName = jwtDecode(response.data.token)
+    const loginSubmit = async (e) => {
+        try {
+            const { data } = await userLogin(login)
+            if (data.status && data.auth) {
+                // let userName = jwtDecode(data.token)
                 // console.log(userName);
-                // setUserData({
-                //     ...userData,
-                //     id: response.data.id,
-                //     name: userName.name
-                // })
-                localStorage.setItem("userToken", response.data.token)
+                // setUserData({ ...userData, id: data.id, name: userName.name })
+                localStorage.setItem("userToken", data.token)
                 Navigate('/')
             } else {
                 setLoginErr({
-                    errMsg: response.data.message
+                    errMsg: data.message
                 })
             }
-
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     return (

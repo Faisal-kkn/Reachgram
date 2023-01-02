@@ -7,14 +7,13 @@ import axios from 'axios';
 import { Menu, Transition } from '@headlessui/react'
 import { BellIcon, HomeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
+import { getSearch } from '../../../Api/UserApi/UserRequest'
+
 function Mobile() {
 
     const { userData } = useContext(UserContext);
     const { showPostModal, setShowPostModal, showSingleChat, setShowSingleChat } = useContext(AppContext);
-    console.log(showSingleChat);
-
     const Navigate = useNavigate()
-
     const [searchData, setSearchData] = useState({ search: '' })
     const [showNotifications, setShowNotifications] = useState(false)
     const [users, setUsers] = useState([])
@@ -32,16 +31,14 @@ function Mobile() {
         setShowSingleChat(false)
     }
 
-    const searchUser = (data) => {
-        setSearchData({ search: data })
-        console.log(data);
-        axios.get(`http://localhost:5000/search?data=${data}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            },
-        }).then((response) => {
-            setUsers(response.data)
-        })
+    const searchUser = async (data) => {
+        try {
+            setSearchData({ search: data })
+            const { data } = await getSearch(data)
+            setUsers(data)
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     const logout = () => {

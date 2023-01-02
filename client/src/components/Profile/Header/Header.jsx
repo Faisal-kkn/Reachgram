@@ -3,68 +3,64 @@ import { NavLink, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode'
 import { AppContext, UserContext } from '../../../AppContext';
+import { userProfileData, userEditProfile, FollowList } from '../../../Api/UserApi/UserRequest'
+
+
 function Header({ data, handleSubmit, editbutton }) {
     const Navigate = useNavigate()
     const { editProfile, setEditProfile, setEditProfileErr } = useContext(AppContext);
 
     const [userDetails, setUserDetails] = useState([])
     const [friendsList, setFriendsList] = useState({data: [], status:false})
-    const ProfileData = () => {
-        console.log('sdfsd');
-        let userDetail = jwtDecode(localStorage.getItem("userToken"))
-        axios.get(`http://localhost:5000/profiledata?userId=${userDetail.user.split(' ')[0]}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        })
-        .then((response) => {
-            console.log('asdadsa');
-            setUserDetails(response.data[0])
-        })
+    const ProfileData = async () => {
+        try {
+            let userDetail = jwtDecode(localStorage.getItem("userToken"))
+            const { data } = await userProfileData(userDetail.user.split(' ')[0])
+            setUserDetails(data[0])
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const submitProfile = () => {
-        const formData = new FormData();
-        for (let key in editProfile) {
-            formData.append(key, editProfile[key])
-        }
-        axios.put('http://localhost:5000/editProfile', formData, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
+    const submitProfile = async () => {
+
+        try {
+            const formData = new FormData();
+            for (let key in editProfile) {
+                formData.append(key, editProfile[key])
             }
-        }).then((response) => {
-            if (response.data.status == false){
-                setEditProfileErr({ username: response.data.username, email: response.data.email, msg: response.data.msg })
-            } else{
+
+            const { data } = await userEditProfile(formData)
+            if (data.status == false) {
+                setEditProfileErr({ username: data.username, email: data.email, msg: data.msg })
+            } else {
                 ProfileData()
                 setEditProfile({ status: false, phone: userDetails.phone, email: userDetails.email, about: userDetails.about, profile: userDetails.profile, fullname: userDetails.fullname, username: userDetails.username })
                 setEditProfile({ ...editProfile, status: false })
             }
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const userFollowersList = (Followers)=>{
-        console.log(Followers);
-        let FollowersList = JSON.stringify(Followers) 
-        axios.get('http://localhost:5000/FollowersList?FollowersList[]=' + FollowersList, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then((response)=>{
-            setFriendsList({data: response.data, status: !friendsList.status})
-        })
+    const userFollowersList = async (Followers)=>{
+        try {
+            let FollowersList = JSON.stringify(Followers) 
+            const { data } = await FollowList(FollowersList)
+            setFriendsList({data: data, status: !friendsList.status})
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const userFollowingList = (Followers) => {
-        console.log(Followers);
-        let FollowersList = JSON.stringify(Followers)
-        axios.get('http://localhost:5000/FollowersList?FollowersList[]=' + FollowersList, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then((response) => {
-            setFriendsList({ data: response.data, status: !friendsList.status })
-        })
+    const userFollowingList = async (following) => {
+        try {
+            let FollowingList = JSON.stringify(following)
+            const { data } = await FollowList(FollowingList)
+            setFriendsList({ data: data, status: !friendsList.status })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     useEffect(() => {
@@ -74,7 +70,7 @@ function Header({ data, handleSubmit, editbutton }) {
 
     return (
         <>
-            {friendsList.status ? (
+            {friendsList?.status ? (
                 <>
                     <div
                         className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
@@ -95,7 +91,7 @@ function Header({ data, handleSubmit, editbutton }) {
                                     <div className=' w-[300px] max-h-[200px]'>
                                         <ul>
                                             {
-                                                friendsList.data.map((item, index)=>{
+                                                friendsList?.data?.map((item, index)=>{
                                                     return(
                                                         <Link className='cursor-pointer ' key={index} to='/UserProfile' state={{ user: item }}>
                                                             <li>

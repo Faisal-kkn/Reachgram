@@ -1,38 +1,37 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 
+import { getUsers, userBlock, userUnblock } from '../../../Api/AdminApi/AdminRequest'
+
 function Users() {
 
     const [allUsers, setAllUsers] = useState([])
 
-    const adminUsers = ()=>{
-        axios.get('http://localhost:5000/admin/allUsers', {
-            headers: {
-                "x-access-token": localStorage.getItem("adminToken"),
-            },
-        }).then(({data}) => {
+    const adminUsers = async ()=>{
+        try {
+            const { data } = await getUsers()
             setAllUsers(data)
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const blockUser = (userId)=>{
-        axios.put('http://localhost:5000/admin/blockUser', { userId: userId }, {
-            headers: {
-                "x-access-token": localStorage.getItem("adminToken"),
-            },
-        }).then(({ data }) => {
+    const blockUser = async (userId)=>{
+        try {
+            const { data } = await userBlock(userId)
             adminUsers()
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
     
-    const unBlockUser = (userId) => {
-        axios.put('http://localhost:5000/admin/unBlockUser', { userId: userId }, {
-            headers: {
-                "x-access-token": localStorage.getItem("adminToken"),
-            },
-        }).then(({ data }) => {
+    const unBlockUser = async (userId) => {
+        try {
+            const { data } = await userUnblock(userId)
             adminUsers()
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     useEffect(()=>{

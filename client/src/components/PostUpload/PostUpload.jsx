@@ -3,6 +3,8 @@ import { AppContext, UserContext } from '../../AppContext';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode'
 
+import { newPost } from '../../Api/UserApi/UserRequest'
+
 function PostUpload() {
 
     const { showPostModal, setShowPostModal } = useContext(AppContext);
@@ -48,37 +50,30 @@ function PostUpload() {
 
     const postUpload = async (e) => {
         e.preventDefault()
-
-        if(fileErr == ''){
-            setFileErr('')
-            const formData = new FormData();
-            for (let key in postData) {
-                formData.append(key, postData[key])
-            }
-            console.log(postData);
-            console.log(formData);
-            axios.post('http://localhost:5000/newPost', formData, {
-                headers: {
-                    "x-access-token": localStorage.getItem("userToken"),
+        try {
+            if (fileErr == '') {
+                setFileErr('')
+                const formData = new FormData();
+                for (let key in postData) {
+                    formData.append(key, postData[key])
                 }
-            }).then(response => {
-                console.log('responseeeeeeeeeeeeeeeeeeeeeeeee');
-                console.log(response);
-                setShowPostModal(false)
-                // if (response.data) {
-                //     setPostData({ discription: '', image: '' })
-                // }
-            }).catch(error => console.log(error))
-        }else{
-            setFileErr('Please select image')
-        }  
-       
 
+                const { data } = await newPost(formData)
+                console.log(data);
+                setShowPostModal(false)
+                if (data) {
+                    setPostData({ discription: '', image: '' })
+                }
+            } else {
+                setFileErr('Please select image')
+            }
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     return (
         <div>
-
             {showPostModal ? (
                 <>
                     <div

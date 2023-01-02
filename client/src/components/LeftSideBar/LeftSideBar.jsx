@@ -5,6 +5,8 @@ import { UserContext } from "../../AppContext";
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
+import { Friends, getOnlineFriends } from '../../Api/UserApi/UserRequest'
+
 function LeftSideBar({ socketio }) {
     const { userData, setUserData } = useContext(UserContext);
 
@@ -14,29 +16,29 @@ function LeftSideBar({ socketio }) {
     const [onlineFriends, setOnlineFriends] = useState([])
     const [onlineFriendsData, setOnlineFriendsData] = useState([])
 
-    const getFriends = () => {
-        let user = jwtDecode(localStorage.getItem("userToken"))
-        setUserData({
-            ...userData,
-            id: user.user.split(' ')[0]
-        })
-        axios.get('http://localhost:5000/friends?userId=' + user.user.split(' ')[0], {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            },
-        }).then((response) => {
-            setFriends([...response.data[0]?.following])
-        })
+    const getFriends = async () => {
+       
+
+        try {
+            let user = jwtDecode(localStorage.getItem("userToken"))
+            setUserData({
+                ...userData,
+                id: user.user.split(' ')[0]
+            })
+
+            const { data } = await Friends(user.user.split(' ')[0])
+            setFriends([...data[0]?.following])
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     useEffect(() => {
-        // setSocket(io('http://localhost:5000'))
         getFriends()
     }, [])
 
    
     useEffect(() => {
-        // if (!socket) return;
         socketio?.emit("addUser", userData.id)
         socketio?.on("getUsers", users => {
             setOnlineUsers(users)
@@ -44,14 +46,13 @@ function LeftSideBar({ socketio }) {
     }, [socketio, userData, friends])
 
     const getUser = async (online) => {
-        let onlineUser = JSON.stringify(online) 
-        axios.get('http://localhost:5000/onlineFriends?friendId[]=' + onlineUser, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            },
-        }).then((response) => {
-            setOnlineFriendsData(response.data)
-        })
+        try {
+            let onlineUser = JSON.stringify(online) 
+            const { data } = await getOnlineFriends(onlineUser)
+            setOnlineFriendsData(data)
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
 

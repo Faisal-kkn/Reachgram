@@ -2,21 +2,22 @@ import React, { useState, useContext } from 'react'
 import { AppContext } from '../../AppContext'
 import axios from 'axios';
 
+import { postUpdate } from '../../Api/UserApi/UserRequest'
+
 function PostEdit() {
     const { postEdit, setPostEdit } = useContext(AppContext);
 
-    const updatePost = (e) => {
+    const updatePost = async (e) => {
         e.preventDefault()
-        axios.put('http://localhost:5000/updatePost', postEdit, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then((response)=>{
+        try {
+            const { data } = await postUpdate(postEdit)
             setPostEdit({
                 ...postEdit,
                 status: false
             })
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     const handleDataChange = (e) => {

@@ -2,19 +2,19 @@ import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLogin from '../../components/Admin/Login/Login';
+import { AdminAuth } from '../../Api/AdminApi/AdminRequest'
 
 function AdminSignin() {
     const Navigate = useNavigate()
 
-    const userAuthenticeted = () => {
-        axios.get("http://localhost:5000/admin/isAdminAuth", {
-            headers: {
-                "x-access-token": localStorage.getItem("adminToken"),
-            },
-        }).then((response) => {
-            if (response.data.auth) Navigate('/admin/dashboard')
+    const userAuthenticeted = async () => {
+        try {
+            const { data } = await AdminAuth()
+            if (data.auth) Navigate('/admin/dashboard')
             else Navigate("/admin");
-        });
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     };
 
     useEffect(() => {

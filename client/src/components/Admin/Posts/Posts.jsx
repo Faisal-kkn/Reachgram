@@ -1,38 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { getAllPosts, postBlock, postUnblock } from '../../../Api/AdminApi/AdminRequest'
 
 function Posts() {
 
     const [allPosts, setAllPosts] = useState([])
 
-    const adminPosts = () => {
-        axios.get('http://localhost:5000/admin/allPosts', {
-            headers: {
-                "x-access-token": localStorage.getItem("adminToken"),
-            },
-        }).then(({ data }) => {
+    const adminPosts = async () => {
+        try {
+            const { data } = await getAllPosts()
+            console.log(data, 'dataaaa');
             setAllPosts(data)
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const blockpost = (postId, userId) => {
-        axios.put('http://localhost:5000/admin/blockPost', { postId, userId }, {
-            headers: {
-                "x-access-token": localStorage.getItem("adminToken"),
-            },
-        }).then(({ data }) => {
+    const blockpost = async (postId, userId) => {
+        try {
+            const { data } = await postBlock({ postId, userId })
             adminPosts()
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const unBlockPost = (postId, userId) => {
-        axios.put('http://localhost:5000/admin/unBlockPost', { postId, userId }, {
-            headers: {
-                "x-access-token": localStorage.getItem("adminToken"),
-            },
-        }).then(({ data }) => {
+    const unBlockPost = async (postId, userId) => {
+        try {
+            const { data } = await postUnblock({ postId, userId })
             adminPosts()
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     useEffect(() => {

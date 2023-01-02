@@ -2,17 +2,17 @@ import express from "express";
 import admin from '../controllers/adminControllers.js';
 const router = express.Router()
 import { upload } from './multer.js'
-import { AdminverifyJWT } from './auth.js'
+import { verifyAdminJWT } from './auth.js'
 
 
-router.get('/isAdminAuth', AdminverifyJWT, admin.jwtCheck);
 router.post('/adminLogin', admin.adminLogin)
-router.get('/allUsers', AdminverifyJWT, admin.allUsers)
-router.put('/blockUser', AdminverifyJWT, admin.blockUser)
-router.put('/unBlockUser',AdminverifyJWT, admin.unBlockUser)
-router.get('/allPosts',AdminverifyJWT, admin.allPosts)
-router.put('/blockPost',AdminverifyJWT, admin.blockPost)
-router.put('/unBlockPost',AdminverifyJWT, admin.unBlockPost)
+router.get('/isAdminAuth', verifyAdminJWT, admin.jwtCheck);
+router.get('/allUsers', verifyAdminJWT, admin.allUsers)
+router.put('/blockUser', verifyAdminJWT, admin.blockUser)
+router.put('/unBlockUser',verifyAdminJWT, admin.unBlockUser)
+router.get('/allPosts',verifyAdminJWT, admin.allPosts)
+router.put('/blockPost',verifyAdminJWT, admin.blockPost)
+router.put('/unBlockPost',verifyAdminJWT, admin.unBlockPost)
 // router.post('/signup', user.userRegister)
 
 export default router;

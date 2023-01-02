@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../../../AppContext';
+import { userProfileData, FollowUser, MessageUser } from '../../../Api/UserApi/UserRequest'
+
 
 function Header({head, data}) {
     const Navigate = useNavigate()
@@ -9,48 +11,35 @@ function Header({head, data}) {
 
     const [userDetails, setUserDetails] = useState({})
     const [userId, setUserId] = useState(head?._id)
-    const ProfileData = () => {
-       
-            axios.get(`http://localhost:5000/profiledata?userId=${head?._id}`, {
-                headers: {
-                    "x-access-token": localStorage.getItem("userToken"),
-                }
-            }).then(async(response) => {
-                console.log('response.data[1]');
-                console.log(response.data[0].friends.length);
-                await setUserDetails(response.data[0])
-                
-            })
-        
+    const ProfileData = async () => {
+        try {
+            const { data } = await userProfileData(head?._id)
+            setUserDetails(data[0])
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const followAction = (myId)=>{
+    const followAction = async (myId)=>{
         console.log('userId ', userId);
         console.log('myId ', myId);
 
-        axios.post('http://localhost:5000/followAndUnfollow', { userId: userDetails._id , myId }, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then((response)=>{
-            console.log('rrrrrrrrrrrrrrrrrrrrrrrrrresponse');
-            console.log(response);
+        try {
+            const { data } = await FollowUser({ userId: userDetails?._id, myId })
             ProfileData()
-        })
-
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const MessageAction = (myId, userId)=> {
-        console.log("myId" + myId);
-        console.log("userId" + userId);
-        axios.post('http://localhost:5000/chat/newChat', { myId, userId }, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then((response)=>{
-            let chatId = response.data._id
+    const MessageAction = async (myId, userId)=> {
+        try {
+            const { data } = await MessageUser({ userId: userDetails._id, myId })
+            let chatId = data._id
             Navigate('/chat', { state: { chatId } })
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
    
     useEffect(() => {

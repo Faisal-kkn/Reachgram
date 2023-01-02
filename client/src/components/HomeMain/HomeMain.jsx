@@ -12,7 +12,7 @@ import { format, render, cancel, register } from 'timeago.js';
 import { io } from 'socket.io-client';
 import { ToastContainer, toast } from 'react-toastify';
 
-
+import { getPost, postDelete, likeUnlike, getAllComment, newComment, commentLikeDisLike, postReport } from '../../Api/UserApi/UserRequest'
 
 function HomeMain() {
     const Navigate = useNavigate()
@@ -33,108 +33,83 @@ function HomeMain() {
         setSocket(io('http://localhost:5000'))
     }, [])
 
-    const allPost = () => {
-        let userId = jwtDecode(localStorage.getItem("userToken"))
-        axios.get('http://localhost:5000/home?userId=' + userId.user.split(' ')[0], {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            },
-        }).then((response) => {
-            if (response.data.auth === false) {
-                Navigate("/login");
-            } else {
-                let user = jwtDecode(localStorage.getItem("userToken"))
-                setUserData({
-                    ...userData,
-                    id: user.user.split(' ')[0],
-                    name: user.user.slice(25, user.user.length)
-                })
-                console.log('response.dataaaaaaa');
-                console.log(response.data);
-                setHomePost(response.data)
-            }
-
-        })
+    const allPost = async () => {
+        try {
+            let userId = jwtDecode(localStorage.getItem("userToken"))
+            const { data } = await getPost(userId.user.split(' ')[0])
+            setHomePost(data)
+            setUserData({
+                ...userData,
+                id: userId.user.split(' ')[0],
+                name: userId.user.slice(25, userId.user.length)
+            })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     const editPost = (userId, mainId, postId, description, image) => {
         setPostEdit({ description: description, image: image, status: true, userId, mainId, postId, })
     }
 
-    const deletePost = (userId, mainId, postId) => {
-        axios.delete(`http://localhost:5000/deletePost?mainId=${mainId}&postId=${postId}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then(() => {
+    const deletePost = async (userId, mainId, postId) => {
+        try {
+            const { data } = await postDelete(mainId, postId)
             notify()
             allPost()
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const likeAndDisLike = (userId, postId, likedUser) => {
-        let data = {
-            userId, postId, likedUser
+    const likeAndDisLike = async (userId, postId, likedUser) => {
+        try {
+            let datas = { userId, postId, likedUser }
+            const { data } = await likeUnlike(datas)
+            allPost()
+        } catch (error) {
+            console.log(error, 'catch error');
         }
-        axios.put(`http://localhost:5000/likeordislike`, data, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken")
-            },
-        }).then((response) => {
+    }
+
+    const allCommentData = async (postId, status) => {
+        try {
+            if (!status) {
+                const { data } = await getAllComment(postId)
+                setAllComments(data)
+            }
             
-            allPost()
-        })
-    }
-
-    const allCommentData = (postId, status) => {
-        console.log(postId);
-        console.log('status');
-        console.log(status);
-        if (!status) {
-            axios.get(`http://localhost:5000/postComments?postId=${postId}`, {
-                headers: {
-                    "x-access-token": localStorage.getItem("userToken"),
-                }
-            }).then((response)=>{
-                console.log('rrrrrresponse');
-                console.log(response);
-                setAllComments(response.data)
-            })
+        } catch (error) {
+            console.log(error, 'catch error');
         }
-        
     }
 
-    const postComment = (postId, userId) => {
-        axios.post('http://localhost:5000/commentPost', { userId: userId, postId: postId, comment: commentData }, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then(()=>{
-            allCommentData(postId ,false)
-            setCommentData('')
-        })
-
-    }
-
-    const commentLikeAndDisLike = (postId, commentId, likedUser)=>{
-        axios.put(`http://localhost:5000/commentLikeAndDisLike`, { postId, commentId, likedUser }, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken")
-            },
-        }).then(() => {
+    const postComment =async (postId, userId) => {
+        try {
+            const { data } = await newComment({ userId, postId, comment: commentData })
             allCommentData(postId, false)
-        })
-
+            setCommentData('')
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const reportPost = (userId, mainId, postId)=>{
-        axios.put(`http://localhost:5000/reportPost`, { userId, mainId, postId },  {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then(() => {
+    const commentLikeAndDisLike = async (postId, commentId, likedUser)=>{
+        try {
+            const { data } = await commentLikeDisLike({ postId, commentId, likedUser })
+            allCommentData(postId, false)
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
+    }
+
+    const reportPost = async (userId, mainId, postId)=>{
+        try {
+            const { data } = await postReport({ userId, mainId, postId })
             allPost()
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     const userNavigation = [
@@ -158,9 +133,7 @@ function HomeMain() {
         }
     ]
 
-    function classNames(...classes) {
-        return classes.filter(Boolean).join(' ')
-    }
+    function classNames(...classes) { return classes.filter(Boolean).join(' ') }
 
     const handleNotification = (userName, type) => {
         socket.emit('sendNotification', {
@@ -180,7 +153,7 @@ function HomeMain() {
             <PostEditModal />
             <div className='pb-[0px] sm:pb-0'>
                 {
-                    homePost.flatMap((iteam, index) => {
+                    homePost.length !=0 && homePost.flatMap((iteam, index) => {
                         return (
                             <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] ' key={index}>
                                 <div className='flex gap-3 items-center'>

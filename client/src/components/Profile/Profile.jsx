@@ -12,6 +12,8 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { ToastContainer, toast } from 'react-toastify';
 import PostEditModal from '../PostEdit/PostEdit';
 
+import { getMyPosts, likeUnlike, getAllComment, newComment, commentLikeDisLike, postDelete } from '../../Api/UserApi/UserRequest'
+
 function Profile() {
     const Navigate = useNavigate()
 
@@ -36,23 +38,14 @@ function Profile() {
 
 
     const myPosts = async () => {
-        let userDetails = jwtDecode(localStorage.getItem("userToken"))
-
-        await axios.get(`http://localhost:5000/profile?userId=${userDetails.user.split(' ')[0]}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            },
-        }).then((response) => {
-            if (response.data.auth === false) {
-                Navigate("/login");
-            } else {
-                setProfilePosts(response.data.reverse())
-                setProfilePostsId({ postMainId: response.data[0].mainId })
-                console.log('response.data[0]');
-                console.log(response.data[0]);
-            }
-        })
-
+        try {
+            let userDetails = jwtDecode(localStorage.getItem("userToken"))
+            const { data } = await getMyPosts(userDetails.user.split(' ')[0])
+            setProfilePosts(data.reverse())
+            setProfilePostsId({ postMainId: data[0].mainId })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -72,63 +65,50 @@ function Profile() {
         myPosts()
     }, [Navigate]);
 
-    const likeAndDisLike = (userId, postId, likedUser) => {
-        console.log('userId ' + userId);
-        console.log('postId ' + postId);
-        console.log('likedUser ' + likedUser);
-        let data = {
-            userId, postId, likedUser
-        }
-        console.log(data);
-        axios.put(`http://localhost:5000/likeordislike`, data, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken")
-            },
-        }).then((response) => {
-            myPosts()
-        })
-    }
-
-    const allCommentData = (postId, status) => {
-        if (!status) {
-            axios.get(`http://localhost:5000/postComments?postId=${postId}`, {
-                headers: {
-                    "x-access-token": localStorage.getItem("userToken"),
-                }
-            }).then((response) => {
-                console.log('rrrrrresponse');
-                console.log(response);
-                setAllComments(response.data)
-            })
-        }
-
-    }
-
-    const postComment = (postId, userId) => {
-        axios.post('http://localhost:5000/commentPost', { userId: userId, postId: postId, comment: commentData }, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
+    const likeAndDisLike = async (userId, postId, likedUser) => {
+        try {
+            let datas = {
+                userId, postId, likedUser
             }
-        }).then(() => {
+            const { data } = await likeUnlike(datas)
+            myPosts()
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
+    }
+
+    const allCommentData = async (postId, status) => {
+        try {
+            if (!status) {
+                const { data } = await getAllComment(postId)
+                setAllComments(data)
+            }
+
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
+    }
+
+    const postComment = async (postId, userId) => {
+        try {
+            const { data } = await newComment({ userId, postId, comment: commentData })
             allCommentData(postId, false)
             setCommentData('')
-        })
-
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
-    const commentLikeAndDisLike = (postId, commentId, likedUser) => {
-        axios.put(`http://localhost:5000/commentLikeAndDisLike`, { postId, commentId, likedUser }, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken")
-            },
-        }).then(() => {
+    const commentLikeAndDisLike = async (postId, commentId, likedUser) => {
+        try {
+            const { data } = await commentLikeDisLike({ postId, commentId, likedUser })
             allCommentData(postId, false)
-        })
-
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
     const singlePost = (id) => {
         setsinglePostShow(true)
-
     }
 
     const userNavigation = [
@@ -144,24 +124,21 @@ function Profile() {
         },
     ]
 
-    function classNames(...classes) {
-        return classes.filter(Boolean).join(' ')
-    }
+    function classNames(...classes) { return classes.filter(Boolean).join(' ') }
 
 
     const editPost = (userId, mainId, postId, description, image) => {
         setPostEdit({ description: description, image: image, status: true, userId, mainId, postId, })
     }
 
-    const deletePost = (userId, mainId, postId) => {
-        axios.delete(`http://localhost:5000/deletePost?mainId=${mainId}&postId=${postId}`, {
-            headers: {
-                "x-access-token": localStorage.getItem("userToken"),
-            }
-        }).then(() => {
+    const deletePost = async (userId, mainId, postId) => {
+        try {
+            const { data } = await postDelete(mainId, postId)
             notify()
             myPosts()
-        })
+        } catch (error) {
+            console.log(error, 'catch error');
+        }
     }
 
     return (
