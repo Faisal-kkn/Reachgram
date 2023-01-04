@@ -75,7 +75,7 @@ function Posts() {
                                             {index + 1}
                                         </td>
                                         <td className="py-4 px-6">
-                                            <img src={`/images/${post.postImage}`} width="50px" className='rounded-full' alt="" />
+                                            <img src={`${process.env.PUBLIC_FOLDER + post.postImage}`} width="50px" className='rounded-full' alt="" />
                                         </td>
                                         <td className="py-4 px-6">
                                             {post.user[0]}

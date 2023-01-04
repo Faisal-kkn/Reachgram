@@ -111,7 +111,7 @@ function Mobile() {
                             <div>
                                 <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ring-2 ring-gray ring-offset-2 ring-offset-gray-800 ring-gray focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                     <span className="sr-only">Open user menu</span>
-                                    <img className="h-8 w-8 rounded-full" src={userData?.image ? '/images/' + userData?.image : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
+                                    <img className="h-8 w-8 rounded-full" src={userData?.image ? process.env.PUBLIC_FOLDER +  userData?.image : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                 </Menu.Button>
                             </div>
                             <Transition

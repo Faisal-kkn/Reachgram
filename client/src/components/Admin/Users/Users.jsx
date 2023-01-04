@@ -75,7 +75,7 @@ function Users() {
                                             {index+1}
                                         </td>
                                         <td className="py-4 px-6">
-                                            <img src={`/images/${user.profile}`} width="50px" className='rounded-full' alt="" />
+                                            <img src={`${process.env.PUBLIC_FOLDER + user.profile}`} width="50px" className='rounded-full' alt="" />
                                         </td>
                                         <td className="py-4 px-6">
                                             {user.fullname}

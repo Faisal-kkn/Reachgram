@@ -27,7 +27,7 @@ function Conversation({ currentChatId, conversation, currentUser }) {
         {/* onClick={() => getConversation(chat._id)}  */}
         <div className='w-[50px] h-[50px] overflow-hidden relative'>
             <div className='w-[50px] h-[50px] rounded-full overflow-hidden relative'>
-                  <img className='rounded-full' src={user?.profile ? '/images/' + user?.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
+                  <img className='rounded-full' src={user?.profile ? process.env.PUBLIC_FOLDER + user?.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
             </div>
             {/* <span className='w-[15px] h-[15px] bg-green-500 absolute bottom-[2px] right-0 rounded-full'></span> */}
         </div>

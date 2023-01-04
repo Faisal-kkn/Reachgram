@@ -148,7 +148,7 @@ function Chat({ socket }) {
                                     <div>
                                         <div className='flex gap-3 items-center pb-3'>
                                             <div className='w-[50px] h-[50px]  overflow-hidden relative'>
-                                                <img className='rounded-full' src={'/images/' + chatProfile?.profile} alt="" />
+                                                <img className='rounded-full' src={process.env.PUBLIC_FOLDER +  chatProfile?.profile} alt="" />
                                                 <span className='w-[15px] h-[15px] bg-green-500 absolute bottom-[2px] right-0 rounded-full'></span>
                                             </div>
                                             <div >
