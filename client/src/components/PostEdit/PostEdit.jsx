@@ -5,6 +5,8 @@ import axios from 'axios';
 import { postUpdate } from '../../Api/UserApi/UserRequest'
 
 function PostEdit() {
+    const PF = process.env.PUBLIC_FOLDER
+
     const { postEdit, setPostEdit } = useContext(AppContext);
 
     const updatePost = async (e) => {
@@ -61,7 +63,7 @@ function PostEdit() {
                                               </div>
                                           </div>
                                           <div className='w-full overflow-hidden h-[300px] flex justify-center items-center relative mt-3 border-4 border-solid border-[#314f5f65]'>
-                                              <div id="bgimage" className='w-[80vw] md:w-[60vw] bg-cover  overflow-hidden h-[300px] flex justify-center items-center blur-[1px]' style={{ backgroundImage: `url(${process.env.PUBLIC_FOLDER + postEdit.image})`}}></div>
+                                              <div id="bgimage" className='w-[80vw] md:w-[60vw] bg-cover  overflow-hidden h-[300px] flex justify-center items-center blur-[1px]' style={{ backgroundImage: `url(${PF + postEdit.image})`}}></div>
                                           </div>
                                       </div>
                                       <div className="flex items-center justify-center pt-[1px] border-t border-solid border-slate-200 rounded-b">

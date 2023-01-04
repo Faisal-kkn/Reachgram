@@ -15,6 +15,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import { getPost, postDelete, likeUnlike, getAllComment, newComment, commentLikeDisLike, postReport } from '../../Api/UserApi/UserRequest'
 
 function HomeMain({ socketio }) {
+    const PF = process.env.PUBLIC_FOLDER
+
     const Navigate = useNavigate()
     const { userData, setUserData } = useContext(UserContext);
     const { postEdit, setPostEdit } = useContext(AppContext);
@@ -158,7 +160,7 @@ function HomeMain({ socketio }) {
                             <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] ' key={index}>
                                 <div className='flex gap-3 items-center'>
                                     <div className='w-[50px] h-[50px]  overflow-hidden relative'>
-                                        <img className='rounded-full' src={`${process.env.PUBLIC_FOLDER + iteam.profile || "https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f"}`} alt="" />
+                                        <img className='rounded-full' src={`${PF + iteam.profile || "https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f"}`} alt="" />
                                     </div>
                                     <div>
                                         <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{iteam.user[0]}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{iteam.username[0]}</small>
@@ -222,7 +224,7 @@ function HomeMain({ socketio }) {
                                     </div>
                                 </div>
                                 <div className='w-full mt-3 rounded-[10px] overflow-hidden h-auto md:h-[400px] border-4 border-solid border-[#314F5F] '>
-                                    <img className='w-full rounded-[10px]' src={`${process.env.PUBLIC_FOLDER + iteam.image}`} alt="" />
+                                    <img className='w-full rounded-[10px]' src={`${PF + iteam.image}`} alt="" />
                                 </div>
                                 <div className='pt-2 text-[14px] post-cnt' > {/*  style={{ 'display': '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', 'overflow': 'hidden' }} */}
                                     {iteam.description}
@@ -247,7 +249,7 @@ function HomeMain({ socketio }) {
                                                 return(
                                                     <div className='flex gap-3 items-start pb-3' key={index}>
                                                         <div className='w-[50px] h-[50px] rounded-full overflow-hidden relative'>
-                                                            <img className='rounded-full' src={comment.user?.profile ? process.env.PUBLIC_FOLDER + comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
+                                                            <img className='rounded-full' src={comment.user?.profile ? PF + comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                         </div>
                                                         <div className='w-[85%]'>
                                                             <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{comment.user.fullname}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{comment.user.username}</small> 
@@ -269,7 +271,7 @@ function HomeMain({ socketio }) {
                                             <div className='flex items-center h-[50px] border-[#314F5F] border-[2px] bg-[#05141c2b] rounded-l-3xl rounded-[10px]'>
 
                                                 <div className='w-[70px] h-[70px] rounded-full overflow-hidden relative left-[-10px]'>
-                                                    <img className='rounded-full' src={comment.user?.profile ? process.env.PUBLIC_FOLDER +  comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
+                                                    <img className='rounded-full' src={comment.user?.profile ? PF +  comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                 </div>
                                                 <div className='w-[90%] h-full'>
                                                     <input type="text" value={commentData} onChange={(e) => setCommentData(e.target.value)} className='w-full border-transparent bg-transparent outline-none h-full' />

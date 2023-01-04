@@ -16,6 +16,7 @@ import { getMyPosts, likeUnlike, getAllComment, newComment, commentLikeDisLike, 
 
 function Profile() {
     const Navigate = useNavigate()
+    const PF = process.env.PUBLIC_FOLDER
 
     const notify = () => toast.success('Post Deleted !', {
         position: toast.POSITION.TOP_RIGHT
@@ -208,7 +209,7 @@ function Profile() {
                                                 <div key={index} className='rounded-[10px] bg-cover h-[300px] overflow-hidden relative hover-main'  >
                                                     <div className='border-[4px] rounded-[10px] bg-cover h-full w-full overflow-hidden absolute' style={{ borderImage: "linear-gradient(#83A2B4, #50809B) 30" }}></div>
                                                     <div className='rounded-[10px] overflow-hidden h-full w-full p-1' >
-                                                        <img key={index} className='w-full h-full' src={`${process.env.PUBLIC_FOLDER + iteam.image}`} alt="" />
+                                                        <img key={index} className='w-full h-full' src={`${PF + iteam.image}`} alt="" />
                                                     </div>
                                                     <div className='hover-data flex gap-5 justify-center items-center'>
                                                         <div key={index} onClick={() => likeAndDisLike(profilePostsId.postMainId, iteam._id, userData.id)} className=' cursor-pointer min-w-[70px] py-3 bg-[rgba(49,79,95,0.4)] rounded-[5px] flex justify-center items-center gap-2 md:px-8 h-fit'><HeartIcon className={`w-6 h-6 ${iteam.Likes.includes(userData.id) ? 'text-red-600' : 'text-white'} `} /> <span className='text-[16px]'>{iteam.Likes.length}</span></div>
@@ -240,7 +241,7 @@ function Profile() {
                                                             <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] '>
                                                                 <div className='flex gap-3 items-center'>
                                                                     <div className='w-[50px] h-[50px]  overflow-hidden relative'>
-                                                                        <img className='rounded-full' src={`${process.env.PUBLIC_FOLDER + userData.image}`} alt="" />
+                                                                        <img className='rounded-full' src={`${PF + userData.image}`} alt="" />
                                                                     </div>
                                                                     <div>
                                                                         <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{userData.name}</h4>
@@ -276,7 +277,7 @@ function Profile() {
                                                                     </div>
                                                                 </div>
                                                                 <div className='w-full mt-3 rounded-[10px] overflow-hidden h-auto md:h-[400px] border-4 border-solid border-[#314F5F] '>
-                                                                    <img className='w-full rounded-[10px]' src={`${process.env.PUBLIC_FOLDER + iteam.image}`} alt="" />
+                                                                    <img className='w-full rounded-[10px]' src={`${PF + iteam.image}`} alt="" />
                                                                 </div>
                                                                 <div className='pt-2 text-[14px] post-cnt' > {/*  style={{ 'display': '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', 'overflow': 'hidden' }} */}
                                                                     {iteam.description}
@@ -302,7 +303,7 @@ function Profile() {
                                                                                 return (
                                                                                     <div className='flex gap-3 items-start pb-3' key={index}>
                                                                                         <div className='w-[50px] h-[50px] rounded-full overflow-hidden relative'>
-                                                                                            <img className='rounded-full' src={comment.user?.profile ? process.env.PUBLIC_FOLDER + comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
+                                                                                            <img className='rounded-full' src={comment.user?.profile ? PF + comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                                                         </div>
                                                                                         <div className='w-[85%]'>
                                                                                             <h4 className='leading-3 overflow-hidden pr-5 overflow-ellipsis whitespace-nowrap text-white inline-block max-w-[250px]'>{comment.user.fullname}</h4>  <small className='leading-3 overflow-hidden max-w-[250px] overflow-ellipsis whitespace-nowrap text-[#596C7A] inline-block'>@{comment.user.username}</small>
@@ -321,7 +322,7 @@ function Profile() {
                                                                             <div className='flex items-center h-[50px] border-[#314F5F] border-[2px] bg-[#05141c2b] rounded-l-3xl rounded-[10px]'>
 
                                                                                 <div className='w-[70px] h-[70px] rounded-full overflow-hidden relative left-[-10px]'>
-                                                                                    <img className='rounded-full' src={comment.user?.profile ? process.env.PUBLIC_FOLDER +  comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
+                                                                                    <img className='rounded-full' src={comment.user?.profile ? PF +  comment.user.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                                                 </div>
                                                                                 <div className='w-[90%] h-full'>
                                                                                     <input type="text" value={commentData} onChange={(e) => setCommentData(e.target.value)} className='w-full border-transparent bg-transparent outline-none h-full' />

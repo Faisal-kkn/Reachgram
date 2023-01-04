@@ -7,6 +7,8 @@ import { userProfileData, userEditProfile, FollowList } from '../../../Api/UserA
 
 
 function Header({ data, handleSubmit, editbutton }) {
+    const PF = process.env.PUBLIC_FOLDER
+
     const Navigate = useNavigate()
     const { editProfile, setEditProfile, setEditProfileErr } = useContext(AppContext);
 
@@ -97,7 +99,7 @@ function Header({ data, handleSubmit, editbutton }) {
                                                             <li>
                                                                 <div className='my-2 flex gap-3 items-center' >
                                                                     <div className='w-[50px] h-[50px]  overflow-hidden relative rounded-full'>
-                                                                        <img className='rounded-full' src={item.profile ? process.env.PUBLIC_FOLDER + item.profile : `https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f`} alt="" />
+                                                                        <img className='rounded-full' src={item.profile ? PF + item.profile : `https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f`} alt="" />
                                                                     </div>
                                                                     <div>
                                                                         <h4 className='leading-3 overflow-hidden w-[150px] overflow-ellipsis whitespace-nowrap text-white'>{item.fullname}</h4>
@@ -129,7 +131,7 @@ function Header({ data, handleSubmit, editbutton }) {
             ) : null}
             <div className='mx-auto max-w-7xl flex justify-between flex-col md:flex-row  gap-3 w-12/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white items-center'>
                 <div className='flex gap-5 items-center w-full lg:w-4/12'>
-                    <div className='border-[3px] rounded-[10px] min-w-[100px] h-[100px] bg-cover' style={{ backgroundImage: `url(${userDetails.profile ? process.env.PUBLIC_FOLDER +  userDetails.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'})` }}></div>
+                    <div className='border-[3px] rounded-[10px] min-w-[100px] h-[100px] bg-cover' style={{ backgroundImage: `url(${userDetails.profile ? PF +  userDetails.profile : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'})` }}></div>
                     <div className=''>
                         <h4 className='text-[18px] font-semibold'>{userDetails.fullname} <small className='font-normal text-[#83A2B4] lowercase'>&nbsp; &nbsp; @{userDetails.username}</small></h4>
                         <p className=' font-light text-[#83A2B4] inline-block pr-5'>{userDetails.email}</p>

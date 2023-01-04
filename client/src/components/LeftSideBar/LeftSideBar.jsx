@@ -9,6 +9,7 @@ import { Friends, getOnlineFriends } from '../../Api/UserApi/UserRequest'
 
 function LeftSideBar({ socketio }) {
     const { userData, setUserData } = useContext(UserContext);
+    const PF = process.env.PUBLIC_FOLDER
 
     // const [socket, setSocket] = useState(null)
     const [onlineUsers, setOnlineUsers] = useState([])
@@ -79,7 +80,7 @@ function LeftSideBar({ socketio }) {
                             return(
                                 <div className='my-2 flex gap-3 items-center' key={index}>
                                     <div className='w-[50px] h-[50px]  overflow-hidden relative'>
-                                        <img className='rounded-full' src={process.env.PUBLIC_FOLDER + onUser.profile} alt="" />
+                                        <img className='rounded-full' src={PF + onUser.profile} alt="" />
                                         <span className='w-[15px] h-[15px] bg-green-500 absolute bottom-[2px] right-0 rounded-full'></span>
                                     </div>
                                     <div>

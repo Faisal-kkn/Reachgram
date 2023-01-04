@@ -3,6 +3,7 @@ import axios from 'axios'
 import { getAllPosts, postBlock, postUnblock } from '../../../Api/AdminApi/AdminRequest'
 
 function Posts() {
+    const PF = process.env.PUBLIC_FOLDER
 
     const [allPosts, setAllPosts] = useState([])
 
@@ -75,7 +76,7 @@ function Posts() {
                                             {index + 1}
                                         </td>
                                         <td className="py-4 px-6">
-                                            <img src={`${process.env.PUBLIC_FOLDER + post.postImage}`} width="50px" className='rounded-full' alt="" />
+                                            <img src={`${PF + post.postImage}`} width="50px" className='rounded-full' alt="" />
                                         </td>
                                         <td className="py-4 px-6">
                                             {post.user[0]}

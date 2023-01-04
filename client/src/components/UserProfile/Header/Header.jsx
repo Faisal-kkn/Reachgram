@@ -6,6 +6,8 @@ import { userProfileData, FollowUser, MessageUser } from '../../../Api/UserApi/U
 
 
 function Header({head, data}) {
+    const PF = process.env.PUBLIC_FOLDER
+
     const Navigate = useNavigate()
     const { userData } = useContext(UserContext);
 
@@ -51,7 +53,7 @@ function Header({head, data}) {
         <>
             <div className='mx-auto max-w-7xl flex justify-between flex-col md:flex-row  gap-3 w-12/12 bg-[#314f5f6e] rounded-[10px] p-[15px] text-white items-center'>
                 <div className='flex gap-5 items-center w-full lg:w-4/12'>
-                    <div className='border-[3px] rounded-[10px] min-w-[100px] h-[100px] bg-cover' style={{ backgroundImage: `url(${process.env.PUBLIC_FOLDER + userDetails.profile || 'https://images.unsplash.com/photo-1485893086445-ed75865251e0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'})` }}></div>
+                    <div className='border-[3px] rounded-[10px] min-w-[100px] h-[100px] bg-cover' style={{ backgroundImage: `url(${PF + userDetails.profile || 'https://images.unsplash.com/photo-1485893086445-ed75865251e0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'})` }}></div>
                     <div className=''>
                         <h4 className='text-[18px] font-semibold'>{userDetails.fullname} <small className='font-normal text-[#83A2B4] lowercase'>&nbsp; &nbsp; @{userDetails.username}</small></h4>
                         <p className=' font-light text-[#83A2B4] inline-block pr-5'>{userDetails.email}</p>

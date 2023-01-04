@@ -12,6 +12,7 @@ import { getUserData, getSearch } from '../../Api/UserApi/UserRequest'
 
 function Navbar({ socketio }) {
     const [notificationsData, setNotificationsData] = useState([])
+    const PF = process.env.PUBLIC_FOLDER
 
     useEffect(() => {
         socketio?.on("getNotification", data=>{
@@ -162,7 +163,7 @@ function Navbar({ socketio }) {
                                                                         }}>
                                                                             <div className='flex gap-3 items-center cursor-pointer'>
                                                                                 <div className='w-[50px] h-[50px] overflow-hidden my-auto'>
-                                                                                    <img className='rounded-full w-[50px] h-[50px] ' src={`${iteam.profile ? process.env.PUBLIC_FOLDER +  + iteam.profile : "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
+                                                                                    <img className='rounded-full w-[50px] h-[50px] ' src={`${iteam.profile ? PF +  + iteam.profile : "https://images.unsplash.com/photo-1534105555282-7f69cbee08fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"}`} alt="" />
                                                                                 </div>
                                                                                 <div className='w-[80%]'>
                                                                                     <h4 className='leading-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-[#0F213E] capitalize  max-w-[150px]'>{iteam.fullname}</h4>
@@ -219,7 +220,7 @@ function Navbar({ socketio }) {
                                                     <div>
                                                         <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ring-2 ring-gray ring-offset-2 ring-offset-gray-800 ring-gray focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                             <span className="sr-only">Open user menu</span>
-                                                            <img className="h-8 w-8 rounded-full" src={userData?.image ? process.env.PUBLIC_FOLDER + userData?.image : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
+                                                            <img className="h-8 w-8 rounded-full" src={userData?.image ? PF + userData?.image : 'https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=740&t=st=1669703755~exp=1669704355~hmac=e3cfbee8016a046173a54320da5c08b71fa822fe07e3107865ff80c66ab06c8f'} alt="" />
                                                         </Menu.Button>
                                                     </div>
                                                     <Transition

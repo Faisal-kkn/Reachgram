@@ -4,6 +4,7 @@ import axios from 'axios'
 import { getUsers, userBlock, userUnblock } from '../../../Api/AdminApi/AdminRequest'
 
 function Users() {
+    const PF = process.env.PUBLIC_FOLDER
 
     const [allUsers, setAllUsers] = useState([])
 
@@ -75,7 +76,7 @@ function Users() {
                                             {index+1}
                                         </td>
                                         <td className="py-4 px-6">
-                                            <img src={`${process.env.PUBLIC_FOLDER + user.profile}`} width="50px" className='rounded-full' alt="" />
+                                            <img src={`${PF + user.profile}`} width="50px" className='rounded-full' alt="" />
                                         </td>
                                         <td className="py-4 px-6">
                                             {user.fullname}
