@@ -18,7 +18,6 @@ import AdminPosts from './components/Admin/Posts/Posts';
 // import { io } from 'socket.io-client';
 const socket = require("socket.io-client")("http://localhost:5000");
 
-
 function App() { 
   // const [socket, setSocket] = useState(null)
   const [showPostModal, setShowPostModal] = useState(false)

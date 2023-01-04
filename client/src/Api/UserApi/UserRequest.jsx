@@ -1,17 +1,17 @@
 import instance from '../../Axios/UserAxios'
 import axios from 'axios'
 
-export const userLogin = (data) => axios.post(`http://localhost:5000/api/login`, data)
-export const userRegister = (data) => axios.post(`http://localhost:5000/api/signup`, data)
-export const userRegisterOtp = (data) => axios.post(`http://localhost:5000/api/otpvarification`, data)
-export const passwordForgot = (email) => axios.post(`http://localhost:5000/api/forgotPassword`, email)
-export const OtpForm = (newPassword) => axios.post(`http://localhost:5000/api/newPassword`, newPassword)
-export const newPost = (data) => axios.post(`http://localhost:5000/api/newPost`, data, {
+export const userLogin = (data) => axios.post(`http://reachgram.online/api/login`, data)
+export const userRegister = (data) => axios.post(`http://reachgram.online/api/signup`, data)
+export const userRegisterOtp = (data) => axios.post(`http://reachgram.online/api/otpvarification`, data)
+export const passwordForgot = (email) => axios.post(`http://reachgram.online/api/forgotPassword`, email)
+export const OtpForm = (newPassword) => axios.post(`http://reachgram.online/api/newPassword`, newPassword)
+export const newPost = (data) => axios.post(`http://reachgram.online/api/newPost`, data, {
     headers: {
         "accesstoken": localStorage.getItem("userToken")
     },
 })
-export const userEditProfile = (data) => axios.put(`http://localhost:5000/api/editProfile`, data, {
+export const userEditProfile = (data) => axios.put(`http://reachgram.online/api/editProfile`, data, {
     headers: {
         "accesstoken": localStorage.getItem("userToken")
     },
