@@ -9,17 +9,17 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import PostEditModal from '../PostEdit/PostEdit';
 import { format, render, cancel, register } from 'timeago.js';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import { ToastContainer, toast } from 'react-toastify';
 
 import { getPost, postDelete, likeUnlike, getAllComment, newComment, commentLikeDisLike, postReport } from '../../Api/UserApi/UserRequest'
 
-function HomeMain() {
+function HomeMain({ socketio }) {
     const Navigate = useNavigate()
     const { userData, setUserData } = useContext(UserContext);
     const { postEdit, setPostEdit } = useContext(AppContext);
 
-    const [socket, setSocket] = useState(null)
+    // const [socket, setSocket] = useState(null)
     const [homePost, setHomePost] = useState([])
     const [comment, setComment] = useState({ id: '', status: false })
     const [commentData, setCommentData] = useState('')
@@ -29,9 +29,9 @@ function HomeMain() {
         position: toast.POSITION.TOP_RIGHT
     });
 
-    useEffect(() => {
-        setSocket(io('http://reachgram.online'))
-    }, [])
+    // useEffect(() => {
+    //     setSocket(io('http://reachgram.online/api'))
+    // }, [])
 
     const allPost = async () => {
         try {
@@ -136,7 +136,7 @@ function HomeMain() {
     function classNames(...classes) { return classes.filter(Boolean).join(' ') }
 
     const handleNotification = (userName, type) => {
-        socket.emit('sendNotification', {
+        socketio.emit('sendNotification', {
             senderName: userData.name,
             receiverName: userName,
             type: type

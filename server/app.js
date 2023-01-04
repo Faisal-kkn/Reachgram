@@ -12,8 +12,9 @@ const app = express();
 
 const httpServer = http.createServer(app)
 const io = new Server(httpServer,{
+    path: "/api/socket.io",
     cors: {
-        origin: ['http://localhost:3000']
+        origin: ['http://reachgram.online']
     }
 })
 

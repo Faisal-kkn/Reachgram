@@ -16,7 +16,7 @@ function Home({ socket }) {
                         <Story />
                     </div> */}
                     <div className='overflow-y-scroll scrollbar-hide h-[95vh] lg:h-[90vh] md:h-[85vh] am:h-[90vh]  text-white rounded-t-[10px] scrollbar-hide'>
-                        <HomeMain />
+                        <HomeMain socketio={socket} />
                     </div>
                 </div>
                 <div className='hidden md:block md:w-5/12 lg:w-3/12'><RightSideBar /></div>

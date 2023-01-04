@@ -1,7 +1,7 @@
 import instance from '../../Axios/AdminAxios'
 import axios from 'axios'
 
-export const adminLogin = (data) => axios.post(`http://localhost:5000/api/admin/adminLogin`, data)
+export const adminLogin = (data) => axios.post(`http://reachgram.online/api/admin/adminLogin`, data)
 export const AdminAuth = () => instance.get(`/admin/isAdminAuth`)
 export const getAllPosts = () => instance.get(`/admin/allPosts`)
 export const postBlock = ({ postId, userId }) => instance.put(`/admin/blockPost`, { postId, userId })
