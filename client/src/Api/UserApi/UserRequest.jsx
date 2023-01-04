@@ -1,18 +1,17 @@
 import instance from '../../Axios/UserAxios'
 import axios from 'axios'
 
-export const userLogin = (data) => axios.post(`http://localhost:5000/login`, data)
-export const userRegister = (data) => axios.post(`http://localhost:5000/signup`, data)
-export const userRegisterOtp = (data) => axios.post(`http://localhost:5000/otpvarification`, data)
-export const passwordForgot = (email) => axios.post(`http://localhost:5000/forgotPassword`, email)
-export const OtpForm = (newPassword) => axios.post(`http://localhost:5000/newPassword`, newPassword)
-
-export const newPost = (data) => axios.post(`http://localhost:5000/newPost`, data, {
+export const userLogin = (data) => axios.post(`http://localhost:5000/api/login`, data)
+export const userRegister = (data) => axios.post(`http://localhost:5000/api/signup`, data)
+export const userRegisterOtp = (data) => axios.post(`http://localhost:5000/api/otpvarification`, data)
+export const passwordForgot = (email) => axios.post(`http://localhost:5000/api/forgotPassword`, email)
+export const OtpForm = (newPassword) => axios.post(`http://localhost:5000/api/newPassword`, newPassword)
+export const newPost = (data) => axios.post(`http://localhost:5000/api/newPost`, data, {
     headers: {
         "accesstoken": localStorage.getItem("userToken")
     },
 })
-export const userEditProfile = (data) => axios.put(`http://localhost:5000/editProfile`, data, {
+export const userEditProfile = (data) => axios.put(`http://localhost:5000/api/editProfile`, data, {
     headers: {
         "accesstoken": localStorage.getItem("userToken")
     },

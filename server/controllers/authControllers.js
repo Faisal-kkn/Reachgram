@@ -9,7 +9,7 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 
-var regex = /^[a-z0 -9_.-]*$/;
+// var regex = /^[a-z0 -9_.-]*$/;
 
 
 export default {
@@ -18,6 +18,7 @@ export default {
     },
     myData: (req, res) => {
         try {
+            // regex.test()
             userRegisterSchema.findOne({ _id: req.query.userId }).then((response) => {
                 if (response) res.status(200).json({ profile: response.profile, fullname: response.fullname, username: response.username })
             })

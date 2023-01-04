@@ -75,7 +75,7 @@ function LeftSideBar({ socketio }) {
                 <h6>Online</h6>{/*   */}
                 <div className='mt-2 max-h-[80vh] overflow-x-scroll scrollbar-hide'>
                     {
-                        onlineFriendsData?.map((onUser, index)=>{
+                        onlineFriendsData.length !=0 && onlineFriendsData?.map((onUser, index)=>{
                             return(
                                 <div className='my-2 flex gap-3 items-center' key={index}>
                                     <div className='w-[50px] h-[50px]  overflow-hidden relative'>

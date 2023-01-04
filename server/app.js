@@ -104,7 +104,7 @@ mongoose.connect(CONNECTION_URL, () => {
     console.log('Database is connected');
 }, e => console.error(e))
 
-app.use('/', user)
-app.use('/chat', chat)
-app.use('/admin', admin)
+app.use('/api/', user)
+app.use('/api/chat', chat)
+app.use('/api/admin', admin)
 

@@ -60,6 +60,7 @@ function Login() {
                         <div className="flex mx-auto items-center z-10 w-10/12 justify-center sm:p-8 sm:mx-0 min-h-[100vh] sm:w-6/12 md:w-7/12 lg:w-4/12">
                             <div>
                                 <div className='w-full'>
+                                    <img src="logo_white.png" alt="" className='w-[250px] mx-auto mb-5' />
                                     <p className='text-white font-light text-[14px] mb-[10px] '>START FOR FREE</p>
                                     <h3 className='font-semibold text-white text-[35px] sm:text-[48px]'>Login your account<span className='text-[#006FC0]'>.</span></h3>
                                     <p className='text-white font-light text-[14px] mt-[15px]'>Create new account? <NavLink to='/signup'><span className='text-[#006FC0] text-[16px] font-normal'> &nbsp; &nbsp; Signup</span></NavLink></p>
