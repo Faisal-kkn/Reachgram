@@ -63,7 +63,7 @@ function Profile() {
     }
     useEffect(() => {
         myPosts()
-    }, [Navigate]);
+    }, []);
 
     const likeAndDisLike = async (userId, postId, likedUser) => {
         try {
