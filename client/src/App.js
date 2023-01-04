@@ -16,7 +16,7 @@ import AdminDashboard from './components/Admin/Dashboard/Dashboard';
 import AdminUsers from './components/Admin/Users/Users';
 import AdminPosts from './components/Admin/Posts/Posts';
 // import { io } from 'socket.io-client';
-const socket = require("socket.io-client")("http://localhost:5000");
+const socket = require("socket.io-client")("http://reachgram.online/");
 
 function App() { 
   // const [socket, setSocket] = useState(null)

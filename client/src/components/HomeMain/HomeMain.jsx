@@ -30,7 +30,7 @@ function HomeMain() {
     });
 
     useEffect(() => {
-        setSocket(io('http://localhost:5000'))
+        setSocket(io('http://reachgram.online'))
     }, [])
 
     const allPost = async () => {
