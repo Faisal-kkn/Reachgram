@@ -43,7 +43,9 @@ function UserProfile() {
     let userPost = async () => {
         try {
             const { data } = await getMyPosts(userProfileData ? userProfileData?._id : userProfileDatas?._id)
-            setProfilePosts(data.reverse())
+            setProfilePosts(data)
+            console.log(data, 'aaaaaaaffffff');
+
             setProfilePostsId({ postMainId: data[0]?.mainId })
         } catch (error) {
             console.log(error, 'catch error');
@@ -131,7 +133,7 @@ function UserProfile() {
 
                             {
                                 !singlePostShow ? <div className='grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5 items-center'>
-                                    {profilePosts.reverse().map((iteam, index) => {
+                                    {profilePosts.map((iteam, index) => {
                                         return (
                                             <div key={index} className='rounded-[10px] bg-cover h-[300px] overflow-hidden relative hover-main'  >
                                                 <div className='border-[4px] rounded-[10px] bg-cover h-full w-full overflow-hidden absolute' style={{ borderImage: "linear-gradient(#83A2B4, #50809B) 30" }}></div>
@@ -162,7 +164,7 @@ function UserProfile() {
                                 </div> :
                                     <>
                                         {
-                                            profilePosts.reverse().map((iteam, index) => {
+                                            profilePosts.map((iteam, index) => {
                                                 return (
                                                     <div className='max-w-3xl mx-auto' key={index} id={iteam._id}>
                                                         <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] '>

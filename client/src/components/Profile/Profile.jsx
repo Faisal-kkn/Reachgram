@@ -41,7 +41,8 @@ function Profile() {
         try {
             let userDetails = jwtDecode(localStorage.getItem("userToken"))
             const { data } = await getMyPosts(userDetails.user.split(' ')[0])
-            setProfilePosts(data.reverse())
+            setProfilePosts(data)
+            console.log(data, 'dataaaaa');
             setProfilePostsId({ postMainId: data[0].mainId })
         } catch (error) {
             console.log(error, 'catch error');
@@ -150,7 +151,7 @@ function Profile() {
 
             <div className='relative'>
                 {
-                    singlePostShow && <div className='cursor-pointer absolute rounded-sm top-[5px] left-[130px] p-2 z-30 bg-[#00000030]  text-white' onClick={() => {
+                    singlePostShow && <div className='cursor-pointer absolute rounded-sm top-[5px] left-[15px] md:left-[130px] p-2 z-30 bg-[#00000030]  text-white' onClick={() => {
                         setsinglePostShow(false)
                         Navigate('/profile')
                     }}>
@@ -202,7 +203,7 @@ function Profile() {
 
                                 {
                                     !singlePostShow ? <div className='grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5 items-center'>
-                                        {profilePosts.reverse().map((iteam, index) => {
+                                        {profilePosts.map((iteam, index) => {
                                             return (
                                                 <div key={index} className='rounded-[10px] bg-cover h-[300px] overflow-hidden relative hover-main'  >
                                                     <div className='border-[4px] rounded-[10px] bg-cover h-full w-full overflow-hidden absolute' style={{ borderImage: "linear-gradient(#83A2B4, #50809B) 30" }}></div>
@@ -233,7 +234,7 @@ function Profile() {
                                     </div> :
                                         <>
                                             {
-                                                profilePosts.reverse().map((iteam, index) => {
+                                                profilePosts.map((iteam, index) => {
                                                     return (
                                                         <div className='max-w-3xl mx-auto' key={index} id={iteam._id}>
                                                             <div className='bg-[#314f5f6e] p-[15px] mb-3 rounded-[10px] '>
