@@ -16,7 +16,7 @@ import { getMyPosts, likeUnlike, getAllComment, newComment, commentLikeDisLike, 
 
 function Profile() {
     const Navigate = useNavigate()
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const notify = () => toast.success('Post Deleted !', {
         position: toast.POSITION.TOP_RIGHT
