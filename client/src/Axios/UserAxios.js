@@ -4,7 +4,7 @@
 // const instance = axios.create({baseURL: baseurl})
 
 import axios from "axios";
-const baseURL = "http://reachgram.online/api";
+const baseURL = "https://reachgram.online/api";
 
 const defaultOptions = {
     baseURL: baseURL,

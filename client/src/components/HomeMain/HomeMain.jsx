@@ -32,7 +32,7 @@ function HomeMain({ socketio }) {
     });
 
     // useEffect(() => {
-    //     setSocket(io('http://reachgram.online/api'))
+    //     setSocket(io('https://reachgram.online/api'))
     // }, [])
 
     const allPost = async () => {

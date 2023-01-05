@@ -121,7 +121,7 @@ function UserProfile() {
             <ProfilHead head={userProfileData ? userProfileData : userProfileDatas} data={profilePosts.length} />
             <div className='relative'>
                 {
-                    singlePostShow && <div className='cursor-pointer absolute rounded-sm top-[5px] left-[130px] p-2 z-30 bg-[#00000030]  text-white' onClick={() => {
+                    singlePostShow && <div className='cursor-pointer absolute rounded-sm top-[5px] left-[15px] md:left-[130px] p-2 z-30 bg-[#00000030]  text-white' onClick={() => {
                         setsinglePostShow(false)
                         Navigate('/UserProfile')
                     }}>
