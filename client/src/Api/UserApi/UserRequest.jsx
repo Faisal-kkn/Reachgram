@@ -1,17 +1,17 @@
 import instance from '../../Axios/UserAxios'
 import axios from 'axios'
 
-export const userLogin = (data) => axios.post(`https://reachgram.online/api/login`, data)
-export const userRegister = (data) => axios.post(`https://reachgram.online/api/signup`, data)
-export const userRegisterOtp = (data) => axios.post(`https://reachgram.online/api/otpvarification`, data)
-export const passwordForgot = (email) => axios.post(`https://reachgram.online/api/forgotPassword`, email)
-export const OtpForm = (newPassword) => axios.post(`https://reachgram.online/api/newPassword`, newPassword)
-export const newPost = (data) => axios.post(`https://reachgram.online/api/newPost`, data, {
+export const userLogin = (data) => axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, data)
+export const userRegister = (data) => axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, data)
+export const userRegisterOtp = (data) => axios.post(`${process.env.REACT_APP_BACKEND_URL}/otpvarification`, data)
+export const passwordForgot = (email) => axios.post(`${process.env.REACT_APP_BACKEND_URL}/forgotPassword`, email)
+export const OtpForm = (newPassword) => axios.post(`${process.env.REACT_APP_BACKEND_URL}/newPassword`, newPassword)
+export const newPost = (data) => axios.post(`${process.env.REACT_APP_BACKEND_URL}/newPost`, data, {
     headers: {
         "accesstoken": localStorage.getItem("userToken")
     },
 })
-export const userEditProfile = (data) => axios.put(`https://reachgram.online/api/editProfile`, data, {
+export const userEditProfile = (data) => axios.put(`${process.env.REACT_APP_BACKEND_URL}/editProfile`, data, {
     headers: {
         "accesstoken": localStorage.getItem("userToken")
     },
