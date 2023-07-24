@@ -16,7 +16,7 @@ const httpServer = http.createServer(app)
 const io = new Server(httpServer,{
     path: "/api/socket.io",
     cors: {
-        origin: ['http://reachgram.online']
+        origin: ['https://reachgram.online']
     }
 })
 
