@@ -4,7 +4,7 @@
 // const instance = axios.create({baseURL: baseurl})
 
 import axios from "axios";
-const baseURL = "https://reachgram.online/api";
+const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 const defaultOptions = {
     baseURL: baseURL,

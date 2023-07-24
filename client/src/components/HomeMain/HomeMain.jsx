@@ -15,7 +15,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { getPost, postDelete, likeUnlike, getAllComment, newComment, commentLikeDisLike, postReport } from '../../Api/UserApi/UserRequest'
 
 function HomeMain({ socketio }) {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const Navigate = useNavigate()
     const { userData, setUserData } = useContext(UserContext);
@@ -32,7 +32,7 @@ function HomeMain({ socketio }) {
     });
 
     // useEffect(() => {
-    //     setSocket(io('https://reachgram.online/api'))
+    //     setSocket(io('http://localhost:5000/api'))
     // }, [])
 
     const allPost = async () => {

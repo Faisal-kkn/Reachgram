@@ -7,7 +7,7 @@ import { userProfileData, userEditProfile, FollowList } from '../../../Api/UserA
 
 
 function Header({ data, handleSubmit, editbutton }) {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const Navigate = useNavigate()
     const { editProfile, setEditProfile, setEditProfileErr } = useContext(AppContext);

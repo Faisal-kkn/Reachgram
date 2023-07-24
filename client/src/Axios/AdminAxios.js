@@ -4,7 +4,7 @@
 // const instance = axios.create({baseURL: baseurl})
 
 import axios from "axios";
-const baseURL = "https://reachgram.online/api";
+const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 const defaultOptions = {
     baseURL: baseURL,
@@ -19,7 +19,6 @@ let AdminInstance = axios.create(defaultOptions);
 // Set the AUTH token for any request
 AdminInstance.interceptors.request.use(function (config) {
     const token = localStorage.getItem("adminToken");
-    console.log(token, "verifyyyyyysyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
     config.headers.accesstoken = token;
     return config;
 });

@@ -4,7 +4,7 @@ import axios from 'axios'
 import { getUsers, userBlock, userUnblock } from '../../../Api/AdminApi/AdminRequest'
 
 function Users() {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const [allUsers, setAllUsers] = useState([])
 

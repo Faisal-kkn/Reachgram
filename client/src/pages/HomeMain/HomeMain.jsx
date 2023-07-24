@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import axios from 'axios'; import { NavLink, useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import Header from '../../components/Navbar/Navbar'
 import Mobile from '../../components/Navbar/Mobile/Mobile'
 import { userAuth } from '../../Api/UserApi/UserRequest'
@@ -13,7 +13,7 @@ function HomeMain({ socket }) {
     const userAuthenticeted =async () => {
         try {
             const { data } = await userAuth()
-            if (data.auth == false) Navigate("/login")
+            if (data.auth == false) Navigate("/login");
         } catch (error) {
             console.log(error, 'catch error');
         }

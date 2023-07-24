@@ -10,7 +10,7 @@ import { BellIcon, HomeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/sol
 import { getSearch } from '../../../Api/UserApi/UserRequest'
 
 function Mobile() {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const { userData } = useContext(UserContext);
     const { showPostModal, setShowPostModal, showSingleChat, setShowSingleChat } = useContext(AppContext);

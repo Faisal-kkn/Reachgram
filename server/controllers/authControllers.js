@@ -126,6 +126,7 @@ export default {
     userLogin: async (req, res) => {
         try {
             userRegisterSchema.findOne({ email: req.body.email, otpStatus: true }).then((response) => {
+                console.log({response});
                 if (response) {
                     bcrypt.compare(req.body.password, response.password)
                         .then((loginResponse) => {
@@ -310,7 +311,6 @@ export default {
     },
     searchUser: (req, res) => {
         try {
-            console.log(req.query.data);
             userRegisterSchema.find({ fullname: { $regex: new RegExp(req.query.data, 'i') }, otpStatus: true }).then((response) => {
                 // let profiledata = 
                 res.status(200).json(response)
@@ -370,7 +370,6 @@ export default {
     },
     myProfile: (req, res) => {
         try {
-            console.log(req.query);
             userPostSchema.aggregate([
                 { $match: { userId: mongoose.Types.ObjectId(req.query.userId) } },
                 {
@@ -434,8 +433,6 @@ export default {
     },
     deletePost: (req, res) => {
         try {
-            console.log('userId data');
-            console.log(req.query);
             userPostSchema.findOneAndUpdate(
                 {
                     _id: req.query.mainId, "postData._id": req.query.postId
@@ -534,8 +531,6 @@ export default {
     },
     postComments: (req, res) => {
         try {
-            console.log('lll');
-            console.log(req.query);
             userCommentSchema.aggregate([
                 { $match: { postId: mongoose.Types.ObjectId(req.query.postId) } },
                 { $unwind: "$comments" },
@@ -724,7 +719,6 @@ export default {
 
     },
     friends: (req, res)=>{
-        console.log(req.query);
         try {
             userFriendsSchema.find({ userId : req.query.userId}).then((response)=>{
                 res.status(200).json(response)

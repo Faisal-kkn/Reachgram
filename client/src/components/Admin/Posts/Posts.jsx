@@ -3,7 +3,7 @@ import axios from 'axios'
 import { getAllPosts, postBlock, postUnblock } from '../../../Api/AdminApi/AdminRequest'
 
 function Posts() {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const [allPosts, setAllPosts] = useState([])
 

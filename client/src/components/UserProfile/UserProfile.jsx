@@ -12,7 +12,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { getMyPosts, postReport, likeUnlike, newComment, commentLikeDisLike, getAllComment } from '../../Api/UserApi/UserRequest'
 
 function UserProfile() {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const notify = () => toast.success('Post Deleted !', {
         position: toast.POSITION.TOP_RIGHT

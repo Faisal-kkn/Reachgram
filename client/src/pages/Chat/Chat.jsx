@@ -12,7 +12,7 @@ import Message from './Message/Message';
 import { newConversation, getChatIds, getConversationData, getChatUser } from '../../Api/UserApi/UserRequest'
 
 function Chat({ socket }) {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const { userData, setUserData } = useContext(UserContext);
     const { showSingleChat, setShowSingleChat } = useContext(AppContext);

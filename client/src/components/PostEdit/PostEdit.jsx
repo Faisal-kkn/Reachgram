@@ -1,11 +1,10 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import { AppContext } from '../../AppContext'
-import axios from 'axios';
 
 import { postUpdate } from '../../Api/UserApi/UserRequest'
 
 function PostEdit() {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const { postEdit, setPostEdit } = useContext(AppContext);
 

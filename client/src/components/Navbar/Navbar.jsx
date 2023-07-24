@@ -12,7 +12,7 @@ import { getUserData, getSearch } from '../../Api/UserApi/UserRequest'
 
 function Navbar({ socketio }) {
     const [notificationsData, setNotificationsData] = useState([])
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     useEffect(() => {
         socketio?.on("getNotification", data=>{

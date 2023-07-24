@@ -14,7 +14,6 @@ import mongoose from 'mongoose'
 
 export default {
     chatList: (req, res) => {
-        // console.log(req.query.userId);
         try {
             userChatListSchema.find({ members: { $in: [req.query.userId] } }).then((response) => {
                 console.log('userChatListSchema');
@@ -36,9 +35,6 @@ export default {
     },
     chatUsers: (req, res) => {
         try {
-            console.log('req.query');
-            console.log(req.query);
-             
             userRegisterSchema.find({ _id: req.query.friendId}).then((response) => {
                     if (response) res.status(200).json(response)
                     else res.json(false)

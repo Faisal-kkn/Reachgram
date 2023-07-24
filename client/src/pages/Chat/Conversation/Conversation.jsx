@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 
 import { getChatUser } from '../../../Api/UserApi/UserRequest'
-const PF = process.env.PUBLIC_FOLDER
+const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
 function Conversation({ currentChatId, conversation, currentUser }) {
 

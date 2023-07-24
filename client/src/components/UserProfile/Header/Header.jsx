@@ -6,7 +6,7 @@ import { userProfileData, FollowUser, MessageUser } from '../../../Api/UserApi/U
 
 
 function Header({head, data}) {
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     const Navigate = useNavigate()
     const { userData } = useContext(UserContext);

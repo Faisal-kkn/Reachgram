@@ -2,14 +2,13 @@ import React, { useState, useContext, useEffect } from 'react'
 import './leftSideBar.css'
 // import { io } from 'socket.io-client';
 import { UserContext } from "../../AppContext";
-import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
 import { Friends, getOnlineFriends } from '../../Api/UserApi/UserRequest'
 
 function LeftSideBar({ socketio }) {
     const { userData, setUserData } = useContext(UserContext);
-    const PF = process.env.PUBLIC_FOLDER
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER
 
     // const [socket, setSocket] = useState(null)
     const [onlineUsers, setOnlineUsers] = useState([])
